@@ -21,7 +21,7 @@ SetWorkingDir, %_WorkingDir%					; Look for other files relative to install root
 ;
 ; Customizable settings
 ;
-_ServiceTimeout := 20						; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
+_ServiceTimeout := 30						; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
 
 ;
 ; Check for administrator privileges.

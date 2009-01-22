@@ -25,7 +25,7 @@ SetWorkingDir, %A_ScriptDir%					; Look for other files relative to our own loca
 ;
 ; Customizable settings
 ;
-_ServiceTimeout := 20						; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
+_ServiceTimeout := 30						; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
 
 ;
 ; Check if node is running
