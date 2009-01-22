@@ -1,0 +1,425 @@
+;
+; Windows Freenet Installer - Include file - Helpers
+;
+; This file contains helpers that are used throughout the installer. Placed here to not clutter the
+; main script file. Will be included directly into the installer (at the bottom) at compile time.
+;
+
+;
+; General helpers
+;
+Exit()
+{
+	global
+
+	SetTimer, RecheckOldUninstallerTimer, Off
+	SetTimer, RecheckJavaVersionTimer, Off
+	SetTimer, UpdateInstallDirStatusTimer, Off
+
+	Gui, Destroy
+
+	FileRemoveDir, %A_Temp%\FreenetInstaller, 1							; Clean up after ourselves
+
+	ExitApp												; Bye Bye
+}
+
+;
+; General GUI helpers
+;
+CalculateGroupBoxHeight(_GBTextLines, _GBButtonLines, _GBCheckBoxLines, _GBSpacings)
+{
+	global
+
+	return _GBTopMargin+(_GBTextLines*_TextHeight)+(_GBButtonLines*24)+(_GBCheckboxLines*17)+(_GBSpacings*_StandardMargin)+_GBBottomMargin
+}
+
+DisableCloseButton(hWnd = "")
+{
+	global
+
+	If hWnd=
+	{
+		hWnd := WinExist("A")
+	}
+
+	hSysMenu:=DllCall("GetSystemMenu","Int",hWnd,"Int",FALSE)
+	nCnt:=DllCall("GetMenuItemCount","Int",hSysMenu)
+
+	DllCall("RemoveMenu","Int",hSysMenu,"UInt",nCnt-1,"Uint","0x400")
+	DllCall("RemoveMenu","Int",hSysMenu,"UInt",nCnt-2,"Uint","0x400")
+	DllCall("DrawMenuBar","Int",hWnd)
+}
+
+EnableCloseButton(hWnd = "")
+{
+	If hWnd=
+	{
+		hWnd := WinExist("A")
+	}
+
+	DllCall("GetSystemMenu","Int",hWnd,"Int",TRUE)
+	DllCall("DrawMenuBar","Int",hWnd)
+}
+
+GuiClose:												; Triggered if user closes GUI via "the red cross"/ALT+F4/...
+ButtonExit:
+	Exit()
+return
+
+;
+; Java check helpers
+;
+CheckJavaVersion()
+{
+	global
+
+	RegRead, _JavaVersion, HKEY_LOCAL_MACHINE, SOFTWARE\JavaSoft\Java Runtime Environment, CurrentVersion
+
+	If (ErrorLevel || _JavaVersion < _RequiredJRE)
+	{
+		return 0
+	}
+	else
+	{
+		RegRead, _JavaLib, HKEY_LOCAL_MACHINE, SOFTWARE\JavaSoft\Java Runtime Environment\%_JavaVersion%, RuntimeLib
+
+		If (ErrorLevel || !FileExist(_JavaLib))
+		{
+			return 0
+		}
+		Else
+		{
+			return 1
+		}
+	}
+}
+
+ButtonInstallJava:
+	GuiControl, +Disabled, _cInstallJavaButton
+	FileInstall, files_bundle\jre-online-installer.exe, %A_WorkingDir%\jre-online-installer.exe
+	RunWait, %A_WorkingDir%\jre-online-installer.exe, , UseErrorLevel
+	GuiControl, -Disabled, _cInstallJavaButton
+return
+
+RecheckJavaVersionTimer:
+	If (CheckJavaVersion())
+	{
+		SetTimer, RecheckJavaVersionTimer, Off
+		Gui, Destroy
+		Goto, GuiStart
+	}
+return
+
+;
+; Old uninstaller check helpers
+;
+CheckForOldUninstaller()
+{
+	global
+
+	RegRead, _OldUninstallerPath, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet 0.7.0 "Darknet", UninstallString
+
+	If (ErrorLevel)
+	{
+		return 0
+	}
+	else
+	{
+		return 1
+	}
+}
+
+RecheckOldUninstallerTimer:
+	If (!CheckForOldUninstaller())
+	{
+		SetTimer, RecheckOldUninstallerTimer, Off
+		Gui, Destroy
+		Goto, GuiStart
+	}
+return
+
+ButtonUninstall:
+	GuiControl, +Disabled, _cUninstallButton
+	RunWait, %_OldUninstallerPath%, , UseErrorLevel
+	GuiControl, -Disabled, _cUninstallButton
+return
+
+;
+; Install path helpers
+;
+ButtonBrowse:
+	Gui, +OwnDialogs										; Bind the dialog below to the main GUI
+
+	StringLeft, _OldBaseInstallDir, _InstallDir, StrLen(_InstallDir)-8
+	FileSelectFolder, _NewInstallDir, *%_OldBaseInstallDir%, 1, If you do not choose a folder containg containing "Freenet" in the path, a folder will be created for you automatically.	; *=Don't restrict user from browsing upwards from default folder, 1=Show a 'new folder' button
+	_NewInstallDir := RegExReplace(_NewInstallDir, "\\$")						; Removes the trailing backslash, if present
+
+	If (_NewInstallDir <> "")									; If user cancels, this will be empty, so don't pass it on in that case
+	{
+		SetInstallDir(_NewInstallDir)
+	}
+return
+
+ButtonDefault:
+	SetInstallDir(_DefaultInstallDir)
+return
+
+SetInstallDir(_NewInstallDir)
+{
+	global
+
+	;If (SubStr(_NewInstallDir, -7) <> "\Freenet")
+	IfNotInString, _NewInstallDir, Freenet
+	{
+		_NewInstallDir = %_NewInstallDir%\Freenet
+	}
+
+	_InstallDir := _NewInstallDir
+	UpdateInstallDirStatus()
+}
+
+UpdateInstallDirStatus()
+{
+	global
+
+	If (StrLen(_InstallDir) > (_GuiWidth3 / 6))
+	{
+		StringLeft, _InstallDirTrimmed, _InstallDir, (_GuiWidth3 / 6) - 3
+		GuiControl, Text, _cInstallDirText, %_InstallDirTrimmed%...
+	}
+	Else
+	{
+		GuiControl, Text, _cInstallDirText, %_InstallDir%
+	}
+
+	If (_InstallDir = _DefaultInstallDir)
+	{
+		GuiControl, +Disabled, _cDefaultButton
+	}
+	Else
+	{
+		GuiControl, -Disabled, _cDefaultButton
+	}
+
+	RegExMatch(_InstallDir, "i)([a-z]:\\).+", _InstallDrive)					; Check for a valid drive. If found, store in _InstallDrive1 (subpattern match number 1 = array 1)
+	If (ErrorLevel || _InstallDrive1 = "")
+	{
+		GuiControl, +cRed, _cInstallDirStatusText
+		GuiControl, Text, _cInstallDirStatusText, Invalid install path!
+		GuiControl, +Disabled, _cInstallButton
+	}
+	Else if (StrLen(_InstallDir) + _InternalPathLength > 255)
+	{
+		GuiControl, +cRed, _cInstallDirStatusText
+		GuiControl, Text, _cInstallDirStatusText, Invalid install path! (Too long for file system to handle)
+		GuiControl, +Disabled, _cInstallButton
+	}
+	Else
+	{
+		DriveSpaceFree, _InstallDriveFreeSpace, %_InstallDrive1%
+		If (_InstallDriveFreeSpace < _RequiredFreeSpace)
+		{
+			GuiControl, +cRed, _cInstallDirStatusText
+			GuiControl, Text, _cInstallDirStatusText, Not enough free space on installation drive!
+			GuiControl, +Disabled, _cInstallButton
+		}
+		Else IfExist, %_InstallDir%\freenet.jar
+		{
+			GuiControl, +cRed, _cInstallDirStatusText
+			GuiControl, Text, _cInstallDirStatusText, Freenet already installed! Please uninstall first or choose another directory!
+			GuiControl, +Disabled, _cInstallButton
+		}
+		Else
+		{
+			GuiControl, +cGreen, _cInstallDirStatusText
+			GuiControl, Text, _cInstallDirStatusText, Installation directory OK!
+			GuiControl, -Disabled, _cInstallButton
+		}
+	}
+}
+
+UpdateInstallDirStatusTimer:
+	UpdateInstallDirStatus()
+return
+
+;
+; Actual installation helpers
+;
+FindInstallSuffix()
+{
+	global
+
+	Loop
+	{
+		If (A_Index = 1)
+		{
+			_InstallSuffix =
+		}
+		Else
+		{
+			_InstallSuffix = _%A_Index%
+		}
+
+		RegRead, _Temp, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, UninstallString
+
+		If (ErrorLevel)
+		{
+			break											; Found a free entry! (...hopefully! Could technically also be an access error)
+		}
+	}
+}
+
+TestInstallDirWriteAccess()
+{
+	global
+
+	FileCreateDir, %_InstallDir%
+	FileAppend, <writetest>, %_InstallDir%\writetest.tmp
+	If (ErrorLevel)
+	{
+		FileRemoveDir, %_InstallDir%									; Will by default not remove dir if it contains anything at all
+		return 0
+	}
+	Else
+	{
+		FileDelete, %_InstallDir%\writetest.tmp
+		return 1
+	}
+}
+
+VisualInstallStart(_Ticks)
+{
+	global
+
+	Gui, Submit, NoHide											; Read values of checkboxes etc. into their variables
+
+	; Disable timers and buttons
+	SetTimer, UpdateInstallDirStatusTimer, Off
+	GuiControl, +Disabled, _cBrowseButton
+	GuiControl, +Disabled, _cDefaultButton
+	GuiControl, +Disabled, _cExitButton
+	GuiControl, +Disabled, _cInstallButton
+	DisableCloseButton()
+
+	GuiControl, +Range0-%_Ticks%, _cProgressBar
+
+	; Switch status text with progress bar
+	GuiControl, +Hidden, _cStatusText
+	GuiControl, -Hidden, _cProgressBar
+}
+
+VisualInstallEnd()
+{
+	global
+
+	; Re-enable timers and buttons
+	SetTimer, UpdateInstallDirStatusTimer, 5000
+	GuiControl, -Disabled, _cBrowseButton
+	GuiControl, -Disabled, _cExitButton
+	GuiControl, -Disabled, _cInstallButton
+	EnableCloseButton()
+
+	; Switch status text with progress bar
+	GuiControl, -Hidden, _cStatusText
+	GuiControl, +Hidden, _cProgressBar
+
+	; Do a check on install dir (mostly to fix default button status)
+	UpdateInstallDirStatus()
+}
+
+FindFreePort(_StartPort)
+{
+	global
+
+	Loop
+	{
+		if (A_Index > 256)										; If this many tries isn't enough, checking any more in this way is probably just a waste of time. Throw an error instead.
+		{
+			_Endport := _StartPort + 256 - 1
+			MsgBox, 48, Freenet Installer error, Freenet Installer was not able to find a free port on your system in the range %_StartPort%-%_EndPort%.`nPlease free a system port in this range to install Freenet. ; 48 = Icon Exclamation
+			return -1
+		}
+		Else If (TestPortAvailability(_StartPort+A_Index-1))
+		{
+			return _StartPort+A_Index-1
+		}
+	}
+}
+
+TestPortAvailability(_Port)
+{
+	global
+
+	VarSetCapacity(wsaData, 32)
+	_Result := DllCall("Ws2_32\WSAStartup", "UShort", 0x0002, "UInt", &wsaData)				; Request Winsock 2.0 (0x0002)
+
+	if (ErrorLevel)
+	{
+		MsgBox, 16, Freenet Installer fatal error, Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing. ; 16 = Icon Hand (stop/error)
+		Exit()
+	}
+	Else If (_Result)											; Non-zero, which means it failed (most Winsock functions return 0 upon success)
+	{
+		_Error := DllCall("Ws2_32\WSAGetLastError")
+		DllCall("Ws2_32\WSACleanup")
+		MsgBox, 16, Freenet Installer fatal error, Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing (Error: %_Error%). ; 16 = Icon Hand (stop/error)
+		Exit()
+	}
+
+	AF_INET = 2
+	SOCK_STREAM = 1
+	IPPROTO_TCP = 6
+
+	_Socket := DllCall("Ws2_32\socket", "Int", AF_INET, "Int", SOCK_STREAM, "Int", IPPROTO_TCP)
+	if (_Socket = -1)
+	{
+		_Error := DllCall("Ws2_32\WSAGetLastError")
+		DllCall("Ws2_32\WSACleanup")
+		MsgBox, 16, Freenet Installer fatal error, Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing (Error: %_Error%). ; 16 = Icon Hand (stop/error)
+		Exit()
+	}
+
+	SizeOfSocketAddress = 16
+	VarSetCapacity(SocketAddress, SizeOfSocketAddress)
+	InsertInteger(2, SocketAddress, 0, AF_INET)
+	InsertInteger(DllCall("Ws2_32\htons", "UShort", _Port), SocketAddress, 2, 2)
+	InsertInteger(DllCall("Ws2_32\inet_addr", "Str", "127.0.0.1"), SocketAddress, 4, 4)
+
+	If DllCall("Ws2_32\connect", "UInt", _Socket, "UInt", &SocketAddress, "Int", SizeOfSocketAddress)
+	{
+		_Available := 1											; DllCall returned non-zero, e.g. fail - which means port is most likely free
+	}
+	Else
+	{
+		_Available := 0
+	}
+
+	DllCall("Ws2_32\WSACleanup")										; Do a cleanup (including closing of any open sockets)
+	return _Available
+}
+
+InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4)
+{
+	global
+
+	Loop, %pSize%												; Copy each byte in the integer into the structure as raw binary data.
+	{
+		DllCall("RtlFillMemory", "UInt", &pDest + pOffset + A_Index-1, "UInt", 1, "UChar", pInteger >> 8*(A_Index-1) & 0xFF)
+	}
+}
+
+GenerateRandomNumberString(_RandomNumberLength)
+{
+	global
+
+	_RandomNumberString =											; Empty variable
+
+	Loop, %_RandomNumberLength%
+	{
+		Random, _RandomNumber, 0, 9
+		
+		_RandomNumberString = %_RandomNumberString%%_RandomNumber%
+	}
+
+	return _RandomNumberString
+}
