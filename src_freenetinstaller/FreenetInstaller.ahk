@@ -318,7 +318,7 @@ RunWait, %comspec% /c "net user Freenet%_InstallSuffix% %_CustomUserPassword% /a
 
 If (A_OSVersion = "WIN_VISTA")
 {
-	RunWait, %comspec% /c "icacls "%_InstallDir%" /E /T /C /G Freenet%_InstallSuffix%:F", , Hide UseErrorLevel
+	RunWait, %comspec% /c "icacls "%_InstallDir%" /grant Freenet%_InstallSuffix%:(OI)(CI)F /T /C", , Hide UseErrorLevel
 }
 Else
 {
