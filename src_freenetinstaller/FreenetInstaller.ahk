@@ -173,7 +173,7 @@ If (CheckForOldUninstaller())
 ;
 ; Text: Install guideline header
 ;
-Gui, Add, Text, xs W%_GuiWidth2% Section, Please check the following default settings before continuing with the installation of your node.
+Gui, Add, Text, xs W%_GuiWidth2% Section, Please check the following default settings before continuing with the installation of Freenet.
 
 ;
 ; Groupbox: Install directory
@@ -189,7 +189,7 @@ Gui, Add, Button, xs+%_Buttonx% ys%_Buttony% W%_ButtonWidth% v_cBrowseButton, &B
 Gui, Add, Button, x+%_StandardMargin% W%_ButtonWidth% v_cDefaultButton, De&fault
 
 _Texty := 24+_StandardMargin
-Gui, Add, Text, xs+%_GBHorMargin% yp+%_Texty% W%_GuiWidth3%, Freenet requires at least %_UsedFreeSpace% MB free disk space, but will not install with less than %_RequiredFreeSpace% MB free. The amount of space reserved for the node can be changed after installation.
+Gui, Add, Text, xs+%_GBHorMargin% yp+%_Texty% W%_GuiWidth3%, Freenet requires at least %_UsedFreeSpace% MB free disk space, but will not install with less than %_RequiredFreeSpace% MB free. The amount of space reserved can be changed after installation.
 
 ; Calculate size and placement of status text. Hack-hack, I know
 _StatusSize := 40											; The margin between "Status:" and the actual status text
@@ -201,10 +201,10 @@ Gui, Add, Text, W%_StatusTextSize% x+0 v_cInstallDirStatusText, ...
 ;
 ; Groupbox: Node service
 ;
-_GBHeight := CalculateGroupBoxHeight(4,0,0,0)								; (_GBTextLines, _GBButtonLines, _GBCheckBoxLines, _GBSpacings) (Number of text lines, number of button lines, number of checkbox lines, number of spacings)
-Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, Node service
+_GBHeight := CalculateGroupBoxHeight(3,0,0,0)								; (_GBTextLines, _GBButtonLines, _GBCheckBoxLines, _GBSpacings) (Number of text lines, number of button lines, number of checkbox lines, number of spacings)
+Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, System service
 
-Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, After installation, your Freenet node will automatically start in the background as a system service. This is required in order for your node to be a part of the Freenet network, and will use a small amount of resources (CPU, RAM and internet connection). The amount of resources used by the node can be adjusted after installation.
+Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, Freenet will automatically start in the background as a system service. This is required to be a part of the Freenet network, and will use a small amount of system resources. The amount of resources used can be adjusted after installation.
 
 ;
 ; Groupbox: Additional settings
