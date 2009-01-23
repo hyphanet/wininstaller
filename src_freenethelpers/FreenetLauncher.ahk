@@ -110,7 +110,7 @@ If (!ErrorLevel && _FFVersion <> "")
 ;
 ; Try browser: Google Chrome (no direct registry key to where it is installed, so we will have to do with what we get)
 ;
-RegRead, _ChromeInstallDir, HKEY_LOCAL_MACHINE, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
+RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
 
 If (!ErrorLevel && _ChromeInstallDir <> "")
 {
