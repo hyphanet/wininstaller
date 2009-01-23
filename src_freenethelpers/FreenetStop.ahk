@@ -81,6 +81,7 @@ Loop
 		{
 			_ServiceHasBeenStopped := 1
 			Service_Stop(_ServiceName)
+			Continue
 		}
 		Else
 		{

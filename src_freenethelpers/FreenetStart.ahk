@@ -70,6 +70,7 @@ Loop
 		{
 			_ServiceHasBeenStarted := 1
 			Service_Start(_ServiceName)
+			Continue
 		}
 		Else
 		{
