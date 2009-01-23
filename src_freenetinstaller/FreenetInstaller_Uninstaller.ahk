@@ -83,7 +83,7 @@ IfMsgBox, Cancel
 	Exit()
 }
 
-MsgBox, 36, Freenet uninstaller, The development team would appreciate it very much if you can spare a moment`nand fill out a short, anonymous online survey about the reason for your uninstallation.`n`nThe survey, located on the Freenet website, will be opened in your browser`nafter the uninstallation.`n`nTake the uninstallation survey?	; 4 = Yes/No, 32 = Icon Question
+MsgBox, 36, Freenet uninstaller, The development team would appreciate it very much if you can`nspare a moment and fill out a short, anonymous online`nsurvey about the reason for your uninstallation.`n`nThe survey, located on the Freenet website, will be opened`nin your browser after the uninstallation.`n`nTake the uninstallation survey?	; 4 = Yes/No, 32 = Icon Question
 IfMsgBox, Yes
 {
 	_DoSurvey := 1
@@ -109,7 +109,7 @@ Loop
 
 	If (A_Index > _ServiceTimeout)
 	{
-		PopupErrorMessage("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.")
+		PopupErrorMessage("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again or reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.")
 		Exit()
 	}
 	Else If (_ServiceState == -1 || _ServiceState == -4)
