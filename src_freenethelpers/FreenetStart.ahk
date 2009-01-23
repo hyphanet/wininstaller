@@ -43,6 +43,7 @@ IfNotExist, installid.dat
 
 FileReadLine, _InstallSuffix, installid.dat, 1
 _ServiceName = freenet%_InstallSuffix%
+_ServiceHasBeenStarted := 0					; Used to make sure that we only start the service once (to avoid UAC spam on Vista, among other things)
 
 Loop
 {
@@ -65,22 +66,30 @@ Loop
 	}
 	Else If (_ServiceState == 1 || _ServiceState == 7)
 	{
-		_ReturnCode := Service_Start(_ServiceName)
-		If (_ReturnCode <> 1)
+		If (!_ServiceHasBeenStarted)
+		{
+			_ServiceHasBeenStarted := 1
+			Service_Start(_ServiceName)
+		}
+		Else
 		{
 			PopupErrorMessage("Freenet start script was unable to start the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.")
 			ExitApp, 1
 		}
-		Else
-		{
-			ExitApp, 0
-		}
 	}
 	Else
 	{
-		ExitApp, 2					; Service must be running then!
+		If (_ServiceHasBeenStarted)
+		{
+			ExitApp, 0				; 0 = We started it
+		}
+		Else
+		{
+			ExitApp, 2				; 2 = No action taken (service was already running)
+		}
 	}
 }
+
 
 ;
 ; Helper functions

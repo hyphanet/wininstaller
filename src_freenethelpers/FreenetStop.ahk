@@ -43,6 +43,7 @@ IfNotExist, installid.dat
 
 FileReadLine, _InstallSuffix, installid.dat, 1
 _ServiceName = freenet%_InstallSuffix%
+_ServiceHasBeenStopped := 0					; Used to make sure that we only stop the service once (to avoid UAC spam on Vista, among other things)
 
 Loop
 {
@@ -65,20 +66,26 @@ Loop
 	}
 	Else If (_ServiceState == 1)
 	{
-
-		ExitApp, 2						; Service must be stopped then!
-	}
-	Else
-	{
-		_ReturnCode := Service_Stop(_ServiceName)
-		If (_ReturnCode <> 1)
+		If (_ServiceHasBeenStopped)
 		{
-			PopupErrorMessage("Freenet stop script was unable to stop the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.")
-			ExitApp, 1
+			ExitApp, 0				; 0 = We stopped it
 		}
 		Else
 		{
-			ExitApp, 0
+			ExitApp, 2				; 2 = No action taken (service was already stopped)
+		}
+	}
+	Else
+	{
+		If (!_ServiceHasBeenStopped)
+		{
+			_ServiceHasBeenStopped := 1
+			Service_Stop(_ServiceName)
+		}
+		Else
+		{
+			PopupErrorMessage("Freenet stop script was unable to stop the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.")
+			ExitApp, 1
 		}
 	}
 }
