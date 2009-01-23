@@ -92,17 +92,33 @@ If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
 _URL = http://127.0.0.1:%_Port1%/
 
 ;
-; Try browser: FireFox
+; Try browser: Mozilla FireFox
 ;
-RegRead, _FFVersion, HKEY_LOCAL_MACHINE, SOFTWARE\Mozilla\Mozilla Firefox, CurrentVersion
+RegRead, _FFVersion, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox, CurrentVersion
 
 If (!ErrorLevel && _FFVersion <> "")
 {
-	RegRead, _FFPath, HKEY_LOCAL_MACHINE, SOFTWARE\Mozilla\Mozilla Firefox\%_FFVersion%\Main, PathToExe
+	RegRead, _FFPath, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox\%_FFVersion%\Main, PathToExe
 
 	If (!ErrorLevel && _FFPath <> "" && FileExist(_FFPath))
 	{
 		Run, %_FFPath% "%_URL%", , UseErrorLevel
+		ExitApp, 0
+	}
+}
+
+;
+; Try browser: Google Chrome (no direct registry key to where it is installed, so we will have to do with what we get)
+;
+RegRead, _ChromeInstallDir, HKEY_LOCAL_MACHINE, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
+
+If (!ErrorLevel && _ChromeInstallDir <> "")
+{
+	_ChromePath = %_ChromeInstallDir%\chrome.exe
+
+	IfExist, %_ChromePath%
+	{
+		Run, %_ChromePath% "%_URL%", , UseErrorLevel
 		ExitApp, 0
 	}
 }
