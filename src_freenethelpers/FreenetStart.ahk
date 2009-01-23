@@ -28,7 +28,7 @@ _ServiceTimeout := 30						; Maximum number of seconds we wait before "timing ou
 ;
 If not (A_IsAdmin)
 {
-	PopupErrorMessage("Freenet start script requires administrator privileges to start the Freenet service.`nPlease make sure that your user account has administrative access to the system,`nand the start script is executed with access to use these privileges.")
+	PopupErrorMessage("Freenet start script requires administrator privileges to start the Freenet service. Please make sure that your user account has administrative access to the system, and the start script is executed with access to use these privileges.")
 	ExitApp, 1
 }
 
@@ -37,7 +37,7 @@ If not (A_IsAdmin)
 ;
 IfNotExist, installid.dat
 {
-	PopupErrorMessage("Freenet start script was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet start script from the 'bin' folder of a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers.")
+	PopupErrorMessage("Freenet start script was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet start script from the 'bin' folder of a Freenet installation directory. If you are already doing so, please report this error message to the developers.")
 	ExitApp, 1
 }
 
