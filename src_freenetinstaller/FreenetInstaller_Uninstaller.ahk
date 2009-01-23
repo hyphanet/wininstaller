@@ -30,7 +30,7 @@ _ProgressFormat = A T W300 FS10					; How our progress bar should look. The 'R' 
 ;
 If not (A_IsAdmin)
 {
-	PopupErrorMessage("The uninstaller requires administrator privileges to uninstall Freenet.`nPlease make sure that your user account has administrative access to the system,`nand the uninstaller is executed with access to use these privileges.")
+	PopupErrorMessage("The uninstaller requires administrator privileges to uninstall Freenet. Please make sure that your user account has administrative access to the system, and the uninstaller is executed with access to use these privileges.")
 	ExitApp
 }
 
@@ -103,13 +103,15 @@ Progress, %_ProgressFormat% R0-6, ..., , Freenet uninstaller						; "R0-6" defin
 ;
 Progress, , Stopping system service...
 
+_ServiceHasBeenStopped := 0										; Used to make sure that we only stop the service once (to avoid UAC spam on Vista, among other things)
+
 Loop
 {
 	_ServiceState := Service_State("freenet" . _InstallSuffix)
 
 	If (A_Index > _ServiceTimeout)
 	{
-		PopupErrorMessage("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again or reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.")
+		PopupErrorMessage("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.")
 		Exit()
 	}
 	Else If (_ServiceState == -1 || _ServiceState == -4)
@@ -122,15 +124,25 @@ Loop
 		Sleep, 1000
 		Continue
 	}
+
+
 	Else If (_ServiceState == 1)
 	{
 		Break						; Service is not running. Continue!
 	}
 	Else
 	{
-		Service_Stop("freenet" . _InstallSuffix)
-		Sleep, 1000
-		Continue
+		If (!_ServiceHasBeenStopped)
+		{
+			_ServiceHasBeenStopped := 1
+			Service_Stop("freenet" . _InstallSuffix)
+			Continue
+		}
+		Else
+		{
+			PopupErrorMessage("The uninstaller was unable to stop the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.")
+			ExitApp, 1
+		}
 	}
 }
 
