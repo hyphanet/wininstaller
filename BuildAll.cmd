@@ -1,25 +1,32 @@
 @echo off
 ::
-:: Not-committed requirements:
-:: - bin\freenet.jar
-:: - bin\freenet-ext.jar
-:: - bin\Ahk2Exe.exe (AutoHotKey compiler)
-:: - bin\upx.exe (UPX packer, comes with AutoHotKey compiler)
-:: - bin\JSTUN.jar
-:: - bin\KeyExplorer.jar
-:: - bin\ThawIndexBrowser.jar
-:: - bin\UPnP.jar
-:: - bin\XMLLibrarian.jar
+:: Non-committed requirements:
+::
+:: - bin\Ahk2Exe.exe (AutoHotkey compiler - http://www.autohotkey.com/)
+:: - bin\upx.exe (UPX packer, comes with AutoHotkey compiler)
+:: - bin\AutoHotkeySC.bin (AHK library, comes with AutoHotkey compiler)
+::
+:: - bin\ResHacker.exe (Resource Hacker - http://angusj.com/resourcehacker/)
+::
+:: - bin\freenet.jar (Freenet jar)
+:: - bin\freenet-ext.jar (Freenet jar)
+::
+:: - bin\JSTUN.jar (Freenet plugin jar)
+:: - bin\KeyExplorer.jar (Freenet plugin jar)
+:: - bin\ThawIndexBrowser.jar (Freenet plugin jar)
+:: - bin\UPnP.jar (Freenet plugin jar)
+:: - bin\XMLLibrarian.jar (Freenet plugin jar)
 ::
 
 ::
 :: Cleanup and prepare
 ::
-if exist bin\FreenetInstaller.exe del bin\FreenetInstaller.exe /Q
+if exist bin\FreenetInstaller.exe del bin\FreenetInstaller.exe
 copy bin\freenet.jar src_freenetinstaller\files_install\freenet.jar
 copy bin\freenet-ext.jar src_freenetinstaller\files_install\freenet-ext.jar
 copy bin\Ahk2Exe.exe compiler\Ahk2Exe.exe
 copy bin\upx.exe compiler\upx.exe
+copy bin\ResHacker.exe compiler\ResHacker.exe
 copy bin\JSTUN.jar src_freenetinstaller\files_install\plugins\JSTUN.jar
 copy bin\KeyExplorer.jar src_freenetinstaller\files_install\plugins\KeyExplorer.jar
 copy bin\ThawIndexBrowser.jar src_freenetinstaller\files_install\plugins\ThawIndexBrowser.jar
@@ -27,9 +34,21 @@ copy bin\UPnP.jar src_freenetinstaller\files_install\plugins\UPnP.jar
 copy bin\XMLLibrarian.jar src_freenetinstaller\files_install\plugins\XMLLibrarian.jar
 
 ::
+:: Patch AHK library
+::
+copy bin\AutoHotkeySC.bin compiler\AutoHotkeySC.bin
+cd compiler
+
+ResHacker.exe -script ResHack_Script_Normal.txt
+ResHacker.exe -script ResHack_Script_VistaElevated.txt
+
+cd ..
+del compiler\AutoHotkeySC.bin
+
+::
 :: Compile non-Vista-elevated executables
 ::
-copy compiler\AutoHotkeySC_Normal.bin compiler\AutoHotkeySC.bin
+move /Y compiler\AutoHotkeySC_Normal.bin compiler\AutoHotkeySC.bin
 
 compiler\Ahk2Exe.exe /in "src_freenethelpers\FreenetLauncher.ahk" /out "src_freenetinstaller\files_install\freenetlauncher.exe"
 
@@ -38,7 +57,7 @@ del compiler\AutoHotkeySC.bin
 ::
 :: Compile Vista-elevated executables
 ::
-copy compiler\AutoHotkeySC_VistaElevated.bin compiler\AutoHotkeySC.bin
+move /Y compiler\AutoHotkeySC_VistaElevated.bin compiler\AutoHotkeySC.bin
 
 compiler\Ahk2Exe.exe /in "src_freenetinstaller\FreenetInstaller_Uninstaller.ahk" /out "src_freenetinstaller\files_install\bin\freenetuninstaller.exe"
 compiler\Ahk2Exe.exe /in "src_freenethelpers\FreenetStart.ahk" /out "src_freenetinstaller\files_install\bin\start.exe"
@@ -53,6 +72,10 @@ del compiler\AutoHotkeySC.bin
 ::
 del compiler\Ahk2Exe.exe
 del compiler\upx.exe
+del compiler\ResHacker.exe
+del compiler\ResHacker.ini
+del compiler\ResHack_Log_Normal.txt
+del compiler\ResHack_Log_VistaElevated.txt
 del src_freenetinstaller\files_install\freenet.jar
 del src_freenetinstaller\files_install\freenet-ext.jar
 del src_freenetinstaller\files_install\freenetlauncher.exe
