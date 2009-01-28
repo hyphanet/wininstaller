@@ -8,20 +8,42 @@
 ;
 ; Don't-touch-unless-you-know-what-you-are-doing settings
 ;
-#NoEnv								; Recommended for performance and compatibility with future AutoHotkey releases
-#NoTrayIcon							; We won't need this...
-#SingleInstance	ignore						; Only allow one instance at any given time
+#NoEnv									; Recommended for performance and compatibility with future AutoHotkey releases
+#NoTrayIcon								; We won't need this...
+#SingleInstance	ignore							; Only allow one instance at any given time
 
-SendMode, Input							; Recommended for new scripts due to its superior speed and reliability
-StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
+SendMode, Input								; Recommended for new scripts due to its superior speed and reliability
+StringCaseSense, Off							; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
 
-_WorkingDir := RegExReplace(A_ScriptDir, "i)\\bin$", "")	; If we are located in the \bin folder, go back a step
-SetWorkingDir, %_WorkingDir%					; Look for other files relative to install root
+_WorkingDir := RegExReplace(A_ScriptDir, "i)\\bin$", "")		; If we are located in the \bin folder, go back a step
+SetWorkingDir, %_WorkingDir%						; Look for other files relative to install root
+
+_SplashCreated := 0							; Initial value
+_Silent := 0								; Initial value
 
 ;
 ; Customizable settings
 ;
-_ServiceTimeout := 30						; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
+_ServiceTimeout := 60							; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
+_SplashFormat = A B2 T FS8						; How our splash should look.
+
+;
+; Check if we should be silent or not (error messages are always displayed though)
+;
+_Arg1 = %1%
+If (_Arg1 == "/?")
+{
+	PopupInfoMessage("Command line options (only use one):`n/silent - Hide info messsages`n/verysilent - Hide info and status messages`n`nReturn codes:`n0 - Success (service has been stopped)`n1 - Error occurred`n2 - Service was not running (no action taken)")
+	ExitApp, 0
+}
+Else If (_Arg1 == "/silent")
+{
+	_Silent := 1
+}
+Else If (_Arg1 == "/verysilent")
+{
+	_Silent := 2
+}
 
 ;
 ; Check for administrator privileges.
@@ -43,7 +65,7 @@ IfNotExist, installid.dat
 
 FileReadLine, _InstallSuffix, installid.dat, 1
 _ServiceName = freenet%_InstallSuffix%
-_ServiceHasBeenStopped := 0					; Used to make sure that we only stop the service once (to avoid UAC spam on Vista, among other things)
+_ServiceHasBeenStopped := 0						; Used to make sure that we only stop the service once (to avoid UAC spam on Vista, among other things)
 
 Loop
 {
@@ -51,6 +73,7 @@ Loop
 
 	If (A_Index > _ServiceTimeout)
 	{
+		SplashImage, OFF
 		PopupErrorMessage("Freenet stop script was unable to control the Freenet system service as it appears to be stuck.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.")
 		ExitApp, 1
 	}
@@ -61,18 +84,27 @@ Loop
 	}
 	Else If (_ServiceState == 2 || _ServiceState == 3 || _ServiceState == 5 || _ServiceState == 6)
 	{
+		If ((_Silent < 2) && !_SplashCreated)
+		{
+			_SplashCreated := 1
+			SplashImage, , %_SplashFormat%, Waiting for the Freenet background service to stop..., , Freenet stop script
+		}
 		Sleep, 1000
 		Continue
 	}
 	Else If (_ServiceState == 1)
 	{
+		SplashImage, OFF
+
 		If (_ServiceHasBeenStopped)
 		{
-			ExitApp, 0				; 0 = We stopped it
+			PopupInfoMessage("The Freenet service has been stopped!")
+			ExitApp, 0					; 0 = We stopped it
 		}
 		Else
 		{
-			ExitApp, 2				; 2 = No action taken (service was already stopped)
+			PopupInfoMessage("The Freenet service is already stopped!")
+			ExitApp, 2					; 2 = No action taken (service was already stopped)
 		}
 	}
 	Else
@@ -96,7 +128,17 @@ Loop
 ;
 PopupErrorMessage(_ErrorMessage)
 {
-	MsgBox, 16, Freenet stop script error, %_ErrorMessage%	; 16 = Icon Hand (stop/error)
+	MsgBox, 16, Freenet stop script error, %_ErrorMessage%		; 16 = Icon Hand (stop/error)
+}
+
+PopupInfoMessage(_InfoMessage)
+{
+	global
+
+	If (_Silent < 1)
+	{
+		MsgBox, 64, Freenet stop script, %_InfoMessage%		; 64 = Icon Asterisk (info)
+	}
 }
 
 Service_State(ServiceName)

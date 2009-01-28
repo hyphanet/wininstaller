@@ -365,7 +365,7 @@ GuiControl, , _cProgressBar, +1
 ;
 ; Start the node
 ;
-RunWait, %_InstallDir%\bin\start.exe, , UseErrorLevel
+RunWait, %_InstallDir%\bin\start.exe /verysilent, , UseErrorLevel
 GuiControl, , _cProgressBar, +1
 
 ;

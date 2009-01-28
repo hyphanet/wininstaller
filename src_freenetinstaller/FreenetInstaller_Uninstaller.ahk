@@ -22,7 +22,7 @@ StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Us
 ;
 ; Customizable settings
 ;
-_ServiceTimeout := 30						; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
+_ServiceTimeout := 60						; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
 _ProgressFormat = A T W300 FS10					; How our progress bar should look. The 'R' (range) parameter is added later in the script.
 
 ;
