@@ -68,7 +68,7 @@ Else
 }
 
 ;
-; Try browser: Mozilla FireFox
+; Try browser: Mozilla FireFox (Tetsted versions: 3.0)
 ;
 RegRead, _FFVersion, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox, CurrentVersion
 
@@ -84,7 +84,7 @@ If (!ErrorLevel && _FFVersion <> "")
 }
 
 ;
-; Try browser: Google Chrome (no direct registry key to where it is installed, so we will have to do with what we get)
+; Try browser: Google Chrome (Tested versions: 1.0.154) (no direct registry key to where it is installed, so we will have to do with what we get)
 ;
 RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
 
@@ -100,7 +100,7 @@ If (!ErrorLevel && _ChromeInstallDir <> "")
 }
 
 ;
-; Try browser: Internet Explorer
+; Try browser: Internet Explorer (Tested versions: 6.0)
 ;
 IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
 {
