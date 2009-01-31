@@ -111,7 +111,7 @@ IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
 ;
 ; No usable browser found
 ;
-PopupErrorMessage("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to the URL inside freenet.url.dat.`n`nFreenet Launcher supports the following browsers:`n- Mozilla FireFox`n- Internet Explorer (not recommended)")
+PopupErrorMessage("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to the URL inside freenet.url.dat.`n`nFreenet Launcher supports the following browsers:`n- Mozilla FireFox`n- Google Chrome`n- Internet Explorer (not recommended)")
 ExitApp, 1
 
 ;
