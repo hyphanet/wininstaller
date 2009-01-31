@@ -223,7 +223,7 @@ UpdateInstallDirStatus()
 			GuiControl, Text, _cInstallDirStatusText, Not enough free space on installation drive!
 			GuiControl, +Disabled, _cInstallButton
 		}
-		Else IfExist, %_InstallDir%\freenet.jar
+		Else If (FileExist(_InstallDir . "\freenet.jar") || FileExist(_InstallDir . "\freenet.jar.new"))
 		{
 			GuiControl, +cRed, _cInstallDirStatusText
 			GuiControl, Text, _cInstallDirStatusText, Freenet already installed! Please uninstall first or choose another directory!
