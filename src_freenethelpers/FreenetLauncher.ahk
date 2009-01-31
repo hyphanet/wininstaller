@@ -84,6 +84,22 @@ If (!ErrorLevel && _FFVersion <> "")
 }
 
 ;
+; Try browser: Opera (Tested versions: 9.6)
+;
+RegRead, _OperaInstallDir, HKEY_LOCAL_MACHINE, Software\Microsoft\Windows\CurrentVersion\Uninstall\{1BC4026B-1957-4514-9058-2B542557F143}, InstallLocation
+
+If (!ErrorLevel && _OperaInstallDir <> "")
+{
+	_OperaPath = %_OperaInstallDir%\opera.exe
+
+	IfExist, %_OperaPath%
+	{
+		Run, %_OperaPath% "%_URL%", , UseErrorLevel
+		ExitApp, 0
+	}
+}
+
+;
 ; Try browser: Google Chrome (Tested versions: 1.0.154) (no direct registry key to where it is installed, so we will have to do with what we get)
 ;
 RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
@@ -111,7 +127,7 @@ IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
 ;
 ; No usable browser found
 ;
-PopupErrorMessage("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to the URL inside freenet.url.dat.`n`nFreenet Launcher supports the following browsers:`n- Mozilla FireFox`n- Google Chrome`n- Internet Explorer (not recommended)")
+PopupErrorMessage("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to the URL inside freenet.url.dat.`n`nFreenet Launcher supports the following browsers:`n- Mozilla FireFox`n- Opera`n- Google Chrome`n- Internet Explorer (not recommended)")
 ExitApp, 1
 
 ;
