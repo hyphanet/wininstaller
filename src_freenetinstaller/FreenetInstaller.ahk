@@ -24,7 +24,7 @@ _StandardMargin := 12						; Our standard margin. Must be at least 8 px.
 _ButtonWidth := 100						; Width of our buttons
 
 _RequiredJRE := 1.5						; Java version required by Freenet. If not found, user will be asked to upgrade/install via the bundled online installer
-_UsedFreeSpace := _Inc_InstallSize+100				; What we actually need. Installation size + default datastore size
+_UsedFreeSpace := _Inc_InstallSize+256				; What we actually need. Installation size + default datastore size
 _RequiredFreeSpace := _UsedFreeSpace+512			; In MB, how much free space do we require to install? What we actually use + enough free space for Windows to continue operating (in case install dir is on system drive... and to not block the drive in general)
 _InternalPathLength := 75					; Length of longest path within the Freenet installation. Installation will refuse to continue if install path + this number exceeds 255 (FAT32 and NTFS limit)
 
