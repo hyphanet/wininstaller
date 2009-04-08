@@ -1,5 +1,5 @@
 ;
-; Translation file - Danish (da)
+; Translation file - Danish (da) - by Zero3 (zero3 that-a-thingy zero3 that-dot-thingy dk)
 ;
 
 LoadLanguage_da()
