@@ -7,51 +7,42 @@
 ;
 ; Don't-touch-unless-you-know-what-you-are-doing settings
 ;
-#NoEnv								; Recommended for performance and compatibility with future AutoHotkey releases
-#NoTrayIcon							; We won't need this...
-#SingleInstance	ignore						; Only allow one instance of at any given time (theoretically, if we allowed multiple, we could run into some temp files problems)
+#NoEnv									; Recommended for performance and compatibility with future AutoHotkey releases
+#NoTrayIcon								; We won't need this...
+#SingleInstance	ignore							; Only allow one instance of at any given time (theoretically, if we allowed multiple, we could run into some temp files problems)
 
-#Include FreenetInstaller_Include_Info.inc			; Include version and build info (which should be updated by the compiler bot before compiling this installer) as well as localizations
-#Include FreenetInstaller_Include_Lang_da.inc			; Include Danish (da) translation
+#Include FreenetInstaller_Include_Info.inc				; Include version and build info (which should be updated by the compiler bot before compiling this installer) as well as localizations
+#Include ..\src_translationhelper\Include_TranslationHelper.ahk		; Include translation helper
 
-SendMode, Input							; Recommended for new scripts due to its superior speed and reliability
-SetFormat, FLOAT, 0.0						; Remove trailing zeroes on floats. We won't need the precision and it looks stupid with numbers printed with 27 trailing zeroes
-StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
-_FontSize := 9							; Our font size. Changing this *might* mess up some of the margin calculations! See comment for _TextHeight calculation below as well.
-Gui, +OwnDialogs						; Make messageboxes "stick" to the main GUI
+SendMode, Input								; Recommended for new scripts due to its superior speed and reliability
+SetFormat, FLOAT, 0.0							; Remove trailing zeroes on floats. We won't need the precision and it looks stupid with numbers printed with 27 trailing zeroes
+StringCaseSense, Off							; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
+_FontSize := 9								; Our font size. Changing this *might* mess up some of the margin calculations! See comment for _TextHeight calculation below as well.
+Gui, +OwnDialogs							; Make messageboxes "stick" to the main GUI
 
 ;
 ; Customizable settings
 ;
-_GuiWidth := 450+10+10						; Main GUI width. Should be the same size as the header image + default element margins (used for the GUI window itself)
-_StandardMargin := 12						; Our standard margin. Must be at least 8 px.
-_ButtonWidth := 100						; Width of our buttons
-_LanguageListWidth := 100					; Width of language drop-down list
+_GuiWidth := 450+10+10							; Main GUI width. Should be the same size as the header image + default element margins (used for the GUI window itself)
+_StandardMargin := 12							; Our standard margin. Must be at least 8 px.
+_ButtonWidth := 100							; Width of our buttons
+_LanguageListWidth := 100						; Width of language drop-down list
 
-_RequiredJRE := 1.5						; Java version required by Freenet. If not found, user will be asked to upgrade/install via the bundled online installer
-_UsedFreeSpace := _Inc_InstallSize+256				; What we actually need. Installation size + default datastore size
-_RequiredFreeSpace := _UsedFreeSpace+512			; In MB, how much free space do we require to install? What we actually use + enough free space for Windows to continue operating (in case install dir is on system drive... and to not block the drive in general)
-_InternalPathLength := 75					; Length of longest path within the Freenet installation. Installation will refuse to continue if install path + this number exceeds 255 (FAT32 and NTFS limit)
+_RequiredJRE := 1.5							; Java version required by Freenet. If not found, user will be asked to upgrade/install via the bundled online installer
+_UsedFreeSpace := _Inc_InstallSize+256					; What we actually need. Installation size + default datastore size
+_RequiredFreeSpace := _UsedFreeSpace+512				; In MB, how much free space do we require to install? What we actually use + enough free space for Windows to continue operating (in case install dir is on system drive... and to not block the drive in general)
+_InternalPathLength := 75						; Length of longest path within the Freenet installation. Installation will refuse to continue if install path + this number exceeds 255 (FAT32 and NTFS limit)
 
-_DefaultInstallDir = %A_ProgramFiles%\Freenet			; Default installation directory
-_cInstallStartMenuShortcuts := 1				; Install start menu shortcut(s) by default?
-_cInstallDesktopShortcuts := 1					; Install desktop shorctu(s) by default?
-_cBrowseAfterInstall := 1					; Browse Freenet after installation by default?
-
-;
-; Setup localization
-;
-_LangArray := 1												; Set initial position for languages array
-
-; AddLanguage() arguments: <localized language name> <language load function name from language file> <windows language code (see http://www.autohotkey.com/docs/misc/Languages.htm)>
-AddLanguage("English","","")										; Load English (en) translation (dummy)
-AddLanguage("Dansk","LoadLanguage_da","0406")								; Load Danish (da) translation
-
-LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
+_DefaultInstallDir = %A_ProgramFiles%\Freenet				; Default installation directory
+_cInstallStartMenuShortcuts := 1					; Install start menu shortcut(s) by default?
+_cInstallDesktopShortcuts := 1						; Install desktop shorctu(s) by default?
+_cBrowseAfterInstall := 1						; Browse Freenet after installation by default?
 
 ;
 ; General init stuff
 ;
+InitTranslations()
+
 FileRemoveDir, %A_Temp%\FreenetInstaller, 1								; Remove any old temp dir
 FileCreateDir, %A_Temp%\FreenetInstaller								; Create a new temp dir
 If (ErrorLevel)
@@ -263,6 +254,20 @@ Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer (Beta)")
 return
 
 ;
+; Messing around with the language dropdown list triggers this
+;
+_ListSelectLanguage:
+	Gui, Submit, NoHide										; Read values of controls into their variables
+
+	If (_cLanguageSelector <> _LangNum)
+	{
+		Gui, Destroy
+		LoadLanguage(_cLanguageSelector)
+		SetTimer, GuiStart, -100
+	}
+return
+
+;
 ; Actual installation thread starts here (when user presses "Install")
 ;
 ButtonInstall:
@@ -377,14 +382,14 @@ GuiControl, , _cProgressBar, +1
 If (_cInstallStartMenuShortcuts)
 {
 	FileCreateDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%
-	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Browse Freenet") ".lnk", , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Browse") " Freenet.lnk", , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
 	FileCreateShortcut, %_InstallDir%\bin\start.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Start Freenet") ".lnk", , , % Trans("Starts the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
 	FileCreateShortcut, %_InstallDir%\bin\stop.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Stop Freenet") ".lnk", , , % Trans("Stops the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
 }
 If (_cInstallDesktopShortcuts)
 {
 	FileCreateDir, %A_DesktopCommon%
-	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, % A_DesktopCommon "\" Trans("Browse Freenet") _InstallSuffix ".lnk", , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, % A_DesktopCommon "\" Trans("Browse") " Freenet" _InstallSuffix ".lnk", , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
 }
 GuiControl, , _cProgressBar, +1
 
@@ -416,4 +421,5 @@ return
 ;
 ; Include helpers
 ;
-#Include FreenetInstaller_Include_Helpers.inc								; Include our helper functions. Should be placed at the very end because of the labels in it.
+#Include FreenetInstaller_Include_Helpers.inc								; Include our helper functions. Should be placed at the very end because of labels
+

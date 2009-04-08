@@ -1,7 +1,7 @@
 ;
 ; Windows Freenet Installer - Include file - Helpers
 ;
-; This file contains helpers that are used throughout the installer. Placed here to not clutter the
+; This file contains helpers used throughout the installer. Placed here to not clutter the
 ; main script file. Will be included directly into the installer (at the bottom) at compile time.
 ;
 
@@ -256,138 +256,6 @@ UpdateInstallDirStatus()
 UpdateInstallDirStatusTimer:
 	UpdateInstallDirStatus()
 return
-
-;
-; Localization helpers
-;
-AddLanguage(_Name, _LoadFunction, _LanguageCode)
-{
-	global
-
-	_LanguageNames%_LangArray% := _Name
-	_LanguageLoadFunctions%_LangArray% := _LoadFunction
-	_LanguageCodes%_LangArray% := _LanguageCode
-
-	_LangArray++
-}
-
-LoadLanguage(_LoadNum)
-{
-	global
-
-	_LangNum := _LoadNum
-	_TransArray := 1
-	_LoadFunction := _LanguageLoadFunctions%_LoadNum%
-
-	If (_LoadFunction <> "")
-	{
-		%_LoadFunction%()
-	}
-}
-
-LanguageCodeToID(_LanguageCode)
-{
-	global
-
-	Loop % _LangArray-1
-	{
-		If (_LanguageCode = _LanguageCodes%A_Index%)
-		{
-			return A_Index
-		}
-	}
-
-	return 1												; Language 1 should always be the default language, so use that if no match above
-}
-
-Trans_Add(_OriginalText, _TranslatedText)
-{
-	global
-
-	_OriginalTextArray%_TransArray% := _OriginalText
-	_TranslatedTextArray%_TransArray% := _TranslatedText
-
-	_TransArray++
-}
-
-Trans(_OriginalText)
-{
-	global
-
-	Loop % _TransArray-1
-	{
-		If (_OriginalText = _OriginalTextArray%A_Index%)
-		{
-			return UTF82Ansi(_TranslatedTextArray%A_Index%)
-		}
-	}
-
-	return _OriginalText
-}
-
-_ListSelectLanguage:
-	Gui, Submit, NoHide											; Read values of controls into their variables
-
-	If (_cLanguageSelector <> _LangNum)
-	{
-		Gui, Destroy
-		LoadLanguage(_cLanguageSelector)
-		SetTimer, GuiStart, -100
-	}
-return
-
-UTF82Ansi(zString)
-{
-	Ansi2Unicode(zString, wString, 65001)
-	Unicode2Ansi(wString, sString, 0)
-	Return sString
-}
-
-Ansi2Unicode(ByRef sString, ByRef wString, CP = 0)
-{
-     nSize := DllCall("MultiByteToWideChar"
-      , "Uint", CP
-      , "Uint", 0
-      , "Uint", &sString
-      , "int",  -1
-      , "Uint", 0
-      , "int",  0)
-
-   VarSetCapacity(wString, nSize * 2)
-
-   DllCall("MultiByteToWideChar"
-      , "Uint", CP
-      , "Uint", 0
-      , "Uint", &sString
-      , "int",  -1
-      , "Uint", &wString
-      , "int",  nSize)
-}
-
-Unicode2Ansi(ByRef wString, ByRef sString, CP = 0)
-{
-     nSize := DllCall("WideCharToMultiByte"
-      , "Uint", CP
-      , "Uint", 0
-      , "Uint", &wString
-      , "int",  -1
-      , "Uint", 0
-      , "int",  0
-      , "Uint", 0
-      , "Uint", 0)
-
-   VarSetCapacity(sString, nSize)
-
-   DllCall("WideCharToMultiByte"
-      , "Uint", CP
-      , "Uint", 0
-      , "Uint", &wString
-      , "int",  -1
-      , "str",  sString
-      , "int",  nSize
-      , "Uint", 0
-      , "Uint", 0)
-}
 
 ;
 ; Actual installation helpers
