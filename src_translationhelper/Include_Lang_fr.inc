@@ -73,7 +73,7 @@ LoadLanguage_fr()
 
 	; Installer - Actual installation
 	Trans_Add("Freenet Background Service", "Service Freenet (arrière plan)")
-	Trans_Add("Browse Freenet", "Parcourir Freenet") ; Shortcut name
+	Trans_Add("Browse", "Parcourir") ; Part of shortcut name
 	Trans_Add("Opens the Freenet proxy homepage in a web browser", "Ouvre la page d'accueil du proxy Freenet dans un navigateur internet")
 	Trans_Add("Start Freenet", "Démarrer Freenet") ; Shortcut name
 	Trans_Add("Starts the background service needed to use Freenet", "Démarre le service d'arrière plan nécessaire pour utiliser Freenet.")

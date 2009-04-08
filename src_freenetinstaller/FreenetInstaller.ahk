@@ -93,7 +93,8 @@ Gui, Add, Picture, Section, FreenetInstaller_Header.png
 ; Welcome text
 ;
 Gui, Font, bold
-Gui, Add, Text, xs W%_GuiWidth2% Center Section, % "`n" Trans("Welcome to the Freenet Installer!") "`n"
+_TextWidth := _GuiWidth2-_LanguageListWidth-_StandardMargin
+Gui, Add, Text, xs W%_TextWidth% Center Section, % "`n" Trans("Welcome to the Freenet Installer!") "`n"
 Gui, Font, norm
 
 ;

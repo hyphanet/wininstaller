@@ -4,9 +4,10 @@
 ; This file contains functions used to translate the GUI.
 ;
 ; Special notes about translation:
-; - Because of the compact GUI design, most of the text are subject to min/max limitations. A too short translation will leave holes in the GUI and
-; a too long will mess up the layout. So try to keep the translations at the approx. same length as the original English text, with the same placement
-; of eventual newline markers. The easiest way to test the translation is to compile the installer and look for any broken layout.
+; - Because of the compact GUI design, much of the text are subject to min/max size limitations. A too short translation will leave holes in the GUI and
+; a too long will mess up the layout. So try to keep the translations at the approx. same length as the original English text, with the approx. same
+; placement of any newline markers. The easiest way to test the translation is to compile the installer and take a look around. Most layout bugs will
+; be visible in the main GUI after starting the installer.
 ;
 
 ;
