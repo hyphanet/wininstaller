@@ -11,5 +11,6 @@
 ;
 
 _Inc_FreenetVersion = 0.7
-_Inc_FreenetBuild = #1204
-_Inc_InstallSize := 9.04
+_Inc_FreenetBuild = #1206
+_Inc_InstallSize := 8.26
+
