@@ -95,9 +95,11 @@ CheckJavaVersion()
 }
 
 ButtonInstallJava:
+	GuiControl, +Disabled, _cLanguageSelector
 	GuiControl, +Disabled, _cInstallJavaButton
 	FileInstall, files_bundle\jre-online-installer.exe, %A_WorkingDir%\jre-online-installer.exe
 	RunWait, %A_WorkingDir%\jre-online-installer.exe, , UseErrorLevel
+	GuiControl, -Disabled, _cLanguageSelector
 	GuiControl, -Disabled, _cInstallJavaButton
 return
 
@@ -106,7 +108,7 @@ RecheckJavaVersionTimer:
 	{
 		SetTimer, RecheckJavaVersionTimer, Off
 		Gui, Destroy
-		Goto, GuiStart
+		SetTimer, GuiStart, -100
 	}
 return
 
@@ -134,13 +136,15 @@ RecheckOldUninstallerTimer:
 	{
 		SetTimer, RecheckOldUninstallerTimer, Off
 		Gui, Destroy
-		Goto, GuiStart
+		SetTimer, GuiStart, -100
 	}
 return
 
 ButtonUninstall:
+	GuiControl, +Disabled, _cLanguageSelector
 	GuiControl, +Disabled, _cUninstallButton
 	RunWait, %_OldUninstallerPath%, , UseErrorLevel
+	GuiControl, -Disabled, _cLanguageSelector
 	GuiControl, -Disabled, _cUninstallButton
 return
 
@@ -151,7 +155,7 @@ ButtonBrowse:
 	Gui, +OwnDialogs										; Bind the dialog below to the main GUI
 
 	StringLeft, _OldBaseInstallDir, _InstallDir, StrLen(_InstallDir)-8
-	FileSelectFolder, _NewInstallDir, *%_OldBaseInstallDir%, 1, If you do not choose a folder containg containing "Freenet" in the path, a folder will be created for you automatically.	; *=Don't restrict user from browsing upwards from default folder, 1=Show a 'new folder' button
+	FileSelectFolder, _NewInstallDir, *%_OldBaseInstallDir%, 1, % Trans("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.")	; *=Don't restrict user from browsing upwards from default folder, 1=Show a 'new folder' button
 	_NewInstallDir := RegExReplace(_NewInstallDir, "\\$")						; Removes the trailing backslash, if present
 
 	If (_NewInstallDir <> "")									; If user cancels, this will be empty, so don't pass it on in that case
@@ -168,7 +172,18 @@ SetInstallDir(_NewInstallDir)
 {
 	global
 
-	;If (SubStr(_NewInstallDir, -7) <> "\Freenet")
+	If (_NewInstallDir == "")
+	{
+		If (_InstallDir == "")
+		{
+			_NewInstallDir := _DefaultInstallDir
+		}
+		Else
+		{
+			_NewInstallDir := _InstallDir
+		}
+	}
+
 	IfNotInString, _NewInstallDir, Freenet
 	{
 		_NewInstallDir = %_NewInstallDir%\Freenet
@@ -205,13 +220,13 @@ UpdateInstallDirStatus()
 	If (ErrorLevel || _InstallDrive1 = "")
 	{
 		GuiControl, +cRed, _cInstallDirStatusText
-		GuiControl, Text, _cInstallDirStatusText, Invalid install path!
+		GuiControl, Text, _cInstallDirStatusText, % Trans("Invalid install path!")
 		GuiControl, +Disabled, _cInstallButton
 	}
 	Else if (StrLen(_InstallDir) + _InternalPathLength > 255)
 	{
 		GuiControl, +cRed, _cInstallDirStatusText
-		GuiControl, Text, _cInstallDirStatusText, Invalid install path! (Too long for file system to handle)
+		GuiControl, Text, _cInstallDirStatusText, % Trans("Invalid install path! (Too long for file system to handle)")
 		GuiControl, +Disabled, _cInstallButton
 	}
 	Else
@@ -220,19 +235,19 @@ UpdateInstallDirStatus()
 		If (_InstallDriveFreeSpace < _RequiredFreeSpace)
 		{
 			GuiControl, +cRed, _cInstallDirStatusText
-			GuiControl, Text, _cInstallDirStatusText, Not enough free space on installation drive!
+			GuiControl, Text, _cInstallDirStatusText, % Trans("Not enough free space on installation drive!")
 			GuiControl, +Disabled, _cInstallButton
 		}
 		Else If (FileExist(_InstallDir . "\freenet.jar") || FileExist(_InstallDir . "\freenet.jar.new"))
 		{
 			GuiControl, +cRed, _cInstallDirStatusText
-			GuiControl, Text, _cInstallDirStatusText, Freenet already installed! Please uninstall first or choose another directory!
+			GuiControl, Text, _cInstallDirStatusText, % Trans("Freenet already installed! Please uninstall first or choose another directory!")
 			GuiControl, +Disabled, _cInstallButton
 		}
 		Else
 		{
 			GuiControl, +cGreen, _cInstallDirStatusText
-			GuiControl, Text, _cInstallDirStatusText, Installation directory OK!
+			GuiControl, Text, _cInstallDirStatusText, % Trans("Installation directory OK!")
 			GuiControl, -Disabled, _cInstallButton
 		}
 	}
@@ -241,6 +256,138 @@ UpdateInstallDirStatus()
 UpdateInstallDirStatusTimer:
 	UpdateInstallDirStatus()
 return
+
+;
+; Localization helpers
+;
+AddLanguage(_Name, _LoadFunction, _LanguageCode)
+{
+	global
+
+	_LanguageNames%_LangArray% := _Name
+	_LanguageLoadFunctions%_LangArray% := _LoadFunction
+	_LanguageCodes%_LangArray% := _LanguageCode
+
+	_LangArray++
+}
+
+LoadLanguage(_LoadNum)
+{
+	global
+
+	_LangNum := _LoadNum
+	_TransArray := 1
+	_LoadFunction := _LanguageLoadFunctions%_LoadNum%
+
+	If (_LoadFunction <> "")
+	{
+		%_LoadFunction%()
+	}
+}
+
+LanguageCodeToID(_LanguageCode)
+{
+	global
+
+	Loop % _LangArray-1
+	{
+		If (_LanguageCode = _LanguageCodes%A_Index%)
+		{
+			return A_Index
+		}
+	}
+
+	return 1												; Language 1 should always be the default language, so use that if no match above
+}
+
+Trans_Add(_OriginalText, _TranslatedText)
+{
+	global
+
+	_OriginalTextArray%_TransArray% := _OriginalText
+	_TranslatedTextArray%_TransArray% := _TranslatedText
+
+	_TransArray++
+}
+
+Trans(_OriginalText)
+{
+	global
+
+	Loop % _TransArray-1
+	{
+		If (_OriginalText = _OriginalTextArray%A_Index%)
+		{
+			return UTF82Ansi(_TranslatedTextArray%A_Index%)
+		}
+	}
+
+	return _OriginalText
+}
+
+_ListSelectLanguage:
+	Gui, Submit, NoHide											; Read values of controls into their variables
+
+	If (_cLanguageSelector <> _LangNum)
+	{
+		Gui, Destroy
+		LoadLanguage(_cLanguageSelector)
+		SetTimer, GuiStart, -100
+	}
+return
+
+UTF82Ansi(zString)
+{
+	Ansi2Unicode(zString, wString, 65001)
+	Unicode2Ansi(wString, sString, 0)
+	Return sString
+}
+
+Ansi2Unicode(ByRef sString, ByRef wString, CP = 0)
+{
+     nSize := DllCall("MultiByteToWideChar"
+      , "Uint", CP
+      , "Uint", 0
+      , "Uint", &sString
+      , "int",  -1
+      , "Uint", 0
+      , "int",  0)
+
+   VarSetCapacity(wString, nSize * 2)
+
+   DllCall("MultiByteToWideChar"
+      , "Uint", CP
+      , "Uint", 0
+      , "Uint", &sString
+      , "int",  -1
+      , "Uint", &wString
+      , "int",  nSize)
+}
+
+Unicode2Ansi(ByRef wString, ByRef sString, CP = 0)
+{
+     nSize := DllCall("WideCharToMultiByte"
+      , "Uint", CP
+      , "Uint", 0
+      , "Uint", &wString
+      , "int",  -1
+      , "Uint", 0
+      , "int",  0
+      , "Uint", 0
+      , "Uint", 0)
+
+   VarSetCapacity(sString, nSize)
+
+   DllCall("WideCharToMultiByte"
+      , "Uint", CP
+      , "Uint", 0
+      , "Uint", &wString
+      , "int",  -1
+      , "str",  sString
+      , "int",  nSize
+      , "Uint", 0
+      , "Uint", 0)
+}
 
 ;
 ; Actual installation helpers
@@ -295,6 +442,7 @@ VisualInstallStart(_Ticks)
 
 	; Disable timers and buttons
 	SetTimer, UpdateInstallDirStatusTimer, Off
+	GuiControl, +Disabled, _cLanguageSelector
 	GuiControl, +Disabled, _cBrowseButton
 	GuiControl, +Disabled, _cDefaultButton
 	GuiControl, +Disabled, _cExitButton
@@ -314,6 +462,7 @@ VisualInstallEnd()
 
 	; Re-enable timers and buttons
 	SetTimer, UpdateInstallDirStatusTimer, 5000
+	GuiControl, -Disabled, _cLanguageSelector
 	GuiControl, -Disabled, _cBrowseButton
 	GuiControl, -Disabled, _cExitButton
 	GuiControl, -Disabled, _cInstallButton
@@ -336,7 +485,7 @@ FindFreePort(_StartPort)
 		if (A_Index > 256)										; If this many tries isn't enough, checking any more in this way is probably just a waste of time. Throw an error instead.
 		{
 			_Endport := _StartPort + 256 - 1
-			MsgBox, 48, Freenet Installer error, Freenet Installer was not able to find a free port on your system in the range %_StartPort%-%_EndPort%.`nPlease free a system port in this range to install Freenet. ; 48 = Icon Exclamation
+			MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer was not able to find a free port on your system in the range ") _StartPort "-" _EndPort ".`n" Trans("Please free a system port in this range to install Freenet.") ; 48 = Icon Exclamation
 			return -1
 		}
 		Else If (TestPortAvailability(_StartPort+A_Index-1))
@@ -353,16 +502,16 @@ TestPortAvailability(_Port)
 	VarSetCapacity(wsaData, 32)
 	_Result := DllCall("Ws2_32\WSAStartup", "UShort", 0x0002, "UInt", &wsaData)				; Request Winsock 2.0 (0x0002)
 
-	if (ErrorLevel)
+	If (ErrorLevel)
 	{
-		MsgBox, 16, Freenet Installer fatal error, Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing. ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 	Else If (_Result)											; Non-zero, which means it failed (most Winsock functions return 0 upon success)
 	{
 		_Error := DllCall("Ws2_32\WSAGetLastError")
 		DllCall("Ws2_32\WSACleanup")
-		MsgBox, 16, Freenet Installer fatal error, Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing (Error: %_Error%). ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 
@@ -375,7 +524,7 @@ TestPortAvailability(_Port)
 	{
 		_Error := DllCall("Ws2_32\WSAGetLastError")
 		DllCall("Ws2_32\WSACleanup")
-		MsgBox, 16, Freenet Installer fatal error, Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing (Error: %_Error%). ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 
