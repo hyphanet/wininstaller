@@ -230,8 +230,8 @@ Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, % Trans("Free
 _GBHeight := CalculateGroupBoxHeight(0,0,3,0)
 Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Additional settings")
 
-Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts (All users: Browse Freenet, Start Freenet, Stop Freenet)")
-Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut (All users: Browse Freenet)")
+Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts (All users: Freenet, Start Freenet, Stop Freenet)")
+Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut (All users: Freenet)")
 Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Browse Freenet &after the installation")
 
 ;
@@ -324,6 +324,7 @@ FileAppend, fproxy.port=%_FProxyPort%`n,									%_InstallDir%\freenet.ini
 FileAppend, fcp.port=%_FCPPort%`n,										%_InstallDir%\freenet.ini
 FileAppend, pluginmanager.loadplugin=JSTUN;KeyExplorer;ThawIndexBrowser;UPnP;XMLLibrarian`n,			%_InstallDir%\freenet.ini
 FileAppend, node.updater.autoupdate=true`n,									%_InstallDir%\freenet.ini
+FileAppend, % "node.l10n=" UTF82Ansi(_LanguageNames%_LangNum%) "`n",						%_InstallDir%\freenet.ini
 FileAppend, End`n,												%_InstallDir%\freenet.ini
 
 FileAppend, `n,													%_InstallDir%\wrapper.conf
@@ -331,7 +332,7 @@ FileAppend, # Name of the service`n,										%_InstallDir%\wrapper.conf
 FileAppend, wrapper.ntservice.name=freenet%_InstallSuffix%`n,							%_InstallDir%\wrapper.conf
 FileAppend, `n,													%_InstallDir%\wrapper.conf
 FileAppend, # Display name of the service`n,									%_InstallDir%\wrapper.conf
-FileAppend, % "wrapper.ntservice.displayname=" Trans("Freenet background service") _InstallSuffix "`n",		%_InstallDir%\wrapper.conf
+FileAppend, wrapper.ntservice.displayname=Freenet background service%_InstallSuffix%`n,				%_InstallDir%\wrapper.conf
 FileAppend, `n,													%_InstallDir%\wrapper.conf
 FileAppend, # User account to run the serve runder`n,								%_InstallDir%\wrapper.conf
 FileAppend, wrapper.ntservice.account=.\Freenet%_InstallSuffix%`n,						%_InstallDir%\wrapper.conf
@@ -383,14 +384,14 @@ GuiControl, , _cProgressBar, +1
 If (_cInstallStartMenuShortcuts)
 {
 	FileCreateDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%
-	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Browse") " Freenet.lnk", , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_ProgramsCommon%\Freenet%_InstallSuffix%\Freenet.lnk, , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
 	FileCreateShortcut, %_InstallDir%\bin\start.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Start Freenet") ".lnk", , , % Trans("Starts the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
 	FileCreateShortcut, %_InstallDir%\bin\stop.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Stop Freenet") ".lnk", , , % Trans("Stops the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
 }
 If (_cInstallDesktopShortcuts)
 {
 	FileCreateDir, %A_DesktopCommon%
-	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, % A_DesktopCommon "\" Trans("Browse") " Freenet" _InstallSuffix ".lnk", , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_DesktopCommon%\Freenet%_InstallSuffix%.lnk, , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
 }
 GuiControl, , _cProgressBar, +1
 

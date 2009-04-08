@@ -200,7 +200,7 @@ If (ErrorLevel)
 
 ; We don't really care if deletion of shortcuts fail, as the user probably just deleted / renamed / moved them around.
 FileRemoveDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%, 1
-FileDelete, % A_DesktopCommon "\" Trans("Browse") " Freenet" _InstallSuffix ".lnk"
+FileDelete, %A_DesktopCommon%\Freenet%_InstallSuffix%.lnk
 
 Progress, 4
 

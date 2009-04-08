@@ -62,8 +62,8 @@ LoadLanguage_fr()
 
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "Paramètres supplémentaires")
-	Trans_Add("Install &start menu shortcuts (All users: Browse Freenet, Start Freenet, Stop Freenet)", "Installer des raccourcis dans le menu &démarrer (Parcourir, Démarrer, Arrêter Freenet)")
-	Trans_Add("Install &desktop shortcut (All users: Browse Freenet)", "Installer un raccourci sur le &bureau (Parcourir Freenet)")
+	Trans_Add("Install &start menu shortcuts (All users: Freenet, Start Freenet, Stop Freenet)", "Installer des raccourcis dans le menu &démarrer (Freenet, Démarrer, Arrêter Freenet)")
+	Trans_Add("Install &desktop shortcut (All users: Freenet)", "Installer un raccourci sur le &bureau (Freenet)")
 	Trans_Add("Browse Freenet &after the installation", "Commencer à parcourir Freenet &après l'installation")
 
 	; Installer - Main GUI - Footer
@@ -72,8 +72,6 @@ LoadLanguage_fr()
 	Trans_Add("&Install", "&Installeur")
 
 	; Installer - Actual installation
-	Trans_Add("Freenet Background Service", "Service Freenet (arrière plan)")
-	Trans_Add("Browse", "Parcourir") ; Part of shortcut name
 	Trans_Add("Opens the Freenet proxy homepage in a web browser", "Ouvre la page d'accueil du proxy Freenet dans un navigateur internet")
 	Trans_Add("Start Freenet", "Démarrer Freenet") ; Shortcut name
 	Trans_Add("Starts the background service needed to use Freenet", "Démarre le service d'arrière plan nécessaire pour utiliser Freenet.")

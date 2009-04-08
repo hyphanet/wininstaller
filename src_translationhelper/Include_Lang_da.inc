@@ -62,8 +62,8 @@ LoadLanguage_da()
 
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "Yderligere indstillinger")
-	Trans_Add("Install &start menu shortcuts (All users: Browse Freenet, Start Freenet, Stop Freenet)", "Installer start&menugenveje (Alle brugere: Åbn Freenet, Start Freenet, Stop Freenet)")
-	Trans_Add("Install &desktop shortcut (All users: Browse Freenet)", "Installer s&krivebordsgenvej (Alle brugere: Åbn Freenet)")
+	Trans_Add("Install &start menu shortcuts (All users: Freenet, Start Freenet, Stop Freenet)", "Installer start&menugenveje (Alle brugere: Freenet, Start Freenet, Stop Freenet)")
+	Trans_Add("Install &desktop shortcut (All users: Freenet)", "Installer s&krivebordsgenvej (Alle brugere: Freenet)")
 	Trans_Add("Browse Freenet &after the installation", "Åbn Freenet &efter installationen")
 
 	; Installer - Main GUI - Footer
@@ -72,8 +72,6 @@ LoadLanguage_da()
 	Trans_Add("&Install", "&Installer")
 
 	; Installer - Actual installation
-	Trans_Add("Freenet Background Service", "Freenet baggrundstjeneste")
-	Trans_Add("Browse", "Åbn") ; Part of shortcut name
 	Trans_Add("Opens the Freenet proxy homepage in a web browser", "Åbner Freenet-proxyen i en webbrowser")
 	Trans_Add("Start Freenet", "Start Freenet") ; Shortcut name
 	Trans_Add("Starts the background service needed to use Freenet", "Starter baggrundstjenesten krævet for at bruge Freenet")
