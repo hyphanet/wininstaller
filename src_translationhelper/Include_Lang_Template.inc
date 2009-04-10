@@ -99,7 +99,7 @@ LoadLanguage_xx()
 
 	; Uninstaller - General
 	Trans_Add("Freenet has been uninstalled!", "")
-	Trans_Add("Do you really want to uninstall", "")
+	Trans_Add("Do you really want to uninstall Freenet?", "")
 	Trans_Add("The development team would appreciate it very much if you can`nspare a moment and fill out a short, anonymous online`nsurvey about the reason for your uninstallation.`n`nThe survey, located on the Freenet website, will be opened`nin your browser after the uninstallation.`n`nTake the uninstallation survey?", "")
 
 	; Uninstaller - Error messageboxes

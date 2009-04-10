@@ -84,7 +84,7 @@ Else
 ;
 ; Ask for confirmation and about the uninstallation survey
 ;
-MsgBox, 33, % Trans("Freenet uninstaller"), % Trans("Do you really want to uninstall") " Freenet" _InstallSuffix "?"		; 1 = OK/Cancel, 32 = Icon Question
+MsgBox, 33, % Trans("Freenet uninstaller"), % Trans("Do you really want to uninstall Freenet?")		; 1 = OK/Cancel, 32 = Icon Question
 IfMsgBox, Cancel
 {
 	Exit()
