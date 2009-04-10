@@ -40,7 +40,7 @@ InitTranslations()
 _Arg1 = %1%
 If (_Arg1 == "/?")
 {
-	PopupInfoMessage(Trans("Command line options (only use one):`n/silent - Hide info messsages`n/verysilent - Hide info and status messages`n`nReturn codes:`n0 - Success (service stopped)`n1 - Error occurred`n2 - Service was not running (no action)"))
+	PopupInfoMessage(Trans("Command line options (only use one):`n/silent - Hide info messages`n/verysilent - Hide info and status messages`n`nReturn codes:`n0 - Success (service stopped)`n1 - Error occurred`n2 - Service was not running (no action)"))
 	ExitApp, 0
 }
 Else If (_Arg1 == "/silent")
