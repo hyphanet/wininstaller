@@ -93,11 +93,11 @@ If (!ErrorLevel && _FFVersion <> "")
 ;
 ; Try browser: Opera (Tested versions: 9.6)
 ;
-RegRead, _OperaInstallDir, HKEY_LOCAL_MACHINE, Software\Microsoft\Windows\CurrentVersion\Uninstall\{1BC4026B-1957-4514-9058-2B542557F143}, InstallLocation
+RegRead, _OperaPath, HKEY_LOCAL_MACHINE, Software\Clients\StartMenuInternet\Opera.exe\shell\open\command
 
-If (!ErrorLevel && _OperaInstallDir <> "")
+If (!ErrorLevel && _OperaPath <> "")
 {
-	_OperaPath = %_OperaInstallDir%\opera.exe
+	StringReplace, _OperaPath, _OperaPath, ", , All
 
 	IfExist, %_OperaPath%
 	{
@@ -117,7 +117,7 @@ If (!ErrorLevel && _ChromeInstallDir <> "")
 
 	IfExist, %_ChromePath%
 	{
-		Run, %_ChromePath% "%_URL%", , UseErrorLevel
+		Run, %_ChromePath% "%_URL%" --incognito, , UseErrorLevel
 		ExitApp, 0
 	}
 }
