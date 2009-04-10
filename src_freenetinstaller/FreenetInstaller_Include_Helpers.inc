@@ -315,6 +315,9 @@ VisualInstallStart(_Ticks)
 	GuiControl, +Disabled, _cDefaultButton
 	GuiControl, +Disabled, _cExitButton
 	GuiControl, +Disabled, _cInstallButton
+	GuiControl, +Disabled, _cInstallStartMenuShortcuts
+	GuiControl, +Disabled, _cInstallDesktopShortcuts
+	GuiControl, +Disabled, _cBrowseAfterInstall
 	DisableCloseButton()
 
 	GuiControl, +Range0-%_Ticks%, _cProgressBar
@@ -334,6 +337,9 @@ VisualInstallEnd()
 	GuiControl, -Disabled, _cBrowseButton
 	GuiControl, -Disabled, _cExitButton
 	GuiControl, -Disabled, _cInstallButton
+	GuiControl, -Disabled, _cInstallStartMenuShortcuts
+	GuiControl, -Disabled, _cInstallDesktopShortcuts
+	GuiControl, -Disabled, _cBrowseAfterInstall
 	EnableCloseButton()
 
 	; Switch status text with progress bar
