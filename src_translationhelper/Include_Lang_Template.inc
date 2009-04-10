@@ -50,7 +50,7 @@ LoadLanguage_xx()
 	; Installer - Old installation detected
 	Trans_Add("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:", "")
 	Trans_Add("&Uninstall", "")
-	Trans_Add("The installation will continue once the old installation has been removed.", "Installationen vil fortsætte når den tidligere installation er blevet fjernet.")
+	Trans_Add("The installation will continue once the old installation has been removed.", "")
 
 	; Installer - Main GUI - Header
 	Trans_Add("Please check the following default settings before continuing with the installation of Freenet.", "")
@@ -94,8 +94,8 @@ LoadLanguage_xx()
 	Trans_Add("Installation finished successfully!", "")
 
 	; Uninstaller - Common
-	Trans_Add("Freenet uninstaller", "Freenet afinstallationsprogram")
-	Trans_Add("Freenet uninstaller error", "Freenet afinstallationsprogram fejl")
+	Trans_Add("Freenet uninstaller", "")
+	Trans_Add("Freenet uninstaller error", "")
 
 	; Uninstaller - General
 	Trans_Add("Freenet has been uninstalled!", "")
