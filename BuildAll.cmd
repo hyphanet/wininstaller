@@ -6,8 +6,6 @@
 :: - bin\upx.exe (UPX packer, comes with AutoHotkey compiler)
 :: - bin\AutoHotkeySC.bin (AHK library, comes with AutoHotkey compiler)
 ::
-:: - bin\ResHacker.exe (Resource Hacker - http://angusj.com/resourcehacker/)
-::
 :: - bin\freenet.jar (Freenet jar)
 :: - bin\freenet-ext.jar (Freenet jar)
 ::
