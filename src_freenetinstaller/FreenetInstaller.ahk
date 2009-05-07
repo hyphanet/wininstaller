@@ -251,7 +251,7 @@ Gui, Add, Button, x+%_StandardMargin% ys W%_ButtonWidth% v_cInstallButton gButto
 ;
 SetInstallDir("")
 SetTimer, UpdateInstallDirStatusTimer, 5000
-Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer (Beta)")
+Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer")
 return
 
 ;

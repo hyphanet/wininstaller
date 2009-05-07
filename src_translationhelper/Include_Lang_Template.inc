@@ -20,7 +20,6 @@ LoadLanguage_xx()
 {
 	; Installer - Common
 	Trans_Add("Freenet Installer", "")
-	Trans_Add("Freenet Installer (Beta)", "")
 	Trans_Add("Welcome to the Freenet Installer!", "")
 	Trans_Add("Installation Problem", "")
 	Trans_Add("Freenet Installer fatal error", "")

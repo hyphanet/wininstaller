@@ -11,6 +11,6 @@
 ;
 
 _Inc_FreenetVersion = 0.7
-_Inc_FreenetBuild = #1206
+_Inc_FreenetBuild = #1209
 _Inc_InstallSize := 8.26
 
