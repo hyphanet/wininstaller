@@ -26,7 +26,7 @@ _Silent := 0								; Initial value
 ;
 ; Customizable settings
 ;
-_ServiceTimeout := 60							; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
+_ServiceTimeout := 120							; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
 _SplashFormat = A B2 T FS8						; How our splash should look.
 
 ;
