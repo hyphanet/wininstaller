@@ -20,6 +20,7 @@ FileInstall, files_install\LICENSE.Mantissa,			%_InstallDir%\LICENSE.Mantissa
 FileInstall, files_install\seednodes.fref,			%_InstallDir%\seednodes.fref
 FileInstall, files_install\startssl.pem,			%_InstallDir%\startssl.pem
 FileInstall, files_install\wrapper.conf,			%_InstallDir%\wrapper.conf
+FileInstall, files_install\update.cmd,				%_InstallDir%\update.cmd
 
 FileCreateDir,							%_InstallDir%\bin
 FileInstall, files_install\bin\freenetuninstaller.exe,		%_InstallDir%\bin\freenetuninstaller.exe
