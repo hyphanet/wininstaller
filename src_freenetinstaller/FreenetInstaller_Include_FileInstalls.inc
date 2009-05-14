@@ -26,6 +26,7 @@ FileCreateDir,							%_InstallDir%\bin
 FileInstall, files_install\bin\freenetuninstaller.exe,		%_InstallDir%\bin\freenetuninstaller.exe
 FileInstall, files_install\bin\start.exe,			%_InstallDir%\bin\start.exe
 FileInstall, files_install\bin\stop.exe,			%_InstallDir%\bin\stop.exe
+FileInstall, files_install\bin\wget.exe,			%_InstallDir%\bin\wget.exe
 FileInstall, files_install\bin\wrapper-windows-x86-32.exe,	%_InstallDir%\bin\wrapper-windows-x86-32.exe
 
 
