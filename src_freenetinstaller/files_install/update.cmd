@@ -53,6 +53,8 @@ if "%1"=="testing" set RELEASE=testing
 if "%1"=="-testing" set RELEASE=testing
 if "%1"=="/testing" set RELEASE=testing
 
+echo Release is %RELEASE%
+
 ::Check if we are on Vista/Seven if so we need to use icacls instead of cacls
 set VISTA=0
 ::Treat server 2k3/XP64 as vista as they need icacls
@@ -155,6 +157,8 @@ if not exist freenet-%RELEASE%-latest.jar.url goto mainyes
 fc freenet-%RELEASE%-latest.jar.url freenet-%RELEASE%-latest.jar.new.url > NUL
 if errorlevel 1 goto mainyes
 echo    - Main jar is current.
+fc freenet-%RELEASE%-latest.jar freenet.jar > NUL
+if errorlevel 1 goto mainyes
 goto checkext
 
 :mainyes
@@ -191,18 +195,19 @@ echo    - New ext jar found!
 echo -----
 echo - New Freenet version found!  Installing now...
 echo -----
-:: FIXME  we still need to pull dynamic service name from file the new installer is going to create.
-net start | find "Freenet 0.7 darknet" > NUL
-if errorlevel 1 goto update2 > NUL
-set RESTART=1
 
 ::See if we are using the new binary stop.exe
 if not exist bin\stop.exe goto oldstopper
+:Assume that it was running, no way to easily tell - FIXME what to grep for in the service list when multiple installs?
+set RESTART=1
 call bin\stop.exe > NUL
 ::  FIXME   do we need a new error handling section for the new .exe?  Will it handle errors itself?
 goto update2
 
 :oldstopper
+net start | find "Freenet 0.7 darknet" > NUL
+if errorlevel 1 goto update2 > NUL
+set RESTART=1
 ::Tell the user not to abort script, it gets very messy.
 echo - Shutting down Freenet...   (This may take a moment, please don't abort)
 call bin\stop.cmd > NUL
