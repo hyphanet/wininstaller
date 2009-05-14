@@ -1,6 +1,6 @@
 @echo off
 ::This script is designed for the Windows command line shell, so please don't put it into anything else! :)
-::This script may need to be run with administrator privledges.
+::This script may need to be run with administrator privileges.
 
 ::If you want to debug this script by adding pauses and stuff, please do it from another batch file, because
 ::if you modify this script in any way it will be detected as outdated and will be overwritten on the next run.
@@ -12,7 +12,7 @@
 Title Freenet Update Over HTTP Script
 echo -----
 echo - Freenet Windows update script 1.6 by Zero3Cool (zero3cool@zerosplayground.dk)
-echo - Freenet Windows update script 1.7-2.4,2.6-2.8 by Juiceman (juiceman69@gmail.com)
+echo - Freenet Windows update script 1.7-2.4,2.6-2.9 by Juiceman (juiceman69@gmail.com)
 echo - Thanks to search4answers, Michael Schierl and toad for help and feedback.
 echo -----
 echo - This script will automatically update your Freenet installation
@@ -28,6 +28,7 @@ echo -----------------------------------------------------------
 echo -----
 
 ::CHANGELOG:
+:: 2.9 - Check for file permissions
 :: 2.8 - Add detecting of Vista\Seven, use the appropriate version of cacls.
 :: 2.7 - Better error handling
 :: 2.6 - Prepare for new binary start and stop.exe's
@@ -68,6 +69,15 @@ cd /D %LOCATION%
 ::Check if its valid, or at least looks like it
 if not exist freenet.ini goto error2
 if not exist bin\wget.exe goto error2
+
+::Simple test to see if we have enough privileges to modify files.
+echo - Checking file permissions
+if exist writetest del writetest > NUL
+if exist writetest goto writefail
+echo test > writetest
+if not exist writetest goto writefail
+del writetest > NUL
+if exist writetest goto writefail
 
 :: Maybe fix bug #2556
 echo - Changing file permissions
@@ -321,7 +331,6 @@ echo - Changing file permissions
 if %VISTA%==0 echo Y| cacls . /E /T /C /G freenet:f 2 > NUL > NUL
 if %VISTA%==1 echo y| icacls . /grant freenet:(OI)(CI)F /T /C > NUL
 
-
 if %RESTART%==0 goto cleanup2
 echo - Restarting Freenet...
 ::See if we are using the new binary start.exe
@@ -344,5 +353,9 @@ copy /Y update.new.cmd update.cmd > NUL
 echo -----
 exit
 
+ ::We don't have enough privileges!
+:writefail
+echo File permissions error!  Please launch this script with administrator privileges.
+pause
 :veryend
 ::FREENET WINDOWS UPDATE SCRIPT
