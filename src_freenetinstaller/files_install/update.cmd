@@ -55,6 +55,9 @@ if "%1"=="/testing" set RELEASE=testing
 
 ::Check if we are on Vista/Seven if so we need to use icacls instead of cacls
 set VISTA=0
+::Treat server 2k3/XP64 as vista as they need icacls
+VER | findstr /l "5.2." > nul
+IF %ERRORLEVEL% EQU 0 set VISTA=1
 ::Vista?
 VER | findstr /l "6.0." > nul
 IF %ERRORLEVEL% EQU 0 set VISTA=1
@@ -91,7 +94,7 @@ if %FILENAME%==update.new.cmd goto updaterok
 ::Download latest updater and verify it
 if exist update.new.cmd del update.new.cmd
 echo - Checking for newer version of this update script...
-bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/update/update.cmd -O update.new.cmd
+bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/update/update-new.cmd -O update.new.cmd
 Title Freenet Update Over HTTP Script
 
 if not exist update.new.cmd goto error1
