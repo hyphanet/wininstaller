@@ -32,6 +32,7 @@ FileInstall, files_install\bin\wrapper-windows-x86-32.exe,	%_InstallDir%\bin\wra
 
 FileCreateDir,							%_InstallDir%\lib
 FileInstall, files_install\lib\wrapper-windows-x86-32.dll,	%_InstallDir%\lib\wrapper-windows-x86-32.dll
+FileInstall, files_install\lib\sha1test.jar,			%_InstallDir%\lib\sha1test.jar
 
 FileCreateDir,							%_InstallDir%\plugins
 FileInstall, files_install\plugins\JSTUN.jar,			%_InstallDir%\plugins\JSTUN.jar
