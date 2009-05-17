@@ -8,6 +8,7 @@
 ; Include translations
 ;
 #Include ..\src_translationhelper\Include_Lang_da.inc								; Include Danish (da) translation
+#Include ..\src_translationhelper\Include_Lang_fi.inc								; Include Finnish (fi) translation
 #Include ..\src_translationhelper\Include_Lang_fr.inc								; Include French (fr) translation
 
 InitTranslations()
@@ -19,6 +20,7 @@ InitTranslations()
 	; AddLanguage() arguments: <localized language name> <language load function name from language file> <windows language code (see http://www.autohotkey.com/docs/misc/Languages.htm)>
 	AddLanguage("English","","")										; Load English (en) translation (dummy)
 	AddLanguage("Dansk","LoadLanguage_da","0406")
+	AddLanguage("suomi","LoadLanguage_fi","040b")
 	AddLanguage("Français","LoadLanguage_fr","040c+080c+0c0c+100c+140c+180c")				; Make default for all variations of French
 
 	LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
