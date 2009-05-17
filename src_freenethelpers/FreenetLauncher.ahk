@@ -55,7 +55,7 @@ If (Service_State(_ServiceName) <> 4)
 }
 
 ;
-; Compile fproxy URL
+; Put together the fproxy URL
 ;
 IfNotExist, freenet.ini
 {
@@ -72,6 +72,22 @@ Else
 	}
 
 	_URL = http://127.0.0.1:%_Port1%/
+}
+
+;
+; Try browser: Google Chrome (Tested versions: 1.0.154)
+;
+RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
+
+If (!ErrorLevel && _ChromeInstallDir <> "")
+{
+	_ChromePath = %_ChromeInstallDir%\chrome.exe
+
+	IfExist, %_ChromePath%
+	{
+		Run, %_ChromePath% "%_URL%" --incognito, , UseErrorLevel
+		ExitApp, 0
+	}
 }
 
 ;
@@ -107,23 +123,7 @@ If (!ErrorLevel && _OperaPath <> "")
 }
 
 ;
-; Try browser: Google Chrome (Tested versions: 1.0.154)
-;
-RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
-
-If (!ErrorLevel && _ChromeInstallDir <> "")
-{
-	_ChromePath = %_ChromeInstallDir%\chrome.exe
-
-	IfExist, %_ChromePath%
-	{
-		Run, %_ChromePath% "%_URL%" --incognito, , UseErrorLevel
-		ExitApp, 0
-	}
-}
-
-;
-; Try browser: Internet Explorer (Tested versions: 6.0)
+; Try browser: Internet Explorer (Tested versions: 6.0, 7.0)
 ;
 IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
 {
@@ -134,7 +134,7 @@ IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
 ;
 ; No usable browser found
 ;
-PopupErrorMessage(Trans("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to: ") _URL "`n`n" Trans("Freenet Launcher supports the following browsers:") "`n- Mozilla FireFox`n- Opera`n- Google Chrome`n- Internet Explorer (" Trans("not recommended") ")")
+PopupErrorMessage(Trans("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to: ") _URL "`n`n" Trans("Freenet Launcher supports the following browsers:") "`n- Google Chrome`n- Mozilla FireFox`n- Opera`n- Internet Explorer (" Trans("not recommended") ")")
 ExitApp, 1
 
 ;
