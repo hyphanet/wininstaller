@@ -20,6 +20,7 @@
 :: Cleanup and prepare
 ::
 if exist bin\FreenetInstaller.exe del bin\FreenetInstaller.exe
+if not exist src_freenetinstaller\files_install\plugins mkdir src_freenetinstaller\files_install\plugins
 copy bin\freenet.jar src_freenetinstaller\files_install\freenet.jar
 copy bin\freenet-ext.jar src_freenetinstaller\files_install\freenet-ext.jar
 copy bin\Ahk2Exe.exe compiler\Ahk2Exe.exe
