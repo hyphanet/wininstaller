@@ -15,6 +15,8 @@
 :: - bin\UPnP.jar (Freenet plugin jar)
 :: - bin\XMLLibrarian.jar (Freenet plugin jar)
 ::
+:: - src_freenetinstaller\files_install\seednodes.fref (seednodes file)
+::
 
 ::
 :: Cleanup and prepare
