@@ -23,7 +23,7 @@ Gui, +OwnDialogs							; Make messageboxes "stick" to the main GUI
 ;
 ; Customizable settings
 ;
-_GuiWidth := 450+10+10							; Main GUI width. Should be the same size as the header image + default element margins (used for the GUI window itself)
+_GuiWidth := 475+10+10							; Main GUI width. Should be the same size as the header image + default element margins (used for the GUI window itself)
 _StandardMargin := 12							; Our standard margin. Must be at least 8 px.
 _ButtonWidth := 100							; Width of our buttons
 _LanguageListWidth := 100						; Width of language drop-down list
@@ -194,7 +194,7 @@ If (CheckForOldUninstaller())
 ;
 ; Text: Install guideline header
 ;
-Gui, Add, Text, xs W%_GuiWidth2% Section, % Trans("Please check the following default settings before continuing with the installation of Freenet.")
+Gui, Add, Text, xs W%_GuiWidth2% Center Section, % Trans("Please check the following default settings before continuing with the installation of Freenet.")
 
 ;
 ; Groupbox: Install directory
@@ -232,7 +232,7 @@ Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Additional s
 
 Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts (Freenet, Start Freenet, Stop Freenet)")
 Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut (Freenet)")
-Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Browse Freenet &after the installation")
+Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Launch Freenet &after the installation")
 
 ;
 ; Status bar and main buttons
