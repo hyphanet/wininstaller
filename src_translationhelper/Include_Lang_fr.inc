@@ -61,9 +61,9 @@ LoadLanguage_fr()
 
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "Paramètres supplémentaires")
-	Trans_Add("Install &start menu shortcuts (All users: Freenet, Start Freenet, Stop Freenet)", "Installer des raccourcis dans le menu &démarrer (Freenet, Démarrer, Arrêter Freenet)")
-	Trans_Add("Install &desktop shortcut (All users: Freenet)", "Installer un raccourci sur le &bureau (Freenet)")
-	Trans_Add("Browse Freenet &after the installation", "Commencer à parcourir Freenet &après l'installation")
+	Trans_Add("Install &start menu shortcuts (Freenet, Start Freenet, Stop Freenet)", "Installer des raccourcis dans le menu &démarrer (Freenet, Démarrer, Arrêter Freenet)")
+	Trans_Add("Install &desktop shortcut (Freenet)", "Installer un raccourci sur le &bureau (Freenet)")
+	Trans_Add("Launch Freenet &after the installation", "Commencer à parcourir Freenet &après l'installation")
 
 	; Installer - Main GUI - Footer
 	Trans_Add("Version ", "Version ")

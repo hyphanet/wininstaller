@@ -61,9 +61,9 @@ LoadLanguage_fi()
 
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "Lisäasetukset")
-	Trans_Add("Install &start menu shortcuts (All users: Freenet, Start Freenet, Stop Freenet)", "&Asenna käynnistä-valikon pikakuvakkeet (kaikki käyttäjät: Freenet, Käynnistä Freenet, Pysäytä Freenet)")
-	Trans_Add("Install &desktop shortcut (All users: Freenet)", "Asenna työpöytäkuvakkeet (kaikki käyttäjät: Freenet)")
-	Trans_Add("Browse Freenet &after the installation", "Aloita Freenetin selaaminen asennuksen jälkeen")
+	Trans_Add("Install &start menu shortcuts (Freenet, Start Freenet, Stop Freenet)", "&Asenna käynnistä-valikon pikakuvakkeet (Freenet, Käynnistä Freenet, Pysäytä Freenet)")
+	Trans_Add("Install &desktop shortcut (Freenet)", "Asenna työpöytäkuvakkeet (Freenet)")
+	Trans_Add("Launch Freenet &after the installation", "Aloita Freenetin selaaminen asennuksen jälkeen")
 
 	; Installer - Main GUI - Footer
 	Trans_Add("Version ", "Versio ")

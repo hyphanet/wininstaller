@@ -3,17 +3,19 @@
 ;
 ; Quick guide to translating:
 ; 1.	Save this file as "Include_Lang_xx.inc" (xx being a standard 2-letter lowercase language code, e.g. "en" for English or "da" for Danish)
-; 2.	Replace "xx" with the same language code in "LoadLanguage_xx()" below.
-; 3.	Translate! Format is: Trans_Add("<original text>", "<translated text>"). Please do not leave empty strings (comment them out instead so the installer will fall back to English for those strings).
-; 4.	Submit the translation to SVN or the developer mailing list
-; 4.a	Please make sure that either yourself or another developer tests the translation for obvious layout glitches and other bugs (simply launching the installer and verifying that the main GUI looks OK should be enough most of the time)
-; 4.b	On the first submission, make sure that the translation is added to Include_TranslationHelper.ahk or nothing will happen ;)
+; 2.	Replace "xx" in "LoadLanguage_xx()" below with the same language code.
+; 3.	Translate! Format is: Trans_Add("<original text>", "<translated text>").
+;	Please do not leave empty strings (comment them out instead so the installer will fall back to English for those strings).
+;	Hotkey letters are prefixed with "&". Feel free to change the hotkey to another letter in your translation - but make sure not to overlap with other hotkeys.
+; 4.	Submit your translation to git@github.com:freenet/wininstaller-staging.git or the developer mailing list (devl@freenetproject.org)
+; 	Please make sure that either yourself or another developer tests the translation for obvious layout glitches and other bugs (simply launching the installer and verifying that the main GUI looks OK should be enough most of the time)
+; 	On the first submission, a developer needs to add the translation to Include_TranslationHelper.ahk or nothing will happen.
 ;
 ; General note about translation:
 ; Because of the compact GUI design, much of the text are subject to min/max size limitations. A too short translation will leave holes in the GUI and
 ; a too long will mess up the layout. So try to keep the translations at the approx. same length as the original English text, with the approx. same
 ; placement of any newline markers. The easiest way to test the translation is to compile the installer and take a look around. The installer runs
-; under WINE, but because of WINE bugs the layout will *not* be completely true to a real Windows installation.
+; under WINE on Linux, but because of WINE bugs the layout will *not* be completely equal to running under a real Windows installation.
 ;
 
 LoadLanguage_xx()
@@ -75,9 +77,9 @@ LoadLanguage_xx()
 
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "")
-	Trans_Add("Install &start menu shortcuts (All users: Freenet, Start Freenet, Stop Freenet)", "")
-	Trans_Add("Install &desktop shortcut (All users: Freenet)", "")
-	Trans_Add("Browse Freenet &after the installation", "")
+	Trans_Add("Install &start menu shortcuts (Freenet, Start Freenet, Stop Freenet)", "")
+	Trans_Add("Install &desktop shortcut (Freenet)", "")
+	Trans_Add("Launch Freenet &after the installation", "")
 
 	; Installer - Main GUI - Footer
 	Trans_Add("Version ", "")

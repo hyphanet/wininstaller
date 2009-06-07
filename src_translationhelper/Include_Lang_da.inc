@@ -61,9 +61,9 @@ LoadLanguage_da()
 
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "Yderligere indstillinger")
-	Trans_Add("Install &start menu shortcuts (All users: Freenet, Start Freenet, Stop Freenet)", "Installer start&menugenveje (Alle brugere: Freenet, Start Freenet, Stop Freenet)")
-	Trans_Add("Install &desktop shortcut (All users: Freenet)", "Installer s&krivebordsgenvej (Alle brugere: Freenet)")
-	Trans_Add("Browse Freenet &after the installation", "Åbn Freenet &efter installationen")
+	Trans_Add("Install &start menu shortcuts (Freenet, Start Freenet, Stop Freenet)", "Installer start&menugenveje (Freenet, Start Freenet, Stop Freenet)")
+	Trans_Add("Install &desktop shortcut (Freenet)", "Installer s&krivebordsgenvej (Freenet)")
+	Trans_Add("Launch Freenet &after the installation", "Åbn Freenet &efter installationen")
 
 	; Installer - Main GUI - Footer
 	Trans_Add("Version ", "Version ")
