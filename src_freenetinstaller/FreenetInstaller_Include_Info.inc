@@ -10,7 +10,7 @@
 ; _Inc_InstallSize - (float) In MB, size of all files to be installed.
 ;
 
-_Inc_FreenetVersion = 0.7
-_Inc_FreenetBuild = #1209
+_Inc_FreenetVersion = 0.7.5-rc1
+_Inc_FreenetBuild = #1218
 _Inc_InstallSize := 8.26
 
