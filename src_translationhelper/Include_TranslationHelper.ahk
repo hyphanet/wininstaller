@@ -7,9 +7,10 @@
 ;
 ; Include translations
 ;
+#Include ..\src_translationhelper\Include_Lang_de.inc								; Include German (de) translation
+#Include ..\src_translationhelper\Include_Lang_fr.inc								; Include French (fr) translation
 #Include ..\src_translationhelper\Include_Lang_da.inc								; Include Danish (da) translation
 #Include ..\src_translationhelper\Include_Lang_fi.inc								; Include Finnish (fi) translation
-#Include ..\src_translationhelper\Include_Lang_fr.inc								; Include French (fr) translation
 
 InitTranslations()
 {
@@ -19,6 +20,7 @@ InitTranslations()
 
 	; AddLanguage() arguments: <localized language name> <language load function name from language file> <windows language code (see http://www.autohotkey.com/docs/misc/Languages.htm)>
 	AddLanguage("English","","")										; Load English (en) translation (dummy)
+	AddLanguage("Deutsch","LoadLanguage_de","0407+0807+0c07+1007+1407")					; Make default for all variations of German
 	AddLanguage("Français","LoadLanguage_fr","040c+080c+0c0c+100c+140c+180c")				; Make default for all variations of French
 	AddLanguage("Dansk","LoadLanguage_da","0406")
 	AddLanguage("suomi","LoadLanguage_fi","040b")
