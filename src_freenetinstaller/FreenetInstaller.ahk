@@ -108,7 +108,7 @@ Loop % _LangArray-1
 }
 _Listx := _GuiWidth2-_LanguageListWidth
 _Listy := ((_TextHeight*3)/2)-(21/2)
-Gui, Add, DropDownList, xp+%_Listx% yp+%_Listy% W%_LanguageListWidth% Choose%_LangNum% v_cLanguageSelector g_ListSelectLanguage AltSubmit , %_LanguageList%
+Gui, Add, DropDownList, xp+%_Listx% yp+%_Listy% W%_LanguageListWidth% Choose%_LangNum% R10 v_cLanguageSelector g_ListSelectLanguage AltSubmit, %_LanguageList%
 
 ;
 ; Check for unsupported Windows version
