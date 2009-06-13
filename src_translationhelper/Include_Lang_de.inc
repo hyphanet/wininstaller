@@ -3,7 +3,7 @@
 ;
  
 LoadLanguage_de()
-{	
+{
 	; Installer - Common
 	Trans_Add("Freenet Installer", "Freenetinstaller")
 	Trans_Add("Welcome to the Freenet Installer!", "Willkommen zum Freenetinstaller!")
@@ -33,7 +33,7 @@ LoadLanguage_de()
 	Trans_Add(" or later has been installed.", " oder höher installiert wurde.")
  
 	; Installer - Old installation detected
-;	Trans_Add("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:", "Der Freenetinstaller hat entdeckt, dass bereits eine Version von Freenet installiert ist. Ihre aktuelle Freenetinstallation wurde mit einem älteren, nicht mehr unterstützten, Installer gemacht. Um forzufahren müssen sie zunächst Ihre aktuelle Freenetinstallation mit dem früher erstellten Uninstaller deinstallieren:")
+	Trans_Add("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:", "Der Installer hat entdeckt, dass Freenet bereits installiert ist. Ihre aktuelle Installation wurde mit einem älteren, nicht mehr unterstützten, Installer gemacht. Um forzufahren müssen sie zunächst Ihre aktuelle Installation mit dem früher erstellten Uninstaller entfernen:")
 	Trans_Add("&Uninstall", "&Deinstallieren")
 	Trans_Add("The installation will continue once the old installation has been removed.", "Die Installation wird fortgeführt, wenn die alte Installation entfernt wurde.")
  
@@ -42,9 +42,9 @@ LoadLanguage_de()
  
 	; Installer - Main GUI - Install folder
 	Trans_Add("Installation directory", "Installationsverzeichnis")
-;	Trans_Add("Freenet requires at least ", "Freenet braucht mindestens ")
-;	Trans_Add(" MB free disk space, but will not install with less than ", " MB freier Festplattenspeicher, aber wird nicht installiert mit weniger als ")
-;	Trans_Add(" MB free. The amount of space reserved can be changed after installation.", " MB Festplattenspeicher. (Der Speicher der reserviert wird kann nach der Installation geändert werden).")
+	Trans_Add("Freenet requires at least ", "Freenet braucht mindestens ")
+	Trans_Add(" MB free disk space, but will not install with less than ", " MB freier Speicher, aber wird nicht installiert mit weniger als ")
+	Trans_Add(" MB free. The amount of space reserved can be changed after installation.", " MB Speicher. (Dies kann nach der Installation geändert werden).")
 	Trans_Add("&Browse", "Bro&wsen")
 	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "Wenn Sie einen Pfad wählen der nicht 'Freenet' enthält, dann wird ein ensprechendes Verzeichnis automatisch erstellt.")
 	Trans_Add("De&fault", "&Vorgabewert")
@@ -114,12 +114,38 @@ LoadLanguage_de()
  
 	; Launcher
 	Trans_Add("Freenet Launcher error", "Freenetstarter Fehler")
-	Trans_Add("Freenet Launcher was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet Launcher from a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers.", "Der Freenetstarter war nicht in der Lage die installid.dat ID file zu finden.`n`n Vergewissern Sie sich, dass Sie den Freenetstarter aus dem Freenetinstallationsverzeichnis aufrufen. `nWenn Sie dies bereits gemacht haben bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
+	Trans_Add("Freenet Launcher was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet Launcher from a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers.", "Der Freenetstarter war nicht in der Lage die installid.dat ID Datei zu finden.`n`n Vergewissern Sie sich, dass Sie den Freenetstarter aus dem Freenetinstallationsverzeichnis aufrufen. `nWenn Sie dies bereits gemacht haben bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
 	Trans_Add("Freenet Launcher was unable to find the bin\start.exe launcher.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Der Freenetstarter war nicht in der Lage den bin\start.exe Starter zu finden. `n`nBitte installieren Sie Freenet neu.`n`n Wenn das Problem weiterhin auftritt bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
-	Trans_Add("Freenet Launcher was unable to find the freenet.ini configuration file.`n`nMake sure that you are running Freenet Launcher from a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers.", "Der Freenetstarter war nicht in der Lage die Datei freenet.ini zu finden.`n`n Vergewissern Sie sich, dass Sie den Freenetstarter aus dem Freenetinstallationsverzeichnis aufrufen. `nWenn Sie dies bereits gemacht haben bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
+	Trans_Add("Freenet Launcher was unable to find the freenet.ini configuration file.`n`nMake sure that you are running Freenet Launcher from a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers.", "Der Freenetstarter war nicht in der Lage die Datei freenet.ini zu finden.`n`n Vergewissern Sie sich, dass Sie den Freenetstarter aus dem Freenetinstallationsverzeichnis aufrufen. `n`nWenn Sie dies bereits gemacht haben bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
 	Trans_Add("Freenet Launcher was unable to read the 'fproxy.port' value from the freenet.ini configuration file.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Der Freenetstarter war nicht in der Lage den Wert für 'fproxy.port' in der freenet.ini zu lesen. `n`nBitte installieren Sie Freenet neu. `n`nWenn das Problem weiterhin auftritt bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
 	Trans_Add("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to: ", "Der Freenetstarter war nicht in der Lage einen unterstützten Internetbrowser zu finden.`n`nBitte installieren Sie einen unterstützen Internetbrowser oder geben Sie von Hand folgende Adresse ein:")
 	Trans_Add("Freenet Launcher supports the following browsers:", "Der Freenetstarter unterstützt folgende Internetbrowser:")
 	Trans_Add("not recommended", "nicht empfohlen")
+
+	; Service starter
+	Trans_Add("Command line options (only use one):`n/silent - Hide info messages`n/verysilent - Hide info and status messages`n`nReturn codes:`n0 - Success (service started)`n1 - Error occurred`n2 - Service was already running (no action)", "Kommandzeilenparameter (nur einen angeben):`n/silent - Keine Infomeldungen:`n/verysilent - Keine Info- oder Statusmeldungen`n`nRückgabewerte:`n0 - Erfolgreich (gestartet)`n1 - Fehler beim starten`n2 - Dienst läuft bereits")
+	Trans_Add("Freenet start script requires administrator privileges to start the Freenet service. Please make sure that your user account has administrative access to the system, and the start script is executed with access to use these privileges.", "Das Freenetstartscript benötigt Administrator Privilegien um den Systemdienst zu starten. Bitte vergewissern Sie sich, dass Ihr Benutzeraccount die nötigen Rechte hat, und dass das Script mit den nötigen Rechten gestartet wurde.")
+	Trans_Add("Freenet start script was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet start script from the 'bin' folder of a Freenet installation directory. If you are already doing so, please report this error message to the developers.", "Das Freenetstartscript war nicht in der Lage die installid.dat ID Datei zu finden.`n`n Vergewissern Sie sich, dass Sie das Freenetstartscript aus dem 'bin' Verzeichnis von Freenetaufrufen. `nWenn Sie dies bereits gemacht haben bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
+	Trans_Add("Freenet start script was unable to control the Freenet system service as it appears to be stuck.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Das Freenetstartscript war nicht in der Lage Ihren Freenet Systemdienst zu kontrollieren, er scheint fest zu stecken.`n`nBitte installieren Sie Freenet neu.`nFalls das Problem weiterhin besteht, bitte melden Sie diese Fehlermeldung den Entwicklern.")
+	Trans_Add("Freenet start script was unable to find and control the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Das Freenetstartscript war nicht in der Lage den Freenet Systemdienst zu finden und zu kontrollieren. `n`nBitte installieren Sie Freenet neu.`n`nFalls das Problem weiterhin besteht, bitte melden Sie diese Fehlermeldung den Entwicklern.")
+	Trans_Add("Waiting for the Freenet background service to start...", "Wir warten bis der Freenethintergrunddienst gestartet wurde...")
+	Trans_Add("Freenet start script", "Freenetstartscript")
+	Trans_Add("Freenet start script was unable to start the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Das Freenetstartscript war nicht in der Lage den Freenetsystemdienst zu starten.`n`nBitte installieren Sie Freenet neu.`n`n Wenn das Problem weiterhin auftritt bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
+	Trans_Add("The Freenet service has been started!", "Der Freenetdiesnt wurde gestartet")
+	Trans_Add("The Freenet service is already running!", "Der Freenetdienst ist bereits am laufen!")
+	Trans_Add("Freenet start script error", "Fehler im Freenetstartscript")
+
+	; Service stopper
+	Trans_Add("Command line options (only use one):`n/silent - Hide info messages`n/verysilent - Hide info and status messages`n`nReturn codes:`n0 - Success (service stopped)`n1 - Error occurred`n2 - Service was not running (no action)", "Kommandzeilenparameter (nur einen angeben):`n/silent - Keine Infomeldungen:`n/verysilent - Keine Info- oder Statusmeldungen`n`nRückgabewerte:`n0 - Erfolgreich (gestoppt)`n1 - Fehler beim stoppen`n2 - Dienst bereits beendet")
+	Trans_Add("Freenet stop script requires administrator privileges to stop the Freenet service. Please make sure that your user account has administrative access to the system, and the stop script is executed with access to use these privileges.", "Das Freenetstopscript benötigt Administrator Privilegien um den Systemdienst zu starten. Bitte vergewissern Sie sich, dass Ihr Benutzeraccount die nötigen Rechte hat, und dass das Script mit den nötigen Rechten gestartet wurde.")
+	Trans_Add("Freenet stop script was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet stop script from the 'bin' folder of a Freenet installation directory. If you are already doing so, please report this error message to the developers.", "Das Freenetstopscript war nicht in der Lage die installid.dat ID Datei zu finden.`n`n Vergewissern Sie sich, dass Sie das Freenetstopscript aus dem 'bin' Verzeichnis von Freenetaufrufen.`n`nWenn Sie dies bereits gemacht haben bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
+	Trans_Add("Freenet stop script was unable to control the Freenet system service as it appears to be stuck.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Das Freenetstopscript war nicht in der Lage Ihren Freenet Systemdienst zu kontrollieren, er scheint fest zu stecken.`n`nBitte installieren Sie Freenet neu.`nFalls das Problem weiterhin besteht, bitte melden Sie diese Fehlermeldung den Entwicklern.")
+	Trans_Add("Freenet stop script was unable to find and control the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Das Freenetstopscript war nicht in der Lage den Freenet Systemdienst zu finden und zu kontrollieren. `n`nBitte installieren Sie Freenet neu.`n`nFalls das Problem weiterhin besteht, bitte melden Sie diese Fehlermeldung den Entwicklern.")
+	Trans_Add("Waiting for the Freenet background service to stop...", "Wir warten bis der Freenethintergrunddienst gestopppt wurde...")
+	Trans_Add("Freenet stop script", "Freenetstopscript")
+	Trans_Add("The Freenet service has been stopped!", "Der Freenetdienst wurde gestoppt!")
+	Trans_Add("The Freenet service is already stopped!", "Der Freenetdienst wurde bereits gestoppt!")
+	Trans_Add("Freenet stop script was unable to stop the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Das Freenetstopscript war nicht in der Lage den Freenetsystemdienst zu stoppen.`n`nBitte installieren Sie Freenet neu.`n`n Wenn das Problem weiterhin auftritt bitten wir Sie diese Fehlermeldung den Entwicklern zu melden.")
+	Trans_Add("Freenet stop script error", "Fehler im Freenetstopscript")
 }
 
