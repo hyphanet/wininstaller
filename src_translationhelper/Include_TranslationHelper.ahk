@@ -12,6 +12,7 @@
 #Include ..\src_translationhelper\Include_Lang_it.inc								; Include Italian (it) translation
 #Include ..\src_translationhelper\Include_Lang_da.inc								; Include Danish (da) translation
 #Include ..\src_translationhelper\Include_Lang_fi.inc								; Include Finnish (fi) translation
+#Include ..\src_translationhelper\Include_Lang_es.inc								; Include Spanish (es) translation
 
 InitTranslations()
 {
@@ -26,6 +27,7 @@ InitTranslations()
 	AddLanguage("Italiano","LoadLanguage_it","0410+0810")							; Make default for all variations of Italian
 	AddLanguage("Dansk","LoadLanguage_da","0406")
 	AddLanguage("suomi","LoadLanguage_fi","040b")
+	AddLanguage("Español","LoadLanguage_es","040a+080a+0c0a+0c0a+140a+180a+1c0a+200a+240a+280a+2c0a+300a+380a+3c0a+400a+480a+4c0a+500a")
 
 	LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
 }
