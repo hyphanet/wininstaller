@@ -1,5 +1,5 @@
 ;
-; Translation file - Italian (it) - by Luke771 (apophis / www.apophis.ch)
+; Translation file - Italian (it) - by Luke771 (luke771 that-a-thingy gmail that-dot-thingy com / www.apophis.ch / FAFS freesite)
 ;
 
 LoadLanguage_it()
@@ -33,18 +33,18 @@ LoadLanguage_it()
 	Trans_Add(" or later has been installed.", "o posteriore sarà stata installata")
 
 	; Installer - Old installation detected
-;	Trans_Add("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:", "Il Programma di Installazione di Freenet ha rilevato una copia di Freenet installata con un programma di installazione obsoleto e non più supportato. Per continuare è necessario rimuovere le copia di Freenet attualmente installata, usando lo script di disinstallazione generato a suo tempo")
+	Trans_Add("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:", "Il Programma di Installazione di Freenet ha rilevato l'esistenza  di una precedente installazione di Freenet creata da un programma di installazione obsoleto e non più supportato. Si Prega di rimuovere l'attuale installazione prima di continuare")
 	Trans_Add("&Uninstall", "Rim&uovi")
 	Trans_Add("The installation will continue once the old installation has been removed.", "L'installazione continuerà dopo che la vecchia copia di Freenet sarà stata rimossa")
 
 	; Installer - Main GUI - Header
-;	Trans_Add("Please check the following default settings before continuing with the installation of Freenet.", "Si prega di controllare le seguenti impostazioni di default perima di continuare con l'installazione di Freenet")
+	Trans_Add("Please check the following default settings before continuing with the installation of Freenet.", "Si prega di controllare le seguenti impostazioni di default prima di continuare")
 
 	; Installer - Main GUI - Install folder
 	Trans_Add("Installation directory", "Directory installazione")
-;	Trans_Add("Freenet requires at least ", "Freenet necessita di almeno")
-;	Trans_Add(" MB free disk space, but will not install with less than ", "MB di spazio disponibile su disco, ma non può essere installato con meno di")
-;	Trans_Add(" MB free. The amount of space reserved can be changed after installation.", "MB a disposizione. Lo spazio su disco riservato a Freenet può essere cambiato dopo l'installazione")
+	Trans_Add("Freenet requires at least ", "Freenet necessita di ")
+	Trans_Add(" MB free disk space, but will not install with less than ", " MB liberi su disco, Minimo necessario per installare ")
+	Trans_Add(" MB free. The amount of space reserved can be changed after installation.", " MB a disposizione. Questa impostazione può essere cambiata dopo l'installazione")
 	Trans_Add("&Browse", "Cam&bia")
 	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "Se il percorso non contiene 'Freenet', una nuova cartella verrà creata automaticamente")
 	Trans_Add("De&fault", "Prede&finita")
