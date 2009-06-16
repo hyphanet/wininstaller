@@ -103,7 +103,7 @@ Else
 ;
 ; Allright. No way back!
 ;
-Progress, %_ProgressFormat% R0-6, ..., , % Trans("Freenet uninstaller")					; "R0-6" defines number of "ticks" in the progress bar. Should match the numbers below.
+Progress, %_ProgressFormat% R0-7, ..., , % Trans("Freenet uninstaller")					; "R0-6" defines number of "ticks" in the progress bar. Should match the numbers below.
 
 ;
 ; Shut down node
@@ -150,6 +150,17 @@ Loop
 		}
 	}
 }
+
+Progress, 1
+
+;
+; Shut down tray managers
+;
+Progress, , % Trans("Shutting down tray managers...")
+
+FileAppend, Die, %_InstallDir%\tray_die.dat	; Send a "die" signal to any tray managers hooked to this installation
+Sleep, 10000					; Should be at least as long as the update interval in any tray manager that might be running
+FileDelete, tray_die.dat
 
 Progress, 1
 

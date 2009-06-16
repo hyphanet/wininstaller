@@ -52,6 +52,7 @@ del compiler\AutoHotkeySC.bin
 move /Y compiler\AutoHotkeySC_Normal.bin compiler\AutoHotkeySC.bin
 
 compiler\Ahk2Exe.exe /in "src_freenethelpers\FreenetLauncher.ahk" /out "src_freenetinstaller\files_install\freenetlauncher.exe"
+compiler\Ahk2Exe.exe /in "src_freenethelpers\FreenetTray.ahk" /out "src_freenetinstaller\files_install\bin\freenettray.exe"
 
 del compiler\AutoHotkeySC.bin
 
@@ -80,6 +81,7 @@ del compiler\ResHack_Log_VistaElevated.txt
 del src_freenetinstaller\files_install\freenet.jar
 del src_freenetinstaller\files_install\freenet-ext.jar
 del src_freenetinstaller\files_install\freenetlauncher.exe
+del src_freenetinstaller\files_install\bin\freenettray.exe
 del src_freenetinstaller\files_install\bin\start.exe
 del src_freenetinstaller\files_install\bin\stop.exe
 del src_freenetinstaller\files_install\bin\freenetuninstaller.exe

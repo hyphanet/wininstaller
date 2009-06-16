@@ -34,8 +34,9 @@ _RequiredFreeSpace := _UsedFreeSpace+512				; In MB, how much free space do we r
 _InternalPathLength := 75						; Length of longest path within the Freenet installation. Installation will refuse to continue if install path + this number exceeds 255 (FAT32 and NTFS limit)
 
 _DefaultInstallDir = %A_ProgramFiles%\Freenet				; Default installation directory
+_cAutoStartTrayManager := 1						; Automatically start the tray manager on Windows startup by default?
 _cInstallStartMenuShortcuts := 1					; Install start menu shortcut(s) by default?
-_cInstallDesktopShortcuts := 1						; Install desktop shorctu(s) by default?
+_cInstallDesktopShortcuts := 0						; Install desktop shorctu(s) by default?
 _cBrowseAfterInstall := 1						; Browse Freenet after installation by default?
 
 ;
@@ -227,12 +228,13 @@ Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, % Trans("Free
 ;
 ; Groupbox: Additional settings
 ;
-_GBHeight := CalculateGroupBoxHeight(0,0,3,0)
+_GBHeight := CalculateGroupBoxHeight(0,0,4,0)
 Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Additional settings")
 
-Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts (Freenet, Start Freenet, Stop Freenet)")
-Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut (Freenet)")
-Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Launch Freenet &after the installation")
+Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cAutoStartTrayManager Checked%_cAutoStartTrayManager%, % Trans("Start Freenet Tray Manager on Windows startup (Recommended)")
+Gui, Add, Checkbox, v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts (Recommended)")
+Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut (Optional)")
+Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Launch Freenet &after the installation (Optional)")
 
 ;
 ; Status bar and main buttons
@@ -381,10 +383,15 @@ GuiControl, , _cProgressBar, +1
 ;
 ; Install shortcuts
 ;
+If (_cAutoStartTrayManager)
+{
+	FileCreateShortcut, %_InstallDir%\bin\freenettray.exe, %A_StartupCommon%\Freenet Tray%_InstallSuffix%.lnk, , , % Trans("Opens Freenet Tray Manager in the notification area"), %_InstallDir%\Freenet.ico
+}
 If (_cInstallStartMenuShortcuts)
 {
 	FileCreateDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%
 	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_ProgramsCommon%\Freenet%_InstallSuffix%\Freenet.lnk, , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\bin\freenettray.exe, %A_ProgramsCommon%\Freenet%_InstallSuffix%\Freenet Tray.lnk, , , % Trans("Opens Freenet Tray Manager in the notification area"), %_InstallDir%\Freenet.ico
 	FileCreateShortcut, %_InstallDir%\bin\start.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Start Freenet") ".lnk", , , % Trans("Starts the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
 	FileCreateShortcut, %_InstallDir%\bin\stop.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Stop Freenet") ".lnk", , , % Trans("Stops the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
 }
@@ -396,8 +403,12 @@ If (_cInstallDesktopShortcuts)
 GuiControl, , _cProgressBar, +1
 
 ;
-; Start the node
+; Start the tray manager and the node
 ;
+If (_cAutoStartTrayManager)
+{
+	Run, %_InstallDir%\bin\freenettray.exe /welcome, , UseErrorLevel
+}
 RunWait, %_InstallDir%\bin\start.exe /verysilent, , UseErrorLevel
 GuiControl, , _cProgressBar, +1
 
@@ -424,4 +435,3 @@ return
 ; Include helpers
 ;
 #Include FreenetInstaller_Include_Helpers.inc								; Include our helper functions. Should be placed at the very end because of labels
-
