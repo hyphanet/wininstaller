@@ -1,5 +1,5 @@
 @echo off
-::
+::TEST
 :: Non-committed requirements:
 ::
 :: - bin\Ahk2Exe.exe (AutoHotkey compiler - http://www.autohotkey.com/)
