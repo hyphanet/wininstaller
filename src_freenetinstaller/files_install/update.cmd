@@ -27,7 +27,12 @@ echo - is better for your anonymity.
 echo -----------------------------------------------------------
 echo -----
 
-::CHANGELOG:
+:: TODO:
+:: Rewrite this mess of a script.  It needs to more organized and clean
+:: Update all the Windows binary using this script.
+
+:: CHANGELOG:
+:: 3.2 - Use the .sha1 url to check for updates to freenet-ext.jar.  Saves ~4mb per run.
 :: 3.1 - Fix permissions by fixing invalid cacls arguments
 :: 3.0 - Handle binary start/stop.exe exit conditions and use it to set restart flag.
 :: 2.9 - Check for file permissions
@@ -159,9 +164,9 @@ if not exist freenet-%RELEASE%-latest.jar.url goto mainyes
 ::Compare with current copy
 fc freenet-%RELEASE%-latest.jar.url freenet-%RELEASE%-latest.jar.new.url > NUL
 if errorlevel 1 goto mainyes
-echo    - Main jar is current.
 fc freenet-%RELEASE%-latest.jar freenet.jar > NUL
 if errorlevel 1 goto mainyes
+echo    - Main jar is current.
 goto checkext
 
 :mainyes
@@ -171,27 +176,36 @@ echo    - New main jar found!
 set MAINUPDATED=1
 
 :checkext
-echo - Checking ext jar
 ::Check for a new freenet-ext.jar.
-::Unfortunately there is no .url file for it, so we have to download the whole thing.
-:: FIXME can we use the .sha1 file to check for changes?  I think it would work.
-if exist freenet-ext.jar.copy del freenet-ext.jar.copy
-bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/freenet-ext.jar -O freenet-ext.jar.copy
-if not exist freenet-ext.jar.copy goto error3
-FOR %%I IN ("%LOCATION%freenet-ext.jar.copy") DO if %%~zI==0 goto error3
-::Update anyway if doesn't exist...
-if not exist freenet-ext.jar goto extyes
-::Compare with current copy
-fc freenet-ext.jar freenet-ext.jar.copy > NUL
+echo - Checking ext jar
+
+if exist freenet-ext.jar.sha1.new del freenet-ext.jar.sha1.new
+bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/freenet-ext.jar.sha1 -O freenet-ext.jar.sha1.new
+Title Freenet Update Over HTTP Script
+
+if not exist freenet-ext.jar.sha1.new goto error3
+FOR %%I IN ("freenet-ext.jar.sha1.new") DO if %%~zI==0 goto error3
+
+::Do we have something old to compare with? If not, update right away
+if not exist freenet-ext.jar.sha1 goto extyes
+
+fc freenet-ext.jar.sha1 freenet-ext.jar.sha1.new > NUL
 if errorlevel 1 goto extyes
+
 echo    - ext jar is current.
-if exist freenet-ext.jar.copy del freenet-ext.jar.copy
+
 ::Check if we had flagged the main jar as updated and if so we still need to update
 if %MAINUPDATED%==1 goto update1
 goto noupdate
 
 :extyes
 echo    - New ext jar found!
+
+if exist freenet-ext.jar.copy del freenet-ext.jar.copy
+bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/freenet-ext.jar -O freenet-ext.jar.copy
+if not exist freenet-ext.jar.copy goto error3
+FOR %%I IN ("%LOCATION%freenet-ext.jar.copy") DO if %%~zI==0 goto error3
+
 
 ::New version found, check if the node is currently running
 :update1
