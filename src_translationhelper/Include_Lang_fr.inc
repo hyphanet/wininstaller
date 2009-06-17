@@ -33,7 +33,7 @@ LoadLanguage_fr()
 	Trans_Add(" or later has been installed.", " ou ultérieur aura été installé.")
 
 	; Installer - Old installation detected
-;	Trans_Add("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:", "L'Installeur Freenet a détécté une précédente installation de Freenet sur votre système. Votre installation actuelle de Freenet a été installée en utilisant une version plus ancienne et non supportée de l'installeur Freenet. Pour continuer, vous devez tout d'abord désinstaller votre version actuelle de Freenet en utilisant le programme de désinstallation créé précédemment :")
+	Trans_Add("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:", "Votre installation actuelle de Freenet utilise une version plus ancienne et non supportée de l'installeur Freenet. Pour continuer, vous devez tout d'abord désinstaller votre version actuelle de Freenet en utilisant le désinstalleur créé précédemment :")
 	Trans_Add("&Uninstall", "&Désinstaller")
 	Trans_Add("The installation will continue once the old installation has been removed.", "L'installation continuera une fois que l'ancienne installation aura été supprimée.")
 
