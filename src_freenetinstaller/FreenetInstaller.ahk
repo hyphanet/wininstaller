@@ -37,7 +37,7 @@ _DefaultInstallDir = %A_ProgramFiles%\Freenet				; Default installation director
 _cAutoStartTrayManager := 1						; Automatically start the tray manager on Windows startup by default?
 _cInstallStartMenuShortcuts := 1					; Install start menu shortcut(s) by default?
 _cInstallDesktopShortcuts := 0						; Install desktop shorctu(s) by default?
-_cBrowseAfterInstall := 1						; Browse Freenet after installation by default?
+_cBrowseAfterInstall := 0						; Browse Freenet after installation by default?
 
 ;
 ; General init stuff
@@ -252,22 +252,8 @@ Gui, Add, Button, x+%_StandardMargin% ys W%_ButtonWidth% v_cInstallButton gButto
 ; Gui layout finished, do GUI init stuff and return to "idle" state...
 ;
 SetInstallDir("")
-SetTimer, UpdateInstallDirStatusTimer, 5000
+SetTimer, UpdateInstallDirStatusTimer, 10000
 Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer")
-return
-
-;
-; Messing around with the language dropdown list triggers this
-;
-_ListSelectLanguage:
-	Gui, Submit, NoHide										; Read values of controls into their variables
-
-	If (_cLanguageSelector <> _LangNum)
-	{
-		Gui, Destroy
-		LoadLanguage(_cLanguageSelector)
-		SetTimer, GuiStart, -100
-	}
 return
 
 ;
@@ -275,7 +261,7 @@ return
 ;
 ButtonInstall:
 Gui, +OwnDialogs											; Make an eventual messagebox "stick" to the main GUI
-VisualInstallStart(9)											; Freeze GUI, show progress bar, etc... Argument is number of "ticks" in the progress bar. Should match the number of +1's during the rest of the installation
+VisualInstallStart(8)											; Freeze GUI, show progress bar, etc... Argument is number of "ticks" in the progress bar. Should match the number of +1's during the rest of the installation
 FindInstallSuffix()											; Figure out if we already have existing installations we need to take into consideration, and if so, find a proper install suffix
 
 ;
@@ -318,7 +304,7 @@ GuiControl, , _cProgressBar, +1
 GuiControl, , _cProgressBar, +1
 
 ;
-; Write installation specific stuff to various files and the Windows registry
+; Patch files, file permissions and the registry
 ;
 FileAppend, %_InstallSuffix%,											%_InstallDir%\installid.dat	; Write id file in case third party software needs it. Will be empty if we are not using a suffix.
 
@@ -337,7 +323,23 @@ FileAppend, # Display name of the service`n,									%_InstallDir%\wrapper.conf
 FileAppend, wrapper.ntservice.displayname=Freenet background service%_InstallSuffix%`n,				%_InstallDir%\wrapper.conf
 FileAppend, `n,													%_InstallDir%\wrapper.conf
 FileAppend, # User account to run the serve runder`n,								%_InstallDir%\wrapper.conf
-FileAppend, wrapper.ntservice.account=.\Freenet%_InstallSuffix%`n,						%_InstallDir%\wrapper.conf
+If (A_OSVersion = "WIN_2000")
+{
+	FileAppend, wrapper.ntservice.account=`n,								%_InstallDir%\wrapper.conf	; Blank = LocalSystem. Windows 2000 lacks the LocalService and NetworkService accounts.
+}
+Else
+{
+	FileAppend, wrapper.ntservice.account=NT AUTHORITY\LocalService`n,					%_InstallDir%\wrapper.conf
+
+	If (A_OSVersion = "WIN_VISTA")
+	{
+		RunWait, %comspec% /c "icacls "%_InstallDir%" /grant LocalService:(OI)(CI)F /T /C", , Hide UseErrorLevel
+	}
+	Else
+	{
+		RunWait, %comspec% /c "cacls "%_InstallDir%" /E /T /C /G LocalService:F", , Hide UseErrorLevel
+	}
+}
 
 RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayIcon, %_InstallDir%\freenet.ico
 RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayName, Freenet%_InstallSuffix%
@@ -346,38 +348,9 @@ RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\
 GuiControl, , _cProgressBar, +1
 
 ;
-; Create our custom user
-;
-_CustomUserPassword := GenerateRandomNumberString(12)							; According to the old installer, 12 chars is max. to avoid warnings about backwards-compatability. The password itself is apparently also needed to run services under a custom account.
-RunWait, %comspec% /c "net user Freenet%_InstallSuffix% %_CustomUserPassword% /add /comment:"Freenet service user. Please do not delete!" /expires:never /passwordchg:no /fullname:"Freenet%_InstallSuffix% user"", , Hide UseErrorLevel
-
-If (A_OSVersion = "WIN_VISTA")
-{
-	RunWait, %comspec% /c "icacls "%_InstallDir%" /grant Freenet%_InstallSuffix%:(OI)(CI)F /T /C", , Hide UseErrorLevel
-}
-Else
-{
-	RunWait, %comspec% /c "cacls "%_InstallDir%" /E /T /C /G Freenet%_InstallSuffix%:F", , Hide UseErrorLevel
-}
-
-RegWrite, REG_DWORD, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList, Freenet%_InstallSuffix%, 0
-
-FileInstall, files_bundle\netuser.exe, %A_WorkingDir%\netuser.exe					; Extract 3rd party "netuser" tool. Taken from old installer.
-RunWait, %A_WorkingDir%\netuser.exe Freenet%_InstallSuffix% /pwnexp:y, , Hide UseErrorLevel		; Set "password never expires" flag on our custom user
-
-FileInstall, files_bundle\Ntrights.exe, %A_WorkingDir%\Ntrights.exe					; Extract 3rd party "Ntrights" tool. Taken from old installer. (Apparently belongs to the resource kit and is OK to redistribute)
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% +r SeServiceLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% -r SeDenyServiceLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% +r SeIncreaseBasePriorityPrivilege, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% +r SeDenyNetworkLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% +r SeDenyInteractiveLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% -r SeShutdownPrivilege, , Hide UseErrorLevel
-GuiControl, , _cProgressBar, +1
-
-;
 ; Install service
 ;
-RunWait, %_InstallDir%\bin\wrapper-windows-x86-32.exe -i ../wrapper.conf wrapper.ntservice.password=%_CustomUserPassword%, , Hide UseErrorLevel
+RunWait, %_InstallDir%\bin\wrapper-windows-x86-32.exe -i ../wrapper.conf, , Hide UseErrorLevel
 GuiControl, , _cProgressBar, +1
 
 ;
@@ -435,4 +408,3 @@ return
 ; Include helpers
 ;
 #Include FreenetInstaller_Include_Helpers.inc								; Include our helper functions. Should be placed at the very end because of labels
-

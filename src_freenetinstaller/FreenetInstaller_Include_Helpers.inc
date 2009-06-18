@@ -61,6 +61,17 @@ EnableCloseButton(hWnd = "")
 	DllCall("DrawMenuBar","Int",hWnd)
 }
 
+_ListSelectLanguage:
+	Gui, Submit, NoHide										; Read values of controls into their variables
+
+	If (_cLanguageSelector <> _LangNum)
+	{
+		Gui, Destroy
+		LoadLanguage(_cLanguageSelector)
+		SetTimer, GuiStart, -100
+	}
+return
+
 GuiClose:												; Triggered if user closes GUI via "the red cross"/ALT+F4/...
 ButtonExit:
 	Exit()
@@ -190,12 +201,6 @@ SetInstallDir(_NewInstallDir)
 	}
 
 	_InstallDir := _NewInstallDir
-	UpdateInstallDirStatus()
-}
-
-UpdateInstallDirStatus()
-{
-	global
 
 	If (StrLen(_InstallDir) > (_GuiWidth3 / 6))
 	{
@@ -206,6 +211,13 @@ UpdateInstallDirStatus()
 	{
 		GuiControl, Text, _cInstallDirText, %_InstallDir%
 	}
+
+	UpdateInstallDirStatus()
+}
+
+UpdateInstallDirStatus()
+{
+	global
 
 	If (_InstallDir = _DefaultInstallDir)
 	{

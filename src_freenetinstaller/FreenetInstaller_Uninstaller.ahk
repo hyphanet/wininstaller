@@ -103,7 +103,7 @@ Else
 ;
 ; Allright. No way back!
 ;
-Progress, %_ProgressFormat% R0-7, ..., , % Trans("Freenet uninstaller")					; "R0-6" defines number of "ticks" in the progress bar. Should match the numbers below.
+Progress, %_ProgressFormat% R0-5, ..., , % Trans("Freenet uninstaller")					; "R0-6" defines number of "ticks" in the progress bar. Should match the numbers below.
 
 ;
 ; Shut down node
@@ -162,7 +162,7 @@ FileAppend, Die, %_InstallDir%\tray_die.dat	; Send a "die" signal to any tray ma
 Sleep, 10000					; Should be at least as long as the update interval in any tray manager that might be running
 FileDelete, tray_die.dat
 
-Progress, 1
+Progress, 2
 
 ;
 ; Remove service
@@ -170,20 +170,6 @@ Progress, 1
 Progress, , % Trans("Removing system service...")
 
 RunWait, %_InstallDir%\bin\wrapper-windows-x86-32.exe -r ../wrapper.conf, , Hide UseErrorLevel
-
-Progress, 2
-
-;
-; Remove special account rights for our custom user
-;
-Progress, , % Trans("Removing custom user account rights...")
-
-FileInstall, files_bundle\Ntrights.exe, %A_WorkingDir%\Ntrights.exe					; Extract 3rd party "Ntrights" tool. Taken from old installer. (Apparently belongs to the resource kit and is OK to redistribute)
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% -r SeServiceLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% -r SeIncreaseBasePriorityPrivilege, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% -r SeDenyNetworkLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% -r SeDenyInteractiveLogonRight, , Hide UseErrorLevel
-FileDelete, %A_WorkingDir%\Ntrights.exe
 
 Progress, 3
 
@@ -210,6 +196,7 @@ If (ErrorLevel)
 }
 
 ; We don't really care if deletion of shortcuts fail, as the user probably just deleted / renamed / moved them around.
+FileDelete, %A_StartupCommon%\Freenet Tray%_InstallSuffix%.lnk
 FileRemoveDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%, 1
 FileDelete, %A_DesktopCommon%\Freenet%_InstallSuffix%.lnk
 
@@ -220,23 +207,9 @@ Progress, 4
 ;
 Progress, , % Trans("Removing registry modifications...")
 
-RegDelete, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList, Freenet%_InstallSuffix%
 RegDelete, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%
 
 Progress, 5
-
-;
-; Remove our custom user
-;
-Progress, , % Trans("Removing custom user...")
-
-FileInstall, files_bundle\RemProf.exe, %A_WorkingDir%\RemProf.exe					; Extract 3rd party "RemProf" tool from http://www.ctrl-alt-del.com.au/CAD_TSUtils.htm. Freeware, but not open-source :(. Removes the profile folder and its registry entry of specified user
-RunWait, %A_WorkingDir%\RemProf.exe Freenet%_InstallSuffix%, , Hide UseErrorLevel
-FileDelete, %A_WorkingDir%\RemProf.exe
-
-RunWait, %comspec% /c "net user Freenet%_InstallSuffix% /delete", , Hide UseErrorLevel
-
-Progress, 6
 
 ;
 ; Done!
@@ -335,4 +308,3 @@ Exit()
 
 	ExitApp												; Bye Bye
 }
-
