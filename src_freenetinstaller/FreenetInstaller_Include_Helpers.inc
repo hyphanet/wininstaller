@@ -445,18 +445,3 @@ InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4)
 	}
 }
 
-GenerateRandomNumberString(_RandomNumberLength)
-{
-	global
-
-	_RandomNumberString =											; Empty variable
-
-	Loop, %_RandomNumberLength%
-	{
-		Random, _RandomNumber, 0, 9
-		
-		_RandomNumberString = %_RandomNumberString%%_RandomNumber%
-	}
-
-	return _RandomNumberString
-}
