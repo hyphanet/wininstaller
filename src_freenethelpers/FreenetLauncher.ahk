@@ -19,6 +19,8 @@ StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Us
 
 SetWorkingDir, %A_ScriptDir%					; Look for other files relative to our own location
 
+_SecureSuffix = ?incognito=true					; fproxy address suffix for incognito-enabled browsers. Will make fproxy hide warning messages about it.
+
 ;
 ; General init stuff
 ;
@@ -75,7 +77,7 @@ Else
 }
 
 ;
-; Try browser: Google Chrome (Tested versions: 1.0.154)
+; Try browser: Google Chrome (incognito-enabled) (Tested versions: 1.0.154)
 ;
 RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
 
@@ -85,13 +87,27 @@ If (!ErrorLevel && _ChromeInstallDir <> "")
 
 	IfExist, %_ChromePath%
 	{
-		Run, %_ChromePath% "%_URL%" --incognito, , UseErrorLevel
+		Run, %_ChromePath% --incognito "%_URL%%_SecureSuffix%", , UseErrorLevel	; All versions of Chrome should support incognito mode
 		ExitApp, 0
 	}
 }
 
 ;
-; Try browser: Mozilla FireFox (Tested versions: 3.0)
+; Try browser: Internet Explorer (only incognito mode (version 8.0+)) (Tested versions: 8.0)
+;
+IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
+{
+	RegRead, _IEVersion, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Internet Explorer, Version
+	
+	If (_IEVersion >= 8.0 && FileExist(A_ProgramFiles "\Internet Explorer\iexplore.exe"))
+	{
+		Run, %A_ProgramFiles%\Internet Explorer\iexplore.exe -private "%_URL%%_SecureSuffix%", , UseErrorLevel
+		ExitApp, 0
+	}
+}
+
+;
+; Try browser: Mozilla FireFox (Tested versions: 3.0, 3.5)
 ;
 RegRead, _FFVersion, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox, CurrentVersion
 
@@ -123,18 +139,9 @@ If (!ErrorLevel && _OperaPath <> "")
 }
 
 ;
-; Try browser: Internet Explorer (Tested versions: 6.0, 7.0)
+; No prioritized browser found. Fall back to system URL call.
 ;
-IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
-{
-	Run, %A_ProgramFiles%\Internet Explorer\iexplore.exe "%_URL%", , UseErrorLevel
-	ExitApp, 0
-}
-
-;
-; No usable browser found
-;
-PopupErrorMessage(Trans("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to: ") _URL "`n`n" Trans("Freenet Launcher supports the following browsers:") "`n- Google Chrome`n- Mozilla FireFox`n- Opera`n- Internet Explorer (" Trans("not recommended") ")")
+Run, %_URL%, , UseErrorLevel
 ExitApp, 1
 
 ;
