@@ -17,7 +17,7 @@
 SendMode, Input								; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off							; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
 
-_LastState := 0								; Variable to keep track of the last known state of the service
+_LastState := -1							; Variable to keep track of the last known state of the service. -1 = Unknown, 0 = Disabled, 1 = Enabled
 
 ;
 ; Customizable settings
@@ -182,7 +182,7 @@ DoStatusUpdate()
 
 	_CurrentState := Service_State(_ServiceName)
 
-	If (_LastState == 0 && _CurrentState == 4)
+	If (_LastState <> 1 && _CurrentState == 4)
 	{
 		_LastState := 1
 
@@ -194,7 +194,7 @@ DoStatusUpdate()
 
 		Menu, TRAY, Default, % Trans("Browse Freenet")
 	}
-	Else If (_LastState == 1 && _CurrentState <> 4)
+	Else If (_LastState <> 0 && _CurrentState <> 4)
 	{
 		_LastState := 0
 
