@@ -121,19 +121,19 @@ Loop
 		PopupErrorMessage(Trans("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers."))
 		Exit()
 	}
-	Else If (_ServiceState == -1 || _ServiceState == -4)
+	Else If (_ServiceState == -1)
 	{
-		PopupErrorMessage(Trans("The uninstaller was unable to find and control the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers."))
-		Exit()
+		PopupErrorMessage(Trans("The uninstaller was unable to control the Freenet system service.`n`nThe uninstaller will try to continue anyway, but you might have to manually stop the service if the uninstaller is unable to delete files in use by it."))
+		Break
 	}
 	Else If (_ServiceState == 2 || _ServiceState == 3 || _ServiceState == 5 || _ServiceState == 6)
 	{
 		Sleep, 1000
 		Continue
 	}
-	Else If (_ServiceState == 1)
+	Else If (_ServiceState == 1 || _ServiceState == -4)
 	{
-		Break						; Service is not running. Continue!
+		Break						; Service is not running, or doesn't exist. Continue!
 	}
 	Else
 	{
