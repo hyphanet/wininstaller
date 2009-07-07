@@ -112,7 +112,7 @@ LoadLanguage_xx()
 
 	; Uninstaller - Service problems
 	Trans_Add("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "")
-	Trans_Add("The uninstaller was unable to find and control the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "")
+	Trans_Add("The uninstaller was unable to control the Freenet system service.`n`nThe uninstaller will try to continue anyway, but you might have to manually stop the service if the uninstaller is unable to delete files in use by it.", "")
 	Trans_Add("The uninstaller was unable to stop the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "")
 
 	; Uninstaller - Files undeletable

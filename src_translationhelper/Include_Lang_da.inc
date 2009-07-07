@@ -96,7 +96,7 @@ LoadLanguage_da()
 
 	; Uninstaller - Service problems
 	Trans_Add("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Afinstallationsprogrammet kunne ikke styre Freenet-systemtjenesten da den tilsyneladende har sat sig fast.`n`nPrøv igen.`n`nHvis problemet fortsætter så indrapporter venligst denne fejlbesked til udviklerne.")
-	Trans_Add("The uninstaller was unable to find and control the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Afinstallationsprogrammet kunne ikke finde og styre Freenet-systemtjenesten.`n`nPrøv igen.`n`nHvis problemet fortsætter så indrapporter venligst denne fejlbesked til udviklerne.")
+	Trans_Add("The uninstaller was unable to control the Freenet system service.`n`nThe uninstaller will try to continue anyway, but you might have to manually stop the service if the uninstaller is unable to delete files in use by it.", "Afinstallationsprogrammet kunne ikke styre Freenet-systemtjenesten.`n`nAfinstallationsprogrammet vil forsøge at fortsætte alligevel, men du bliver måske nødt til manualt at stoppe systemtjenesten hvis afinstallationsprogrammet ikke kan fjerne filer der er i brug af den.")
 	Trans_Add("The uninstaller was unable to stop the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "Afinstallationsprogrammet kunne ikke stoppe Freenet-systemtjenesten.`n`nPrøv igen.`n`nHvis problemet fortsætter så indrapporter venligst denne fejlbesked til udviklerne.")
 
 	; Uninstaller - Files undeletable
