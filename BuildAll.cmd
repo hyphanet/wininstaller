@@ -79,9 +79,13 @@ del compiler\ResHack_Log_Normal.txt
 del compiler\ResHack_Log_VistaElevated.txt
 del src_freenetinstaller\files_install\freenet.jar
 del src_freenetinstaller\files_install\freenet-ext.jar
+copy src_freenetinstaller\files_install\freenetlauncher.exe bin\
 del src_freenetinstaller\files_install\freenetlauncher.exe
+copy src_freenetinstaller\files_install\bin\start.exe bin\
 del src_freenetinstaller\files_install\bin\start.exe
+copy src_freenetinstaller\files_install\bin\stop.exe bin\
 del src_freenetinstaller\files_install\bin\stop.exe
+copy src_freenetinstaller\files_install\bin\freenetuninstaller.exe bin\
 del src_freenetinstaller\files_install\bin\freenetuninstaller.exe
 del src_freenetinstaller\files_install\plugins\JSTUN.jar
 del src_freenetinstaller\files_install\plugins\KeyExplorer.jar
