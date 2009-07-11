@@ -196,7 +196,7 @@ if errorlevel 1 goto extyes
 echo    - ext jar is current.
 
 ::Check if we had flagged the main jar as updated and if so we still need to update
-if %MAINJARUPDATED%==1 goto update1
+if %MAINJARUPDATED%==1 goto updatebegin
 goto noupdate
 
 :extyes
@@ -209,7 +209,7 @@ FOR %%I IN ("%LOCATION%freenet-ext.jar.copy") DO if %%~zI==0 goto error3
 
 
 ::New version found, check if the node is currently running
-:update1
+:updatebegin
 echo -----
 echo - New Freenet version found!  Installing now...
 echo -----
