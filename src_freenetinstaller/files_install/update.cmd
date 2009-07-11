@@ -53,7 +53,7 @@ echo -----
 set MAGICSTRING=INDO
 set CAFILE=startssl.pem
 set RESTART=0
-set MAINUPDATED=0
+set MAINJARUPDATED=0
 set PATH=%SYSTEMROOT%\System32\;%PATH%
 set RELEASE=stable
 if "%1"=="testing" set RELEASE=testing
@@ -173,7 +173,7 @@ goto checkext
 :: Handle loop if there is no old URL to compare to.
 if not exist freenet-%RELEASE%-latest.jar.url copy freenet-%RELEASE%-latest.jar.new.url freenet-%RELEASE%-latest.jar.url > NUL
 echo    - New main jar found!
-set MAINUPDATED=1
+set MAINJARUPDATED=1
 
 :checkext
 ::Check for a new freenet-ext.jar.
@@ -195,7 +195,7 @@ if errorlevel 1 goto extyes
 echo    - ext jar is current.
 
 ::Check if we had flagged the main jar as updated and if so we still need to update
-if %MAINUPDATED%==1 goto update1
+if %MAINJARUPDATED%==1 goto update1
 goto noupdate
 
 :extyes
