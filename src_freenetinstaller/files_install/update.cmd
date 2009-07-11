@@ -151,6 +151,7 @@ if not exist lib mkdir lib
 if not exist lib\sha1test.jar bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10  http://downloads.freenetproject.org/alpha/installer/sha1test.jar -O lib\sha1test.jar
 if not errorlevel 0 goto error3
 
+::Check for a new main jar
 if exist freenet-%RELEASE%-latest.jar.new.url del freenet-%RELEASE%-latest.jar.new.url
 bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/freenet-%RELEASE%-latest.jar.url -O freenet-%RELEASE%-latest.jar.new.url
 Title Freenet Update Over HTTP Script
@@ -219,17 +220,17 @@ if not exist bin\stop.exe goto oldstopper
 call bin\stop.exe /silent
 if errorlevel 0 set RESTART=1
 if errorlevel 1 goto unknownerror
-goto update2
+goto begindownloads
 
 :oldstopper
 net start | find "Freenet 0.7 darknet" > NUL
-if errorlevel 1 goto update2 > NUL
+if errorlevel 1 goto begindownloads > NUL
 set RESTART=1
 ::Tell the user not to abort script, it gets very messy.
 echo - Shutting down Freenet...   (This may take a moment, please don't abort)
 call bin\stop.cmd > NUL
 net start | find "Freenet 0.7 darknet" > NUL
-if errorlevel 1 goto update2
+if errorlevel 1 goto begindownloads
 :: Uh oh, this may take a few tries.  Better tell the user not to panic.
 echo -
 echo - If you see an error message about:
@@ -240,13 +241,13 @@ echo -
 ::Keep trying until service is stopped for sure.
 :safetycheck
 net start | find "Freenet 0.7 darknet" > NUL
-if errorlevel 1 goto update2
+if errorlevel 1 goto begindownloads
 call bin\stop.cmd > NUL
 goto safetycheck
 
 ::Ok Freenet is stopped, it is safe to copy files.
-:update2
-echo - Downloading new version and updating local installation...
+:begindownloads
+echo - Downloading new files and updating local installation...
 
 ::Backup last version of Freenet-%RELEASE%-latest.jar file, we will need it if update fails.
 if exist freenet-%RELEASE%-latest.jar.bak del freenet-%RELEASE%-latest.jar.bak
