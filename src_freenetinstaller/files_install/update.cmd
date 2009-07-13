@@ -56,6 +56,11 @@ set CAFILE=startssl.pem
 set RESTART=0
 set MAINJARUPDATED=0
 set EXTJARUPDATED=0
+set WRAPPEREXEUPDATED=0
+set WRAPPERDLLUPDATED=0
+set STARTEXEUPDATED=0
+set STOPEXEUPDATED=0
+set TRAYUTILITYUPDATED=0
 set PATH=%SYSTEMROOT%\System32\;%PATH%
 set RELEASE=stable
 if "%1"=="testing" set RELEASE=testing
@@ -198,7 +203,6 @@ echo    - New main jar found!
 set MAINJARUPDATED=1
 :maincheckend
 
-:checkext
 ::Check for a new freenet-ext.jar.
 echo - Checking ext jar
 if exist freenet-ext.jar.sha1.new del freenet-ext.jar.sha1.new
@@ -225,9 +229,45 @@ echo    - New ext jar found!
 set EXTJARUPDATED=1
 :extcheckend
 
+
+::Check wrapper .exe
+if not exist ..\bin\wrapper-windows-x86-32.exe goto wrapperexecheckend
+:wrapperexeyes
+:wrapperexecheckend
+
+
+::Check wrapper .dll
+if not exist ..\lib\wrapper-windows-x86-32.dll goto wrapperdllcheckend
+:wrapperdllyes
+:wrapperdllcheckend
+
+
+::Check start.exe if present
+if not exist ..\bin\start.exe goto startexecheckend
+:startexeyes
+:startexecheckend
+
+
+::Check stop.exe if present
+if not exist ..\bin\stop.exe goto stopexecheckend
+:stopexeyes
+:stopexecheckend
+
+
+::Check tray utility if present
+::if not exist ??
+:trayyes
+:traycheckend
+
+
 ::Check if we have flagged any of the files as updated
 if %MAINJARUPDATED%==1 goto updatebegin
 if %EXTJARUPDATED%==1 goto updatebegin
+if %WRAPPEREXEUPDATED%==1 goto updatebegin
+if %WRAPPERDLLUPDATED%==1 goto updatebegin
+if %STARTEXEUPDATED%==1 goto updatebegin
+if %STOPEXEUPDATED%==1 goto updatebegin
+if %TRAYUTILITYUPDATED%==1 goto updatebegin
 goto noupdate
 
 ::New version found, check if the node is currently running
