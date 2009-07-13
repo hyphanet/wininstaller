@@ -28,10 +28,11 @@ echo -----------------------------------------------------------
 echo -----
 
 :: TODO:
-:: Rewrite this mess of a script.  It needs to more organized and clean
-:: Update all the Windows binary using this script.
+:: Update all the Windows binaries using this script.
+:: Fixme: what to do with changing away from custom freenet user account?
 
 :: CHANGELOG:
+:: 3.3 - Refactored script to be more organized and prepare for updating Windows binaries
 :: 3.2 - Use the .sha1 url to check for updates to freenet-ext.jar.  Saves ~4mb per run.
 :: 3.1 - Fix permissions by fixing invalid cacls arguments
 :: 3.0 - Handle binary start/stop.exe exit conditions and use it to set restart flag.
@@ -54,6 +55,7 @@ set MAGICSTRING=INDO
 set CAFILE=startssl.pem
 set RESTART=0
 set MAINJARUPDATED=0
+set EXTJARUPDATED=0
 set PATH=%SYSTEMROOT%\System32\;%PATH%
 set RELEASE=stable
 if "%1"=="testing" set RELEASE=testing
@@ -61,7 +63,7 @@ if "%1"=="-testing" set RELEASE=testing
 if "%1"=="/testing" set RELEASE=testing
 
 echo - Release selected is: %RELEASE%
-echo -
+echo -----
 
 ::Check if we are on Vista/Seven if so we need to use icacls instead of cacls
 set VISTA=0
@@ -77,7 +79,7 @@ IF %ERRORLEVEL% EQU 0 set VISTA=1
 
 ::Go to our location
 for %%I in (%0) do set LOCATION=%%~dpI
-cd /D %LOCATION%
+cd /D "%LOCATION%"
 
 ::Check if its valid, or at least looks like it
 if not exist freenet.ini goto error2
@@ -111,22 +113,6 @@ if not exist update.new.cmd goto error1
 find "FREENET W%MAGICSTRING%WS UPDATE SCRIPT" update.new.cmd > NUL
 if errorlevel 1 goto error1
 
-find "freenet.jar" wrapper.conf > NUL
-if errorlevel 1 goto error5
-
-find "freenet.jar.new" wrapper.conf > NUL
-if not errorlevel 1 goto error5
-
-:: fix #1527
-find "freenet-ext.jar.new" wrapper.conf > NUL
-if errorlevel 1 goto skipit
-copy freenet-ext.jar.new freenet-ext.jar > NUL
-:: Try to delete the file.  If the node is running, it will likely fail.
-if exist freenet-ext.jar.new del /F freenet-ext.jar.new > NUL
-:: Fix the wrapper.conf
-goto error5
-:skipit
-
 ::Check if updater has been updated
 fc update.cmd update.new.cmd > NUL
 if not errorlevel 1 goto updaterok
@@ -142,17 +128,41 @@ goto veryend
 echo    - Update script is current.
 echo -----
 
+find "freenet.jar" wrapper.conf > NUL
+if errorlevel 1 goto error5
+
+find "freenet.jar.new" wrapper.conf > NUL
+if not errorlevel 1 goto error5
+
+:: fix #1527
+find "freenet-ext.jar.new" wrapper.conf > NUL
+if errorlevel 1 goto skipit
+if not exist freenet-ext.jar.new goto skipit
+if exist freenet-ext.jar del /F freenet-ext.jar > NUL
+copy freenet-ext.jar.new freenet-ext.jar > NUL
+:: Try to delete the file.  If the node is running, it will likely fail.
+if exist freenet-ext.jar.new del /F freenet-ext.jar.new > NUL
+:: Fix the wrapper.conf
+goto error5
+:skipit
+
+
 echo - Freenet installation found at %LOCATION%
 echo -----
 echo - Checking for Freenet JAR updates...
+echo -----
 
 ::Check for sha1test and download if needed.
 if not exist lib mkdir lib
 if not exist lib\sha1test.jar bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10  http://downloads.freenetproject.org/alpha/installer/sha1test.jar -O lib\sha1test.jar
 if not errorlevel 0 goto error3
 
+if not exist update_temp mkdir update_temp
+
 ::Check for a new main jar
-if exist freenet-%RELEASE%-latest.jar.new.url del freenet-%RELEASE%-latest.jar.new.url
+echo - Checking main jar
+if exist freenet-%RELEASE%-latest.jar.new.url.bak del freenet-%RELEASE%-latest.jar.new.url.bak
+if exist freenet-%RELEASE%-latest.jar.new.url ren freenet-%RELEASE%-latest.jar.new.url freenet-%RELEASE%-latest.jar.new.url.bak
 bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/freenet-%RELEASE%-latest.jar.url -O freenet-%RELEASE%-latest.jar.new.url
 Title Freenet Update Over HTTP Script
 
@@ -165,48 +175,45 @@ if not exist freenet-%RELEASE%-latest.jar.url goto mainyes
 ::Compare with current copy
 fc freenet-%RELEASE%-latest.jar.url freenet-%RELEASE%-latest.jar.new.url > NUL
 if errorlevel 1 goto mainyes
-fc freenet-%RELEASE%-latest.jar freenet.jar > NUL
-if errorlevel 1 goto mainyes
 echo    - Main jar is current.
-goto checkext
+goto maincheckend
 
 :mainyes
 :: Handle loop if there is no old URL to compare to.
 if not exist freenet-%RELEASE%-latest.jar.url copy freenet-%RELEASE%-latest.jar.new.url freenet-%RELEASE%-latest.jar.url > NUL
 echo    - New main jar found!
 set MAINJARUPDATED=1
+:maincheckend
 
 :checkext
 ::Check for a new freenet-ext.jar.
 echo - Checking ext jar
 
-if exist freenet-ext.jar.sha1.new del freenet-ext.jar.sha1.new
-bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/freenet-ext.jar.sha1 -O freenet-ext.jar.sha1.new
+if exist update_temp\freenet-ext.jar.sha1.new.bak del update_temp\freenet-ext.jar.sha1.new.bak
+if exist update_temp\freenet-ext.jar.sha1.new ren update_temp\freenet-ext.jar.sha1.new freenet-ext.jar.sha1.new.bak
+bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/freenet-ext.jar.sha1 -O update_temp\freenet-ext.jar.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist freenet-ext.jar.sha1.new goto error3
-FOR %%I IN ("freenet-ext.jar.sha1.new") DO if %%~zI==0 goto error3
+if not exist update_temp\freenet-ext.jar.sha1.new goto error3
+FOR %%I IN ("update_temp\freenet-ext.jar.sha1.new") DO if %%~zI==0 goto error3
 
 ::Do we have something old to compare with? If not, update right away
-if not exist freenet-ext.jar.sha1 goto extyes
+if not exist update_temp\freenet-ext.jar.sha1 goto extyes
 
-fc freenet-ext.jar.sha1 freenet-ext.jar.sha1.new > NUL
+fc update_temp\freenet-ext.jar.sha1 update_temp\freenet-ext.jar.sha1.new > NUL
 if errorlevel 1 goto extyes
-
 echo    - ext jar is current.
-
-::Check if we had flagged the main jar as updated and if so we still need to update
-if %MAINJARUPDATED%==1 goto updatebegin
-goto noupdate
+goto extcheckend
 
 :extyes
 echo    - New ext jar found!
+set EXTJARUPDATED=1
+:extcheckend
 
-if exist freenet-ext.jar.copy del freenet-ext.jar.copy
-bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/freenet-ext.jar -O freenet-ext.jar.copy
-if not exist freenet-ext.jar.copy goto error3
-FOR %%I IN ("%LOCATION%freenet-ext.jar.copy") DO if %%~zI==0 goto error3
-
+::Check if we have flagged any of the files as updated
+if %MAINJARUPDATED%==1 goto updatebegin
+if %EXTJARUPDATED%==1 goto updatebegin
+goto noupdate
 
 ::New version found, check if the node is currently running
 :updatebegin
@@ -247,47 +254,70 @@ goto safetycheck
 
 ::Ok Freenet is stopped, it is safe to copy files.
 :begindownloads
-echo - Downloading new files and updating local installation...
-
+echo - Backing up files...
 ::Backup last version of Freenet-%RELEASE%-latest.jar file, we will need it if update fails.
 if exist freenet-%RELEASE%-latest.jar.bak del freenet-%RELEASE%-latest.jar.bak
 if exist freenet-%RELEASE%-latest.jar ren freenet-%RELEASE%-latest.jar freenet-%RELEASE%-latest.jar.bak
-::Download new jar file
+::Backup last version of Freenet-ext.jar file, we will need it if update fails.
+if exist update_temp\freenet-ext.jar.bak del update_temp\freenet-ext.jar.bak
+if exist freenet-ext.jar copy freenet-ext.jar update_temp\freenet-ext.jar.bak > NUL
+
+
+echo - Downloading new files and updating local installation...
+echo -----
+
+::Download new main jar file
+if %MAINJARUPDATED%==0 goto mainjardownloadend
 bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 -i freenet-%RELEASE%-latest.jar.new.url -O freenet-%RELEASE%-latest.jar
+Title Freenet Update Over HTTP Script
 :: Make sure it got downloaded successfully
 if not exist freenet-%RELEASE%-latest.jar goto error4
 FOR %%I IN ("%LOCATION%freenet-%RELEASE%-latest.jar") DO if %%~zI==0 goto error4
-::Test the new jar file for integrity.
-java -cp lib\sha1test.jar Sha1Test freenet-%RELEASE%-latest.jar . %CAFILE% > NUL
+::Test the new file for integrity.
+java -cp lib\sha1test.jar Sha1Test freenet-%RELEASE%-latest.jar . %CAFILE%
 if not errorlevel 0 goto error4
+echo - Freenet-%RELEASE%-snapshot.jar downloaded and verified
+:mainjardownloadend
+
+::Download new ext jar file
+if %EXTJARUPDATED%==0 goto extjardownloadend
+if exist update_temp\freenet-ext.jar del update_temp\freenet-ext.jar
+bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/freenet-ext.jar -O update_temp\freenet-ext.jar
+Title Freenet Update Over HTTP Script
+if not exist update_temp\freenet-ext.jar goto error4
+FOR %%I IN ("%LOCATION%update_temp\freenet-ext.jar") DO if %%~zI==0 goto error4
+::Test the new file for integrity.
+cd update_temp\
+java -cp ..\lib\sha1test.jar Sha1Test freenet-ext.jar . ..\%CAFILE% > NUL
+if not errorlevel 0 goto error4
+cd..
+echo - Freenet-ext.jar downloaded and verified
+:extjardownloadend
+
+Title Freenet Update Over HTTP Script
+
 ::Everything looks good, lets install it
+echo -----
+if %MAINJARUPDATED%==0 goto maincopyend
 copy freenet-%RELEASE%-latest.jar freenet.jar > NUL
 ::Prepare shortcut file for next run.
 if exist freenet-%RELEASE%-latest.jar.url del freenet-%RELEASE%-latest.jar.url
 ren freenet-%RELEASE%-latest.jar.new.url freenet-%RELEASE%-latest.jar.url
-Title Freenet Update Over HTTP Script
-::Tell user the good news.
+echo - Freenet-%RELEASE%-snapshot.jar copied to freenet.jar
+:maincopyend
 
-:: Maybe fix bug #2556
-echo - Changing file permissions
-if %VISTA%==0 echo Y| cacls . /E /T /C /G freenet:f > NUL
-if %VISTA%==1 echo y| icacls . /grant freenet:(OI)(CI)F /T /C > NUL
-echo -
-echo - Freenet-%RELEASE%-snapshot.jar verified and copied to freenet.jar
+if %EXTJARUPDATED%==0 goto extcopyend
+copy update_temp\freenet-ext.jar freenet-ext.jar > NUL
+echo - Copied updated freenet-ext.jar
+:extcopyend
 
-if not exist freenet-ext.jar.copy goto end
-if exist freenet-ext.jar.bak del freenet-ext.jar.bak
-if exist freenet-ext.jar ren freenet-ext.jar freenet-ext.jar.bak
-ren freenet-ext.jar.copy freenet-ext.jar
-java -cp lib\sha1test.jar Sha1Test freenet-ext.jar . %CAFILE% > NUL
-if not errorlevel 0 goto errorext4
-echo Copied updated freenet-ext.jar
+
 goto end
 
 ::No update needed
 :noupdate
 echo -----
-echo - Freenet is up to date.
+echo - Freenet is already up to date.
 goto end
 
 ::Server gave us a damaged version of the update script, tell user to try again later.
@@ -309,17 +339,19 @@ goto end
 
 ::Corrupt file was downloaded, restore from backup.
 :error4
-echo - Error! Freenet update failed, trying to restore backup...
+echo - Error! Freenet update failed, trying to restore backups...
+::Main jar
 if exist freenet-%RELEASE%-latest.jar del freenet-%RELEASE%-latest.jar
 if exist freenet-%RELEASE%-latest.jar.bak ren freenet-%RELEASE%-latest.jar.bak freenet-%RELEASE%-latest.jar
-if exist freenet-%RELEASE%-latest.jar.url del freenet-%RELEASE%-latest.jar.url
-goto end
+if exist freenet-%RELEASE%-latest.jar.new.url del freenet-%RELEASE%-latest.jar.new.url
+if exist freenet-%RELEASE%-latest.jar.new.url.bak ren freenet-%RELEASE%-latest.jar.new.url.bak freenet-%RELEASE%-latest.jar.new.url
 
-::Corrupt ext jar was downloaded, restore from backup
-:errorext4
-echo Error! freenet-ext.jar update failed, trying to restore backup...
+::Ext jar
 if exist freenet-ext.jar del freenet-ext.jar
-if exist freenet-ext.jar.bak ren freenet-ext.jar.bak freenet-ext.jar
+if exist update_temp\freenet-ext.jar.bak copy update_temp\freenet-ext.jar.bak freenet-ext.jar
+if exist update_temp\freenet-ext.jar.sha1.new del update_temp\freenet-ext.jar.sha1.new
+if exist update_temp\freenet-ext.jar.sha1.new.bak ren update_temp\freenet-ext.jar.sha1.new.bak freenet-ext.jar.sha1.new
+
 goto end
 
 ::Wrapper.conf is old, downloading new version and restarting update script
@@ -351,6 +383,9 @@ echo -----
 echo - Cleaning up...
 if exist freenet-%RELEASE%-latest.jar.new.url del freenet-%RELEASE%-latest.jar.new.url
 if exist freenet-%RELEASE%-latest.jar.bak del freenet-%RELEASE%-latest.jar.bak
+if exist freenet-ext.jar.sha1.new del freenet-ext.jar.sha1.new
+if exist freenet-ext.jar.bak del freenet-ext.jar.bak
+
 
 :: Maybe fix bug #2556
 echo - Changing file permissions
