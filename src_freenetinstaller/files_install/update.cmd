@@ -61,6 +61,7 @@ set WRAPPERDLLUPDATED=0
 set STARTEXEUPDATED=0
 set STOPEXEUPDATED=0
 set TRAYUTILITYUPDATED=0
+set LAUNCHERUPDATED=0
 set PATH=%SYSTEMROOT%\System32\;%PATH%
 set RELEASE=stable
 if "%1"=="testing" set RELEASE=testing
@@ -229,35 +230,91 @@ echo    - New ext jar found!
 set EXTJARUPDATED=1
 :extcheckend
 
-
 ::Check wrapper .exe
 if not exist ..\bin\wrapper-windows-x86-32.exe goto wrapperexecheckend
+::TODO code this section
 :wrapperexeyes
+::TODO code this section
 :wrapperexecheckend
 
 
 ::Check wrapper .dll
 if not exist ..\lib\wrapper-windows-x86-32.dll goto wrapperdllcheckend
+::TODO code this section
 :wrapperdllyes
+::TODO code this section
 :wrapperdllcheckend
 
 
 ::Check start.exe if present
 if not exist ..\bin\start.exe goto startexecheckend
+::TODO code this section
 :startexeyes
+::TODO code this section
 :startexecheckend
 
 
 ::Check stop.exe if present
 if not exist ..\bin\stop.exe goto stopexecheckend
+::TODO code this section
 :stopexeyes
+::TODO code this section
 :stopexecheckend
 
+::bypass this entire section so it won't run until the tray utility is ready and I finish the code.
+goto traycheckend
 
 ::Check tray utility if present
-::if not exist ??
+::If the required start.exe and stop.exe and installid.dat are present we will offer to install the tray for them
+if not exist ..\bin\start.exe goto traycheckend
+if not exist ..\bin\start.exe goto traycheckend
+if not exist ..\installid.dat goto traycheckend
+if exist ..\bin\freenettray.exe goto traycheck
+::Get the tray utility and put it in the \bin directory
+::TODO code this section
+
+::Offer to install freenettray.exe in the all users>start folder
+echo *******************************************************************
+echo * It appears you are not using the Freenet tray utility.  
+echo * This is likely because you have an older installation that
+echo * was before the tray program was created.  
+echo * We will download it to your \bin directory now so you can try it.
+echo *******************************************************************
+echo -
+echo - We can also install it in your startup folder so it launches when you login.  
+:promptloop
+::Set ANSWER to a different variable so it won't bug out when we loop
+set ANSWER==X
+echo - 
+set /P ANSWER=- Would you like to install it for "A"ll users, just "Y"ou or "N"one? 
+if /i %ANSWER%==A goto allusers
+if /i %ANSWER%==Y goto justyou
+if /i %ANSWER%==N goto traycheckend
+::User hit a wrong key or <enter> without selecting, go around again.
+goto promptloop
+:allusers
+if not exist "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\freenettray.exe" copy /Y freenettray.exe "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\" > NUL
+if not errorlevel 0 goto writefail
+echo freenettray.exe copied to %ALLUSERSPROFILE%\Start Menu\Programs\Startup\
+goto traycheck
+:justyou
+if not exist "%USERPROFILE%\Start Menu\Programs\Startup\freenettray.exe" copy /Y freenettray.exe "%USERPROFILE%\Start Menu\Programs\Startup\" > NUL
+if not errorlevel 0 goto writefail
+echo freenettray.exe copied to %USERPROFILE%\Start Menu\Programs\Startup\
+
+:traycheck
+::TODO code this section
 :trayyes
+::TODO code this section
 :traycheckend
+
+
+::Check launcher utility if present
+if not exist ..\freenetlauncher.exe goto launchercheckend
+::TODO code this section
+:launcheryes
+::TODO code this section
+:launchercheckend
 
 
 ::Check if we have flagged any of the files as updated
@@ -268,6 +325,8 @@ if %WRAPPERDLLUPDATED%==1 goto updatebegin
 if %STARTEXEUPDATED%==1 goto updatebegin
 if %STOPEXEUPDATED%==1 goto updatebegin
 if %TRAYUTILITYUPDATED%==1 goto updatebegin
+if %LAUNCHERUPDATED%==1 goto updatebegin
+
 goto noupdate
 
 ::New version found, check if the node is currently running
@@ -440,7 +499,7 @@ echo - Cleaning up...
 :: Maybe fix bug #2556
 cd ..
 echo - Changing file permissions
-if %VISTA%==0 echo Y| cacls . /E /T /C /G freenet:f > NUL
+if %VISTA%==0 echo Y| cacls . /E /T /C /G freenet:F > NUL
 if %VISTA%==1 echo y| icacls . /grant freenet:(OI)(CI)F /T /C > NUL
 
 if %RESTART%==0 goto cleanup2
