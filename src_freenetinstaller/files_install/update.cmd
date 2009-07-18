@@ -29,6 +29,7 @@ echo -----
 
 :: TODO:
 :: Update all the Windows binaries using this script.
+:: Implement idea I have for making the script even simpler and robust (using copy /y)
 :: Fixme: what to do with changing away from custom freenet user account?
 
 :: CHANGELOG:
@@ -508,6 +509,37 @@ if not errorlevel 0 goto error4
 if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
 echo    - Freenet-ext.jar downloaded and verified
 :extjardownloadend
+
+::Download new wrapper.exe file
+if %WRAPPEREXEUPDATED%==0 goto wrapperexedownloadend
+::TODO code this section
+:wrapperexedownloadend
+
+::Download new wrapper.dll file
+if %WRAPPERDLLUPDATED%==0 goto wrapperdlldownloadend
+::TODO code this section
+:wrapperdlldownloadend
+
+::Download new start.exe file
+if %STARTEXEUPDATED%==0 goto startexedownloadend
+::TODO code this section
+:startexedownloadend
+
+::Download new stop.exe file
+if %STOPEXEUPDATED%==0 goto stopexedownloadend
+::TODO code this section
+:stopexedownloadend
+
+::Download new freenettray.exe file
+if %TRAYUTILITYUPDATED%==0 goto traydownloadend
+::TODO code this section
+:traydownloadend
+
+::Download new freenetlauncher.exe file
+if %LAUNCHERUPDATED%==0 goto stoplauncherdownloadend
+::TODO code this section
+:stoplauncherdownloadend
+
 
 Title Freenet Update Over HTTP Script
 
