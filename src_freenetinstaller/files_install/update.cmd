@@ -230,40 +230,124 @@ echo    - New ext jar found!
 set EXTJARUPDATED=1
 :extcheckend
 
+::Bypass this section until Toad fixes the .sha1
+goto wrapperexecheckend
 ::Check wrapper .exe
 if not exist ..\bin\wrapper-windows-x86-32.exe goto wrapperexecheckend
-::TODO code this section
+echo - Checking wrapper .exe
+if exist wrapper-windows-x86-32.exe.sha1.new del wrapper-windows-x86-32.exe.sha1.new
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/wrapper-windows-x86-32.exe.sha1 -O wrapper-windows-x86-32.exe.sha1.new
+Title Freenet Update Over HTTP Script
+
+if not exist wrapper-windows-x86-32.exe.sha1.new goto error3
+FOR %%I IN ("wrapper-windows-x86-32.exe.sha1.new") DO if %%~zI==0 goto error3
+
+::Do we have something old to compare with? If not, update right away
+if not exist wrapper-windows-x86-32.exe.sha1 goto wrapperexeyes
+
+fc wrapper-windows-x86-32.exe.sha1 wrapper-windows-x86-32.exe.sha1.new > NUL
+if errorlevel 1 goto wrapperexeyes
+echo    - wrapper .exe is current.
+goto wrapperexecheckend
+
 :wrapperexeyes
-::TODO code this section
+:: Handle loop if there is no old URL to compare to.
+if not exist wrapper-windows-x86-32.exe.sha1 copy wrapper-windows-x86-32.exe.sha1.new wrapper-windows-x86-32.exe.sha1 > NUL
+if exist wrapper-windows-x86-32.exe.sha1.bak del wrapper-windows-x86-32.exe.sha1.bak
+copy wrapper-windows-x86-32.exe.sha1 wrapper-windows-x86-32.exe.sha1.bak > NUL
+echo    - New wrapper .exe found!
+set WRAPPEREXEUPDATED=1
 :wrapperexecheckend
 
-
+::Bypass this section until Toad fixes the .sha1
+goto wrapperdllcheckend
 ::Check wrapper .dll
 if not exist ..\lib\wrapper-windows-x86-32.dll goto wrapperdllcheckend
-::TODO code this section
+echo - Checking wrapper .dll
+if exist wrapper-windows-x86-32.dll.sha1.new del wrapper-windows-x86-32.dll.sha1.new
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/wrapper-windows-x86-32.dll.sha1 -O wrapper-windows-x86-32.dll.sha1.new
+Title Freenet Update Over HTTP Script
+
+if not exist wrapper-windows-x86-32.dll.sha1.new goto error3
+FOR %%I IN ("wrapper-windows-x86-32.dll.sha1.new") DO if %%~zI==0 goto error3
+
+::Do we have something old to compare with? If not, update right away
+if not exist wrapper-windows-x86-32.dll.sha1 goto wrapperdllyes
+
+fc wrapper-windows-x86-32.dll.sha1 wrapper-windows-x86-32.dll.sha1.new > NUL
+if errorlevel 1 goto wrapperdllyes
+echo    - wrapper .dll is current.
+goto wrapperdllcheckend
+
 :wrapperdllyes
-::TODO code this section
+:: Handle loop if there is no old URL to compare to.
+if not exist wrapper-windows-x86-32.dll.sha1 copy wrapper-windows-x86-32.dll.sha1.new wrapper-windows-x86-32.dll.sha1 > NUL
+if exist wrapper-windows-x86-32.dll.sha1.bak del wrapper-windows-x86-32.dll.sha1.bak
+copy wrapper-windows-x86-32.dll.sha1 wrapper-windows-x86-32.dll.sha1.bak > NUL
+echo    - New wrapper .dll found!
+set WRAPPERDLLUPDATED=1
 :wrapperdllcheckend
 
-
+::Bypass this section until Toad fixes the .sha1
+goto startexecheckend
 ::Check start.exe if present
 if not exist ..\bin\start.exe goto startexecheckend
-::TODO code this section
+echo - Checking start.exe
+if exist start.exe.sha1.new del start.exe.sha1.new
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/start.exe.sha1 -O start.exe.sha1.new
+Title Freenet Update Over HTTP Script
+
+if not exist start.exe.sha1.new goto error3
+FOR %%I IN ("start.exe.sha1.new") DO if %%~zI==0 goto error3
+
+::Do we have something old to compare with? If not, update right away
+if not exist start.exe.sha1 goto startexeyes
+
+fc start.exe.sha1 start.exe.sha1.new > NUL
+if errorlevel 1 goto startexeyes
+echo    - start.exe is current.
+goto startexecheckend
+
 :startexeyes
-::TODO code this section
+:: Handle loop if there is no old URL to compare to.
+if not exist start.exe.sha1 copy start.exe.sha1.new start.exe.sha1 > NUL
+if exist start.exe.sha1.bak del start.exe.sha1.bak
+copy start.exe.sha1 start.exe.sha1.bak > NUL
+echo    - New start.exe found!
+set STARTEXEUPDATED=1
 :startexecheckend
 
-
+::Bypass this section until Toad fixes the .sha1
+goto stopexecheckend
 ::Check stop.exe if present
 if not exist ..\bin\stop.exe goto stopexecheckend
-::TODO code this section
+echo - Checking stop.exe
+if exist stop.exe.sha1.new del stop.exe.sha1.new
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/stop.exe.sha1 -O stop.exe.sha1.new
+Title Freenet Update Over HTTP Script
+
+if not exist stop.exe.sha1.new goto error3
+FOR %%I IN ("stop.exe.sha1.new") DO if %%~zI==0 goto error3
+
+::Do we have something old to compare with? If not, update right away
+if not exist stop.exe.sha1 goto stopexeyes
+
+fc stop.exe.sha1 stop.exe.sha1.new > NUL
+if errorlevel 1 goto stopexeyes
+echo    - stop.exe is current.
+goto stopexecheckend
+
 :stopexeyes
-::TODO code this section
+:: Handle loop if there is no old URL to compare to.
+if not exist stop.exe.sha1 copy stop.exe.sha1.new stop.exe.sha1 > NUL
+if exist stop.exe.sha1.bak del stop.exe.sha1.bak
+copy stop.exe.sha1 stop.exe.sha1.bak > NUL
+echo    - New stop.exe found!
+set STOPEXEUPDATED=1
 :stopexecheckend
 
 ::bypass this entire section so it won't run until the tray utility is ready and I finish the code.
 goto traycheckend
-
 ::Check tray utility if present
 ::If the required start.exe and stop.exe and installid.dat are present we will offer to install the tray for them
 if not exist ..\bin\start.exe goto traycheckend
@@ -308,12 +392,33 @@ echo freenettray.exe copied to %USERPROFILE%\Start Menu\Programs\Startup\
 ::TODO code this section
 :traycheckend
 
-
+::Bypass this section until Toad fixes the .sha1
+goto launchercheckend
 ::Check launcher utility if present
 if not exist ..\freenetlauncher.exe goto launchercheckend
-::TODO code this section
+echo - Checking freenetlauncher.exe
+if exist freenetlauncher.exe.sha1.new del freenetlauncher.exe.sha1.new
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/freenetlauncher.exe.sha1 -O freenetlauncher.exe.sha1.new
+Title Freenet Update Over HTTP Script
+
+if not exist freenetlauncher.exe.sha1.new goto error3
+FOR %%I IN ("freenetlauncher.exe.sha1.new") DO if %%~zI==0 goto error3
+
+::Do we have something old to compare with? If not, update right away
+if not exist freenetlauncher.exe.sha1 goto launcheryes
+
+fc freenetlauncher.exe.sha1 freenetlauncher.exe.sha1.new > NUL
+if errorlevel 1 goto launcheryes
+echo    - freenetlauncher.exe is current.
+goto launchercheckend
+
 :launcheryes
-::TODO code this section
+:: Handle loop if there is no old URL to compare to.
+if not exist freenetlauncher.exe.sha1 copy freenetlauncher.exe.sha1.new freenetlauncher.exe.sha1 > NUL
+if exist freenetlauncher.exe.sha1.bak del freenetlauncher.exe.sha1.bak
+copy freenetlauncher.exe.sha1 freenetlauncher.exe.sha1.bak > NUL
+echo    - New freenetlauncher.exe found!
+set LAUNCHERUPDATED=1
 :launchercheckend
 
 
@@ -326,7 +431,6 @@ if %STARTEXEUPDATED%==1 goto updatebegin
 if %STOPEXEUPDATED%==1 goto updatebegin
 if %TRAYUTILITYUPDATED%==1 goto updatebegin
 if %LAUNCHERUPDATED%==1 goto updatebegin
-
 goto noupdate
 
 ::New version found, check if the node is currently running
