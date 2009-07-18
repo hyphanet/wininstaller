@@ -346,7 +346,7 @@ echo    - New stop.exe found!
 set STOPEXEUPDATED=1
 :stopexecheckend
 
-::bypass this entire section so it won't run until the tray utility is ready and I finish the code.
+::bypass this entire section so it won't run until the tray utility is ready.
 goto traycheckend
 ::Check tray utility if present
 ::If the required start.exe and stop.exe and installid.dat are present we will offer to install the tray for them
@@ -354,15 +354,34 @@ if not exist ..\bin\start.exe goto traycheckend
 if not exist ..\bin\start.exe goto traycheckend
 if not exist ..\installid.dat goto traycheckend
 if exist ..\bin\freenettray.exe goto traycheck
+
 ::Get the tray utility and put it in the \bin directory
-::TODO code this section
+::We don't need to exit the program because it's not running since it's not even installed.
+echo - Downloading freenettray.exe
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/freenettray.exe -O freenettray.exe
+Title Freenet Update Over HTTP Script
+
+if not exist freenettray.exe goto error3
+FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto error3
+
+::Get the .sha1 for future comparison
+if exist freenettray.exe.sha1 del freenettray.exe.sha1
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/freenettray.exe.sha1 -O freenettray.exe.sha1
+Title Freenet Update Over HTTP Script
+
+if not exist freenettray.exe.sha1 goto error3
+FOR %%I IN ("freenettray.exe.sha1") DO if %%~zI==0 goto error3
+
+::Copy it to the /bin folder
+copy /Y freenettray.exe ..\bin\freenettray.exe > NUL
+if not exist ..\bin\freenettray.exe goto unknownerror
 
 ::Offer to install freenettray.exe in the all users>start folder
 echo *******************************************************************
 echo * It appears you are not using the Freenet tray utility.  
 echo * This is likely because you have an older installation that
 echo * was before the tray program was created.  
-echo * We will download it to your \bin directory now so you can try it.
+echo * We have downloaded it to your \bin directory now so you can try it.
 echo *******************************************************************
 echo -
 echo - We can also install it in your startup folder so it launches when you login.  
@@ -387,9 +406,29 @@ if not errorlevel 0 goto writefail
 echo freenettray.exe copied to %USERPROFILE%\Start Menu\Programs\Startup\
 
 :traycheck
-::TODO code this section
+echo - Checking freenettray.exe
+if exist freenettray.exe.sha1.new del freenettray.exe.sha1.new
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/freenettray.exe.sha1 -O freenettray.exe.sha1.new
+Title Freenet Update Over HTTP Script
+
+if not exist freenettray.exe.sha1.new goto error3
+FOR %%I IN ("freenettray.exe.sha1.new") DO if %%~zI==0 goto error3
+
+::Do we have something old to compare with? If not, update right away
+if not exist freenettray.exe.sha1 goto trayyes
+
+fc freenettray.exe.sha1 freenettray.exe.sha1.new > NUL
+if errorlevel 1 goto trayyes
+echo    - freenettray.exe is current.
+goto traycheckend
+
 :trayyes
-::TODO code this section
+:: Handle loop if there is no old URL to compare to.
+if not exist freenettray.exe.sha1 copy freenettray.exe.sha1.new freenettray.exe.sha1 > NUL
+if exist freenettray.exe.sha1.bak del freenettray.exe.sha1.bak
+copy freenettray.exe.sha1 freenettray.exe.sha1.bak > NUL
+echo    - New freenettray.exe found!
+set TRAYUTILITYUPDATED=1
 :traycheckend
 
 ::Bypass this section until Toad fixes the .sha1
