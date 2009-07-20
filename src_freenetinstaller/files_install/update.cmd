@@ -412,6 +412,8 @@ goto traycheckend
 :trayyes
 echo    - New freenettray.exe found!
 set TRAYUTILITYUPDATED=1
+::We can only hope the tray gets shutdown in time, let's give it all the time we can by starting now
+if not exist ..\tray_die.dat type "" >> ..\tray_die.dat
 :traycheckend
 
 ::Bypass this section until Toad fixes the .sha1
@@ -577,6 +579,8 @@ Title Freenet Update Over HTTP Script
 
 ::Time to stop the node and if needed freenettray.exe
 if %TRAYUTILITYUPDATED%==0 goto nodestop
+::We can only hope the tray gets shutdown in time
+if not exist ..\tray_die.dat type "" >> ..\tray_die.dat
 ::TODO code this section
 
 :nodestop
@@ -680,9 +684,20 @@ if exist stop.exe.sha1.new ren stop.exe.sha1.new stop.exe.sha1
 echo    - Copied updated stop.exe
 :stopexecopyend
 
+::freenetlauncher.exe
+if %LAUNCHERUPDATED%==0 goto launchercopyend
+copy /Y freenetlauncher.exe ..\freenetlauncher.exe > NUL
+::Prepare .sha1 file for next run.
+if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
+if exist freenetlauncher.exe.sha1.new ren freenetlauncher.exe.sha1.new freenetlauncher.exe.sha1
+echo    - Copied updated freenetlauncher.exe
+:launchercopyend
+
 ::freenettray.exe
 if %TRAYUTILITYUPDATED%==0 goto traycopyend
+:trayloop
 copy /Y freenettray.exe ..\bin\freenettray.exe > NUL
+if not errorlevel 0 goto trayloop
 ::Update the startup folder also
 if exist "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\freenettray.exe" copy /y freenettray.exe "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\" > NUL
 if exist "%USERPROFILE%\Start Menu\Programs\Startup\freenettray.exe" copy /y freenettray.exe "%USERPROFILE%\Start Menu\Programs\Startup\" > NUL
@@ -692,14 +707,6 @@ if exist freenettray.exe.sha1.new ren freenettray.exe.sha1.new freenettray.exe.s
 echo    - Copied updated freenettray.exe
 :traycopyend
 
-::freenetlauncher.exe
-if %LAUNCHERUPDATED%==0 goto launchercopyend
-copy /Y freenetlauncher.exe ..\freenetlauncher.exe > NUL
-::Prepare .sha1 file for next run.
-if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
-if exist freenetlauncher.exe.sha1.new ren freenetlauncher.exe.sha1.new freenetlauncher.exe.sha1
-echo    - Copied updated freenetlauncher.exe
-:launchercopyend
 
 
 goto end
@@ -793,6 +800,11 @@ echo - Changing file permissions
 if %VISTA%==0 echo Y| cacls . /E /T /C /G freenet:F > NUL
 if %VISTA%==1 echo y| icacls . /grant freenet:(OI)(CI)F /T /C > NUL
 
+::Try to restart the tray if it was flagged as updated
+if %TRAYUTILITYUPDATED%==0 goto restart
+if exist tray_die.dat del tray_die.dat
+start bin\freenettray.exe
+:restart
 if %RESTART%==0 goto cleanup2
 echo - Restarting Freenet...
 ::See if we are using the new binary start.exe
