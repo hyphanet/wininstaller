@@ -625,9 +625,24 @@ echo -----
 ::Backup last version of Freenet.jar file, user may want to go back if something is broken in new build
 if exist freenet.jar.bak del freenet.jar.bak
 if exist ..\freenet.jar copy ..\freenet.jar freenet.jar.bak > NUL
-::Backup last version of Freenet-ext.jar file, user may want to go back if something is broken in new build
-if exist freenet-ext.jar.bak del freenet-ext.jar.bak
-if exist ..\freenet-ext.jar copy ..\freenet-ext.jar freenet-ext.jar.bak > NUL
+::Backup last version of wrapper.exe file, user may want to go back if something is broken in new build
+if exist wrapper-windows-x86-32.exe.bak del wrapper-windows-x86-32.exe.bak
+if exist ..\bin\wrapper-windows-x86-32.exe copy ..\bin\wrapper-windows-x86-32.exe wrapper-windows-x86-32.exe.bak > NUL
+::Backup last version of wrapper.dll file, user may want to go back if something is broken in new build
+if exist wrapper-windows-x86-32.dll.bak del wrapper-windows-x86-32.dll.bak
+if exist ..\lib\wrapper-windows-x86-32.dll copy ..\lib\wrapper-windows-x86-32.dll wrapper-windows-x86-32.dll.bak > NUL
+::Backup last version of start.exe file, user may want to go back if something is broken in new build
+if exist start.exe.bak del start.exe.bak
+if exist ..\bin\start.exe copy ..\bin\start.exe start.exe.bak > NUL
+::Backup last version of stop.exe file, user may want to go back if something is broken in new build
+if exist stop.exe.bak del stop.exe.bak
+if exist ..\bin\stop.exe copy ..\bin\stop.exe stop.exe.bak > NUL
+::Backup last version of freenettray.exe file, user may want to go back if something is broken in new build
+if exist freenettray.exe.bak del freenettray.exe.bak
+if exist ..\bin\freenettray.exe copy ..\bin\freenettray.exe freenettray.exe.bak > NUL
+::Backup last version of freenetlauncher.exe file, user may want to go back if something is broken in new build
+if exist freenetlauncher.exe.bak del freenetlauncher.exe.bak
+if exist ..\freenetlauncher.exe copy ..\freenetlauncher.exe freenetlauncher.exe.bak > NUL
 
 echo - Installing new files...
 ::Main jar
