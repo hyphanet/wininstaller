@@ -559,8 +559,7 @@ if not errorlevel 0 goto error4
 echo    - freenettray.exe downloaded and verified
 :traydownloadend
 
-::Download new 
- file
+::Download new freenetlauncher.exe file
 if %LAUNCHERUPDATED%==0 goto stoplauncherdownloadend
 if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
 if exist freenetlauncher.exe del freenetlauncher.exe
