@@ -28,11 +28,11 @@ echo -----------------------------------------------------------
 echo -----
 
 :: TODO:
-:: Update all the Windows binaries using this script.
-:: Implement idea I have for making the script even simpler and robust (using copy /y)
 :: Fixme: what to do with changing away from custom freenet user account?
 
 :: CHANGELOG:
+:: 3.5 - Script will handle all the binaries as soon as the website is ready
+:: 3.4 - Made script more failsafe.
 :: 3.3 - Refactored script to be more organized and prepare for updating Windows binaries
 :: 3.2 - Use the .sha1 url to check for updates to freenet-ext.jar.  Saves ~4mb per run.
 :: 3.1 - Fix permissions by fixing invalid cacls arguments
@@ -707,8 +707,6 @@ if exist freenettray.exe.sha1.new ren freenettray.exe.sha1.new freenettray.exe.s
 echo    - Copied updated freenettray.exe
 :traycopyend
 
-
-
 goto end
 
 ::No update needed
@@ -762,7 +760,6 @@ if exist freenettray.exe.sha1.bak ren freenettray.exe.sha1.bak freenettray.exe.j
 ::Launcher.exe
 if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
 if exist freenetlauncher.exe.sha1.bak ren freenetlauncher.exe.sha1.bak freenetlauncher.exe.sha1
-
 
 goto end
 
