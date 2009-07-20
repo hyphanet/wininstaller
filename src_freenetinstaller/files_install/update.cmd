@@ -798,8 +798,9 @@ echo - Restarting Freenet...
 ::See if we are using the new binary start.exe
 if not exist bin\start.exe goto oldstarter
 call bin\start.exe /silent
-if errorlevel 1 goto unknownerror
-goto cleanup2
+if errorlevel 0 goto cleanup2
+cd update_temp
+goto unknownerror
 
 :oldstarter
 call bin\start.cmd > NUL
