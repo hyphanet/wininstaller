@@ -491,37 +491,96 @@ echo    - Freenet-ext.jar downloaded and verified
 
 ::Download new wrapper.exe file
 if %WRAPPEREXEUPDATED%==0 goto wrapperexedownloadend
-::TODO code this section
+if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
+if exist wrapper-windows-x86-32.exe del wrapper-windows-x86-32.exe
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/wrapper-windows-x86-32.exe -O wrapper-windows-x86-32.exe
+Title Freenet Update Over HTTP Script
+if not exist wrapper-windows-x86-32.exe goto error4
+FOR %%I IN ("wrapper-windows-x86-32.exe") DO if %%~zI==0 goto error4
+::Test the new file for integrity.
+java -cp ..\lib\sha1test.jar Sha1Test wrapper-windows-x86-32.exe . ..\%CAFILE% > NUL
+if not errorlevel 0 goto error4
+echo    - wrapper .exe downloaded and verified
 :wrapperexedownloadend
 
 ::Download new wrapper.dll file
 if %WRAPPERDLLUPDATED%==0 goto wrapperdlldownloadend
-::TODO code this section
+if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
+if exist wrapper-windows-x86-32.dll del wrapper-windows-x86-32.dll
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/wrapper-windows-x86-32.dll -O wrapper-windows-x86-32.dll
+Title Freenet Update Over HTTP Script
+if not exist wrapper-windows-x86-32.dll goto error4
+FOR %%I IN ("wrapper-windows-x86-32.dll") DO if %%~zI==0 goto error4
+::Test the new file for integrity.
+java -cp ..\lib\sha1test.jar Sha1Test wrapper-windows-x86-32.dll . ..\%CAFILE% > NUL
+if not errorlevel 0 goto error4
+echo    - wrapper .dll downloaded and verified
 :wrapperdlldownloadend
 
 ::Download new start.exe file
 if %STARTEXEUPDATED%==0 goto startexedownloadend
-::TODO code this section
+if exist start.exe.sha1 del start.exe.sha1
+if exist start.exe del start.exe
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/start.exe -O start.exe
+Title Freenet Update Over HTTP Script
+if not exist start.exe goto error4
+FOR %%I IN ("start.exe") DO if %%~zI==0 goto error4
+::Test the new file for integrity.
+java -cp ..\lib\sha1test.jar Sha1Test start.exe . ..\%CAFILE% > NUL
+if not errorlevel 0 goto error4
+echo    - start.exe downloaded and verified
 :startexedownloadend
 
 ::Download new stop.exe file
 if %STOPEXEUPDATED%==0 goto stopexedownloadend
-::TODO code this section
+if exist stop.exe.sha1 del stop.exe.sha1
+if exist stop.exe del stop.exe
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/stop.exe -O stop.exe
+Title Freenet Update Over HTTP Script
+if not exist stop.exe goto error4
+FOR %%I IN ("stop.exe") DO if %%~zI==0 goto error4
+::Test the new file for integrity.
+java -cp ..\lib\sha1test.jar Sha1Test stop.exe . ..\%CAFILE% > NUL
+if not errorlevel 0 goto error4
+echo    - stop.exe downloaded and verified
 :stopexedownloadend
 
 ::Download new freenettray.exe file
 if %TRAYUTILITYUPDATED%==0 goto traydownloadend
-::TODO code this section
+if exist freenettray.exe.sha1 del freenettray.exe.sha1
+if exist freenettray.exe del freenettray.exe
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/freenettray.exe -O freenettray.exe
+Title Freenet Update Over HTTP Script
+if not exist freenettray.exe goto error4
+FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto error4
+::Test the new file for integrity.
+java -cp ..\lib\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
+if not errorlevel 0 goto error4
+echo    - freenettray.exe downloaded and verified
 :traydownloadend
 
-::Download new freenetlauncher.exe file
+::Download new 
+ file
 if %LAUNCHERUPDATED%==0 goto stoplauncherdownloadend
-::TODO code this section
+if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
+if exist freenetlauncher.exe del freenetlauncher.exe
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/freenetlauncher.exe -O freenetlauncher.exe
+Title Freenet Update Over HTTP Script
+if not exist freenetlauncher.exe goto error4
+FOR %%I IN ("freenetlauncher.exe") DO if %%~zI==0 goto error4
+::Test the new file for integrity.
+java -cp ..\lib\sha1test.jar Sha1Test freenetlauncher.exe . ..\%CAFILE% > NUL
+if not errorlevel 0 goto error4
+echo    - freenetlauncher.exe downloaded and verified
 :stoplauncherdownloadend
-
-
 Title Freenet Update Over HTTP Script
 
+
+::Time to stop the node and if needed freenettray.exe
+if %TRAYUTILITYUPDATED%==0 goto nodestop
+::TODO code this section
+
+:nodestop
 ::See if we are using the new binary stop.exe
 if not exist ..\bin\stop.exe goto oldstopper
 :newstoppper
@@ -568,6 +627,7 @@ if exist freenet-ext.jar.bak del freenet-ext.jar.bak
 if exist ..\freenet-ext.jar copy ..\freenet-ext.jar freenet-ext.jar.bak > NUL
 
 echo - Installing new files...
+::Main jar
 if %MAINJARUPDATED%==0 goto maincopyend
 copy /Y freenet-%RELEASE%-latest.jar ..\freenet.jar > NUL
 ::Prepare shortcut file for next run.
@@ -576,6 +636,7 @@ ren freenet-%RELEASE%-latest.jar.new.url freenet-%RELEASE%-latest.jar.url
 echo    - Freenet-%RELEASE%-snapshot.jar copied to freenet.jar
 :maincopyend
 
+::Ext jar
 if %EXTJARUPDATED%==0 goto extcopyend
 copy /Y freenet-ext.jar ..\freenet-ext.jar > NUL
 ::Prepare .sha1 file for next run.
@@ -583,6 +644,63 @@ if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
 if exist freenet-ext.jar.sha1.new ren freenet-ext.jar.sha1.new freenet-ext.jar.sha1
 echo    - Copied updated freenet-ext.jar
 :extcopyend
+
+::wrapper .exe
+if %WRAPPEREXEUPDATED%==0 goto wrapperexecopyend
+copy /Y wrapper-windows-x86-32.exe ..\bin\wrapper-windows-x86-32.exe > NUL
+::Prepare .sha1 file for next run.
+if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
+if exist wrapper-windows-x86-32.exe.sha1.new ren wrapper-windows-x86-32.exe.sha1.new wrapper-windows-x86-32.exe.sha1
+echo    - Copied updated wrapper .exe
+:wrapperexecopyend
+
+::Wrapper .dll
+if %WRAPPERDLLUPDATED%==0 goto wrapperdllcopyend
+copy /Y wrapper-windows-x86-32.dll ..\lib\wrapper-windows-x86-32.dll > NUL
+::Prepare .sha1 file for next run.
+if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
+if exist wrapper-windows-x86-32.exe.sha1.new ren wrapper-windows-x86-32.exe.sha1.new wrapper-windows-x86-32.exe.sha1
+echo    - Copied updated wrapper dll
+:wrapperdllcopyend
+
+::Start.exe
+if %STARTEXEUPDATED%==0 goto startexecopyend
+copy /Y start.exe ..\bin\start.exe > NUL
+::Prepare .sha1 file for next run.
+if exist start.exe.sha1 del start.exe.sha1
+if exist start.exe.sha1.new ren start.exe.sha1.new start.exe.sha1
+echo    - Copied updated start.exe
+:startexecopyend
+
+::Stop.exe
+if %STOPEXEUPDATED%==0 goto stopexecopyend
+copy /Y stop.exe ..\bin\stop.exe > NUL
+::Prepare .sha1 file for next run.
+if exist stop.exe.sha1 del stop.exe.sha1
+if exist stop.exe.sha1.new ren stop.exe.sha1.new stop.exe.sha1
+echo    - Copied updated stop.exe
+:stopexecopyend
+
+::freenettray.exe
+if %TRAYUTILITYUPDATED%==0 goto traycopyend
+copy /Y freenettray.exe ..\bin\freenettray.exe > NUL
+::Update the startup folder also
+if exist "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\freenettray.exe" copy /y freenettray.exe "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\" > NUL
+if exist "%USERPROFILE%\Start Menu\Programs\Startup\freenettray.exe" copy /y freenettray.exe "%USERPROFILE%\Start Menu\Programs\Startup\" > NUL
+::Prepare .sha1 file for next run.
+if exist freenettray.exe.sha1 del freenettray.exe.sha1
+if exist freenettray.exe.sha1.new ren freenettray.exe.sha1.new freenettray.exe.sha1
+echo    - Copied updated freenettray.exe
+:traycopyend
+
+::freenetlauncher.exe
+if %LAUNCHERUPDATED%==0 goto launchercopyend
+copy /Y freenetlauncher.exe ..\freenetlauncher.exe > NUL
+::Prepare .sha1 file for next run.
+if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
+if exist freenetlauncher.exe.sha1.new ren freenetlauncher.exe.sha1.new freenetlauncher.exe.sha1
+echo    - Copied updated freenetlauncher.exe
+:launchercopyend
 
 
 goto end
@@ -644,7 +762,7 @@ goto end
 
 ::Wrapper.conf is old, downloading new version and restarting update script
 :error5
-echo - Your wrapper.conf needs to be updated .... updating it ; please restart the script when done.
+echo - Your wrapper.conf needs to be updated .... updating it; please restart the script when done.
 :: Let's try falling back to the old version of the wrapper so we can keep our memory settings.  If it doesn't work we'll get a new one next time around.
 if not exist wrapper.conf.bak goto newwrapper
 if exist wrapper.conf del wrapper.conf
@@ -708,8 +826,31 @@ goto veryend
 :unknownerror
 echo - An unknown error has occurred.
 echo - Please scroll up and look for clues and contact support@freenetproject.org
-if exist update_temp\freenet-%RELEASE%-latest.jar.new.url del update_temp\freenet-%RELEASE%-latest.jar.new.url
-if exist freenet-%RELEASE%-latest.jar.bak del freenet-%RELEASE%-latest.jar.bak
+::Restore the old .sha1 files so we can check them again next run.
+::Main jar
+if exist freenet-%RELEASE%-latest.jar.url del freenet-%RELEASE%-latest.jar.url
+if exist freenet-%RELEASE%-latest.jar.url.bak ren freenet-%RELEASE%-latest.jar.url.bak freenet-%RELEASE%-latest.jar.url
+::Ext jar
+if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
+if exist freenet-ext.jar.sha1.bak ren freenet-ext.jar.sha1.bak freenet-ext.jar.sha1
+::Wrapper .exe
+if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
+if exist wrapper-windows-x86-32.exe.sha1.bak ren wrapper-windows-x86-32.exe.sha1.bak wrapper-windows-x86-32.exe.sha1
+::Wrapper .dll
+if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
+if exist wrapper-windows-x86-32.dll.sha1.bak ren wrapper-windows-x86-32.dll.sha1.bak wrapper-windows-x86-32.dll.sha1
+::Start.exe
+if exist start.exe.sha1 del start.exe.sha1
+if exist start.exe.sha1.bak ren start.exe.sha1.bak start.exe.sha1
+::Stop.exe
+if exist stop.exe.sha1 del stop.exe.sha1
+if exist stop.exe.sha1.bak ren stop.exe.sha1.bak stop.exe.sha1
+::Tray utility
+if exist freenettray.exe.sha1 del freenettray.exe.sha1
+if exist freenettray.exe.sha1.bak ren freenettray.exe.sha1.bak freenettray.exe.jar.sha1
+::Launcher.exe
+if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
+if exist freenetlauncher.exe.sha1.bak ren freenetlauncher.exe.sha1.bak freenetlauncher.exe.sha1
 pause
 
 :veryend
