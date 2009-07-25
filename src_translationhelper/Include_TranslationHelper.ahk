@@ -74,10 +74,13 @@ Trans_Add(_OriginalText, _TranslatedText)
 {
 	global
 
-	_OriginalTextArray%_TransArray% := _OriginalText
-	_TranslatedTextArray%_TransArray% := _TranslatedText
+	If (StrLen(_TranslatedText) <> 0)									; Skip zero-length adds
+	{
+		_OriginalTextArray%_TransArray% := _OriginalText
+		_TranslatedTextArray%_TransArray% := _TranslatedText
 
-	_TransArray++
+		_TransArray++
+	}
 }
 
 Trans(_OriginalText)

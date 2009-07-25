@@ -70,7 +70,7 @@ compiler\Ahk2Exe.exe /in "src_freenetinstaller\FreenetInstaller.ahk" /out "bin\F
 del compiler\AutoHotkeySC.bin
 
 ::
-:: Cleanup
+:: Cleanup. Delete files we copied into the source and move compiled .exe's to the bin folder in case we need them for something else.
 ::
 del compiler\Ahk2Exe.exe
 del compiler\upx.exe
@@ -80,13 +80,13 @@ del compiler\ResHack_Log_Normal.txt
 del compiler\ResHack_Log_VistaElevated.txt
 del src_freenetinstaller\files_install\freenet.jar
 del src_freenetinstaller\files_install\freenet-ext.jar
-del src_freenetinstaller\files_install\freenetlauncher.exe
-del src_freenetinstaller\files_install\bin\freenettray.exe
-del src_freenetinstaller\files_install\bin\start.exe
-del src_freenetinstaller\files_install\bin\stop.exe
-del src_freenetinstaller\files_install\bin\freenetuninstaller.exe
 del src_freenetinstaller\files_install\plugins\JSTUN.jar
 del src_freenetinstaller\files_install\plugins\KeyExplorer.jar
 del src_freenetinstaller\files_install\plugins\ThawIndexBrowser.jar
 del src_freenetinstaller\files_install\plugins\UPnP.jar
 del src_freenetinstaller\files_install\plugins\XMLLibrarian.jar
+move /Y src_freenetinstaller\files_install\freenetlauncher.exe bin\freenetlauncher.exe
+move /Y src_freenetinstaller\files_install\bin\freenettray.exe bin\freenettray.exe
+move /Y src_freenetinstaller\files_install\bin\start.exe bin\start.exe
+move /Y src_freenetinstaller\files_install\bin\stop.exe bin\stop.exe
+move /Y src_freenetinstaller\files_install\bin\freenetuninstaller.exe bin\freenetuninstaller.exe

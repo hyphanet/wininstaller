@@ -16,65 +16,52 @@
 
 SendMode, Input							; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
-
 SetWorkingDir, %A_ScriptDir%					; Look for other files relative to our own location
 
+;
+; Customizable settings
+;
 _SecureSuffix = ?incognito=true					; fproxy address suffix for incognito-enabled browsers. Will make fproxy hide warning messages about it.
+_FileRequirements = installid.dat|bin\start.exe|freenet.ini	; List of files that must exist for the launcher to work. Paths are relative to own location.
 
 ;
 ; General init stuff
 ;
 InitTranslations()
 
+Loop, Parse, _FileRequirements, |
+{
+	IfNotExist, %A_LoopField%
+	{
+		PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was unable to find the following file:") "`n`n" A_LoopField "`n`n" Trans("Make sure that you are running") " " Trans("Freenet Launcher") " " Trans("from a Freenet installation directory.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+		ExitApp, 1
+	}	
+}
+
 ;
 ; Figure out what our service is called
 ;
-IfNotExist, installid.dat
-{
-	PopupErrorMessage(Trans("Freenet Launcher was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet Launcher from a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers."))
-	ExitApp, 1
-}
-Else
-{
-	FileReadLine, _InstallSuffix, installid.dat, 1
-	_ServiceName = freenet%_InstallSuffix%
-}
+FileReadLine, _InstallSuffix, installid.dat, 1
+_ServiceName = freenet%_InstallSuffix%
 
 ;
 ; Make sure that node is running
 ;
 If (Service_State(_ServiceName) <> 4)
 {
-	IfNotExist, bin\start.exe
-	{
-		PopupErrorMessage(Trans("Freenet Launcher was unable to find the bin\start.exe launcher.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers."))
-		ExitApp, 1
-	}
-	Else
-	{
-		RunWait, bin\start.exe /silent, , UseErrorLevel
-	}
+	RunWait, bin\start.exe /silent, , UseErrorLevel
 }
 
 ;
 ; Put together the fproxy URL
 ;
-IfNotExist, freenet.ini
+FileRead, _INI, freenet.ini
+If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
 {
-	PopupErrorMessage(Trans("Freenet Launcher was unable to find the freenet.ini configuration file.`n`nMake sure that you are running Freenet Launcher from a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers."))
+	PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was unable to read the 'fproxy.port' value from the 'freenet.ini' configuration file.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 	ExitApp, 1
 }
-Else
-{
-	FileRead, _INI, freenet.ini
-	If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
-	{
-		PopupErrorMessage(Trans("Freenet Launcher was unable to read the 'fproxy.port' value from the freenet.ini configuration file.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers."))
-		ExitApp, 1
-	}
-
-	_URL = http://127.0.0.1:%_Port1%/
-}
+_URL = http://127.0.0.1:%_Port1%/
 
 ;
 ; Try browser: Google Chrome (incognito-enabled) (Tested versions: 1.0.154)
@@ -88,20 +75,6 @@ If (!ErrorLevel && _ChromeInstallDir <> "")
 	IfExist, %_ChromePath%
 	{
 		Run, %_ChromePath% --incognito "%_URL%%_SecureSuffix%", , UseErrorLevel	; All versions of Chrome should support incognito mode
-		ExitApp, 0
-	}
-}
-
-;
-; Try browser: Internet Explorer (only incognito mode (version 8.0+)) (Tested versions: 8.0)
-;
-IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
-{
-	RegRead, _IEVersion, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Internet Explorer, Version
-	
-	If (_IEVersion >= 8.0 && FileExist(A_ProgramFiles "\Internet Explorer\iexplore.exe"))
-	{
-		Run, %A_ProgramFiles%\Internet Explorer\iexplore.exe -private "%_URL%%_SecureSuffix%", , UseErrorLevel
 		ExitApp, 0
 	}
 }

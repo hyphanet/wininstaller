@@ -238,7 +238,7 @@ UpdateInstallDirStatus()
 	Else if (StrLen(_InstallDir) + _InternalPathLength > 255)
 	{
 		GuiControl, +cRed, _cInstallDirStatusText
-		GuiControl, Text, _cInstallDirStatusText, % Trans("Invalid install path! (Too long for file system to handle)")
+		GuiControl, Text, _cInstallDirStatusText, % Trans("Invalid install path!") " " Trans("(Too long for file system to handle)")
 		GuiControl, +Disabled, _cInstallButton
 	}
 	Else
@@ -373,7 +373,7 @@ FindFreePort(_StartPort)
 		if (A_Index > 256)										; If this many tries isn't enough, checking any more in this way is probably just a waste of time. Throw an error instead.
 		{
 			_Endport := _StartPort + 256 - 1
-			MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer was not able to find a free port on your system in the range ") _StartPort "-" _EndPort ".`n" Trans("Please free a system port in this range to install Freenet.") ; 48 = Icon Exclamation
+			MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to find a free port on your system in the range") " " _StartPort "-" _EndPort ". " Trans("Please free a system port in this range to install Freenet.") ; 48 = Icon Exclamation
 			return -1
 		}
 		Else If (TestPortAvailability(_StartPort+A_Index-1))
@@ -392,14 +392,14 @@ TestPortAvailability(_Port)
 
 	If (ErrorLevel)
 	{
-		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing.") ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 	Else If (_Result)											; Non-zero, which means it failed (most Winsock functions return 0 upon success)
 	{
 		_Error := DllCall("Ws2_32\WSAGetLastError")
 		DllCall("Ws2_32\WSACleanup")
-		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 
@@ -412,7 +412,7 @@ TestPortAvailability(_Port)
 	{
 		_Error := DllCall("Ws2_32\WSAGetLastError")
 		DllCall("Ws2_32\WSACleanup")
-		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 
@@ -444,4 +444,3 @@ InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4)
 		DllCall("RtlFillMemory", "UInt", &pDest + pOffset + A_Index-1, "UInt", 1, "UChar", pInteger >> 8*(A_Index-1) & 0xFF)
 	}
 }
-

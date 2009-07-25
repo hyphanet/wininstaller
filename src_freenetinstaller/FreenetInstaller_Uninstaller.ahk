@@ -21,6 +21,8 @@
 SendMode, Input							; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
 
+_SignalSent := 0						; Used to make sure that we only try to manage the service once (if it doesn't work the first time, chances are that something is wrong)
+
 ;
 ; Customizable settings
 ;
@@ -37,7 +39,7 @@ InitTranslations()
 ;
 If not (A_IsAdmin)
 {
-	PopupErrorMessage(Trans("The uninstaller requires administrator privileges to uninstall Freenet. Please make sure that your user account has administrative access to the system, and the uninstaller is executed with access to use these privileges."))
+	PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("requires administrator privileges to manage the Freenet service. Please make sure that your user account has administrative access to the system, and this program is executed with access to use these privileges."))
 	ExitApp
 }
 
@@ -57,7 +59,7 @@ If (A_ScriptDir <> (LongTempDirPath . "\FreenetUninstaller"))
 	FileCreateDir, %A_Temp%\FreenetUninstaller							; Create a new temp dir
 	If (ErrorLevel)
 	{
-		PopupErrorMessage(Trans("The uninstaller was not able to unpack necessary files to:") "`n`n" A_Temp "\FreenetUninstaller`n`n" Trans("Please make sure that the uninstaller has full access to the system's temporary files folder."))
+		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was not able to unpack necessary files to:") "`n`n" A_Temp "\FreenetUninstaller`n`n" Trans("Please make sure that this program has full access to the system's temporary files folder."))
 		ExitApp
 	}
 
@@ -72,7 +74,7 @@ Else
 
 	If (!FileExist(_InstallDir . "\freenet.jar") || !FileExist(_InstallDir . "\installid.dat"))
 	{
-		PopupErrorMessage(Trans("The uninstaller was unable to recognize your Freenet installation at:") "`n`n" _InstallDir "`n`n" Trans("Please run this uninstaller from the 'bin' folder of a Freenet installation."))
+		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to recognize your Freenet installation at:") "`n`n" _InstallDir "`n`n" Trans("Please run this program from the 'bin' folder of a Freenet installation."))
 		Exit()
 	}
 
@@ -90,7 +92,7 @@ IfMsgBox, Cancel
 	Exit()
 }
 
-MsgBox, 36, % Trans("Freenet uninstaller"), % Trans("The development team would appreciate it very much if you can`nspare a moment and fill out a short, anonymous online`nsurvey about the reason for your uninstallation.`n`nThe survey, located on the Freenet website, will be opened`nin your browser after the uninstallation.`n`nTake the uninstallation survey?")	; 4 = Yes/No, 32 = Icon Question
+MsgBox, 36, % Trans("Freenet uninstaller"), % Trans("The development team would appreciate it very much if you can spare a moment and fill out a short, anonymous online survey about the reason for your uninstallation.") "`n`n" Trans("The survey, located on the Freenet website, will be opened in your browser after the uninstallation.") "`n`n" Trans("Take the uninstallation survey?")	; 4 = Yes/No, 32 = Icon Question
 IfMsgBox, Yes
 {
 	_DoSurvey := 1
@@ -101,16 +103,14 @@ Else
 }
 
 ;
-; Allright. No way back!
+; Alright. No way back!
 ;
-Progress, %_ProgressFormat% R0-5, ..., , % Trans("Freenet uninstaller")					; "R0-6" defines number of "ticks" in the progress bar. Should match the numbers below.
+Progress, %_ProgressFormat% R0-5, ..., , % Trans("Freenet uninstaller")					; "Rx-y" defines number of "ticks" in the progress bar. Should match the numbers below.
 
 ;
 ; Shut down node
 ;
 Progress, , % Trans("Stopping system service...")
-
-_ServiceHasBeenStopped := 0										; Used to make sure that we only stop the service once (to avoid UAC spam on Vista, among other things)
 
 Loop
 {
@@ -118,13 +118,13 @@ Loop
 
 	If (A_Index > _ServiceTimeout)
 	{
-		PopupErrorMessage(Trans("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers."))
+		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Timeout while managing the service."))
 		Exit()
 	}
 	Else If (_ServiceState == -1)
 	{
-		PopupErrorMessage(Trans("The uninstaller was unable to control the Freenet system service.`n`nThe uninstaller will try to continue anyway, but you might have to manually stop the service if the uninstaller is unable to delete files in use by it."))
-		Break
+		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Could not access the service.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+		Exit()
 	}
 	Else If (_ServiceState == 2 || _ServiceState == 3 || _ServiceState == 5 || _ServiceState == 6)
 	{
@@ -133,20 +133,20 @@ Loop
 	}
 	Else If (_ServiceState == 1 || _ServiceState == -4)
 	{
-		Break						; Service is not running, or doesn't exist. Continue!
+		Break						; Service is not running. Continue!
 	}
 	Else
 	{
-		If (!_ServiceHasBeenStopped)
+		If (!_SingalSent)
 		{
-			_ServiceHasBeenStopped := 1
+			_SignalSent := 1
 			Service_Stop("freenet" . _InstallSuffix)
 			Continue
 		}
 		Else
 		{
-			PopupErrorMessage(Trans("The uninstaller was unable to stop the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers."))
-			ExitApp, 1
+			PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Service did not respond to signal.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+			Exit()
 		}
 	}
 }
@@ -182,11 +182,11 @@ RemoveFiles:
 FileRemoveDir, %_InstallDir%, 1
 If (ErrorLevel)
 {
-	MsgBox, 18, % Trans("Freenet uninstaller error"), % Trans("The uninstaller was unable to delete the Freenet files located at:") "`n`n" _InstallDir "`n`n" Trans("Please close all applications with open files inside this directory.")	; 2 = Abort/Retry/Ignore, 16 = Icon Hand (stop/error)
+	MsgBox, 18, % Trans("Freenet uninstaller error"), % Trans("Freenet uninstaller") " " Trans("was unable to delete the Freenet files located at:") "`n`n" _InstallDir "`n`n" Trans("Please close all applications with open files inside this directory.")	; 2 = Abort/Retry/Ignore, 16 = Icon Hand (stop/error)
 
 	IfMsgBox, Abort
 	{
-		PopupErrorMessage(Trans("The uninstallation was aborted.`n`nPlease manually remove the rest of your Freenet installation."))
+		PopupErrorMessage(Trans("The uninstallation was aborted.") "`n`n" Trans("Please manually remove the rest of your Freenet installation."))
 		Exit()
 	}
 	IfMsgBox, Retry
@@ -297,6 +297,8 @@ Service_Stop(ServiceName)
 
 Exit()
 {
+	; Note: This function is only used on exiting from running out of the system's temp dir.
+	; As we copied ourself into the temp dir, we should also make sure to remove ourself again.
 	global
 
 	If (A_IsCompiled)										; Only do the following if we are compiled... Just in case a test session goes wrong.

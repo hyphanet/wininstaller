@@ -1,5 +1,5 @@
 ;
-; Windows Freenet stop script by Zero3 (zero3 that-a-thingy zero3 that-dot-thingy dk) - http://freenetproject.org/
+; Windows Freenet Stopper by Zero3 (zero3 that-a-thingy zero3 that-dot-thingy dk) - http://freenetproject.org/
 ;
 ; Extra credits:
 ; - Service state function: heresy (http://www.autohotkey.com/forum/topic34984.html)
@@ -17,17 +17,16 @@
 SendMode, Input								; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off							; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
 
-_WorkingDir := RegExReplace(A_ScriptDir, "i)\\bin$", "")		; If we are located in the \bin folder, go back a step
-SetWorkingDir, %_WorkingDir%						; Look for other files relative to install root
+SetWorkingDir, % RegExReplace(A_ScriptDir, "i)\\bin$", "")		; Look for other files relative to install root (regex: If we are located in the \bin folder, go back a step)
 
 _SplashCreated := 0							; Initial value
-_Silent := 0								; Initial value
+_SignalSent := 0							; Used to make sure that we only try to manage the service once (if it doesn't work the first time, chances are that something is wrong)
 
 ;
 ; Customizable settings
 ;
 _ServiceTimeout := 120							; Maximum number of seconds we wait before "timing out" and throwing an error when managing the system service
-_SplashFormat = A B2 T FS8						; How our splash should look.
+_SplashFormat = A M T FS8						; How our splash should look.
 
 ;
 ; General init stuff
@@ -40,7 +39,7 @@ InitTranslations()
 _Arg1 = %1%
 If (_Arg1 == "/?")
 {
-	PopupInfoMessage(Trans("Command line options (only use one):`n/silent - Hide info messages`n/verysilent - Hide info and status messages`n`nReturn codes:`n0 - Success (service stopped)`n1 - Error occurred`n2 - Service was not running (no action)"))
+	PopupInfoMessage(Trans("Command line options (only use one):") "`n/silent - " Trans("Hide info messages") "`n/verysilent - " Trans("Hide info and status messages") "`n`n" Trans("Return codes:") "`n0 - " Trans("Success") " " Trans("(service stopped)") "`n1 - " Trans("Error occurred") "`n2 - " Trans("Service was not running") " " Trans("(no action)"))
 	ExitApp, 0
 }
 Else If (_Arg1 == "/silent")
@@ -51,13 +50,17 @@ Else If (_Arg1 == "/verysilent")
 {
 	_Silent := 2
 }
+Else
+{
+	_Silent := 0
+}
 
 ;
 ; Check for administrator privileges.
 ;
 If not (A_IsAdmin)
 {
-	PopupErrorMessage(Trans("Freenet stop script requires administrator privileges to stop the Freenet service. Please make sure that your user account has administrative access to the system, and the stop script is executed with access to use these privileges."))
+	PopupErrorMessage(Trans("Freenet Stopper") " " Trans("requires administrator privileges to manage the Freenet service. Please make sure that your user account has administrative access to the system, and this program is executed with access to use these privileges."))
 	ExitApp, 1
 }
 
@@ -66,13 +69,12 @@ If not (A_IsAdmin)
 ;
 IfNotExist, installid.dat
 {
-	PopupErrorMessage(Trans("Freenet stop script was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet stop script from the 'bin' folder of a Freenet installation directory. If you are already doing so, please report this error message to the developers."))
+	PopupErrorMessage(Trans("Freenet Stopper") " " Trans("was unable to find the following file:") "`n`ninstallid.dat`n`n" Trans("Make sure that you are running") " " Trans("Freenet Stopper") " " Trans("from a Freenet installation directory.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 	ExitApp, 1
 }
 
 FileReadLine, _InstallSuffix, installid.dat, 1
 _ServiceName = freenet%_InstallSuffix%
-_ServiceHasBeenStopped := 0						; Used to make sure that we only stop the service once (to avoid UAC spam on Vista, among other things)
 
 Loop
 {
@@ -81,12 +83,12 @@ Loop
 	If (A_Index > _ServiceTimeout)
 	{
 		SplashImage, OFF
-		PopupErrorMessage(Trans("Freenet stop script was unable to control the Freenet system service as it appears to be stuck.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers."))
+		PopupErrorMessage(Trans("Freenet Stopper") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Timeout while managing the service") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 		ExitApp, 1
 	}
 	Else If (_ServiceState == -1 || _ServiceState == -4)
 	{
-		PopupErrorMessage(Trans("Freenet stop script was unable to find and control the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers."))
+		PopupErrorMessage(Trans("Freenet Stopper") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Could not access the service.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 		ExitApp, 1
 	}
 	Else If (_ServiceState == 2 || _ServiceState == 3 || _ServiceState == 5 || _ServiceState == 6)
@@ -94,7 +96,8 @@ Loop
 		If ((_Silent < 2) && !_SplashCreated)
 		{
 			_SplashCreated := 1
-			SplashImage, , %_SplashFormat%, % Trans("Waiting for the Freenet background service to stop..."), , % Trans("Freenet stop script")
+			SplashImage, , %_SplashFormat%, % Trans("The Freenet service is stopping..."), , % Trans("Freenet Stopper")
+			WinActivate, % Trans("Freenet Stopper")
 		}
 		Sleep, 1000
 		Continue
@@ -103,7 +106,7 @@ Loop
 	{
 		SplashImage, OFF
 
-		If (_ServiceHasBeenStopped)
+		If (_SignalSent)
 		{
 			PopupInfoMessage(Trans("The Freenet service has been stopped!"))
 			ExitApp, 0					; 0 = We stopped it
@@ -116,15 +119,15 @@ Loop
 	}
 	Else
 	{
-		If (!_ServiceHasBeenStopped)
+		If (!_SignalSent)
 		{
-			_ServiceHasBeenStopped := 1
+			_SignalSent := 1
 			Service_Stop(_ServiceName)
 			Continue
 		}
 		Else
 		{
-			PopupErrorMessage(Trans("Freenet stop script was unable to stop the Freenet system service.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers."))
+			PopupErrorMessage(Trans("Freenet Stopper") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Service did not respond to signal.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 			ExitApp, 1
 		}
 	}
@@ -135,7 +138,7 @@ Loop
 ;
 PopupErrorMessage(_ErrorMessage)
 {
-	MsgBox, 16, % Trans("Freenet stop script error"), %_ErrorMessage%		; 16 = Icon Hand (stop/error)
+	MsgBox, 16, % Trans("Freenet Stopper error"), %_ErrorMessage%		; 16 = Icon Hand (stop/error)
 }
 
 PopupInfoMessage(_InfoMessage)
@@ -144,7 +147,7 @@ PopupInfoMessage(_InfoMessage)
 
 	If (_Silent < 1)
 	{
-		MsgBox, 64, % Trans("Freenet stop script"), %_InfoMessage%		; 64 = Icon Asterisk (info)
+		MsgBox, 64, % Trans("Freenet Stopper"), %_InfoMessage%		; 64 = Icon Asterisk (info)
 	}
 }
 

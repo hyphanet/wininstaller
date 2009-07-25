@@ -16,7 +16,6 @@
 
 SendMode, Input								; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off							; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
-
 _LastState := -1							; Variable to keep track of the last known state of the service. -1 = Unknown, 0 = Disabled, 1 = Enabled
 
 ;
@@ -37,7 +36,7 @@ Loop, Parse, _FileRequirements, |
 {
 	IfNotExist, %A_LoopField%
 	{
-		PopupErrorMessage(Trans("Freenet Tray") Trans(" was unable to find the following file:") "`n`n" A_LoopField "`n`n" Trans("Make sure that you are running ") Trans("Freenet Tray") Trans(" from a Freenet installation directory.") "`n`n" Trans("If you are already doing so, please report this error message to the developers."))
+		PopupErrorMessage(Trans("Freenet Tray") " " Trans("was unable to find the following file:") "`n`n" A_LoopField "`n`n" Trans("Make sure that you are running ") Trans("Freenet Tray") Trans(" from a Freenet installation directory.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 		ExitApp, 1
 	}	
 }
@@ -52,7 +51,7 @@ Menu, TRAY, NoStandard							; Remove default tray menu items
 Menu, TRAY, Icon, freenetoffline.ico, , 1				; As we don't know if the node is running yet, show as offline
 Menu, TRAY, Tip, % Trans("Freenet Tray") _InstallSuffix
 
-Menu, TRAY, Add, % Trans("Browse Freenet"), BrowseFreenet
+Menu, TRAY, Add, % Trans("Launch Freenet"), BrowseFreenet
 Menu, TRAY, Add								; Separator
 Menu, TRAY, Add, % Trans("Start Freenet service"), Start
 Menu, TRAY, Add, % Trans("Stop Freenet service"), Stop
@@ -63,7 +62,7 @@ Menu, TRAY, Add								; Separator
 Menu, TRAY, Add, % Trans("About"), About
 Menu, TRAY, Add, % Trans("Exit"), Exit
 
-Menu, TRAY, Disable, % Trans("Browse Freenet")
+Menu, TRAY, Disable, % Trans("Launch Freenet")
 Menu, TRAY, Disable, % Trans("Start Freenet service")
 Menu, TRAY, Disable, % Trans("Stop Freenet service")
 
@@ -73,7 +72,7 @@ Menu, TRAY, Disable, % Trans("Stop Freenet service")
 _Arg1 = %1%
 If (_Arg1 == "/welcome")
 {
-	TrayTip, Freenet Tray,% Trans("You can browse, start and stop Freenet along with other useful things from this tray icon.") "`n`n" Trans("Doubleclick: Start/Browse Freenet") "`n" Trans("Right-click: Advanced menu"), 20, 1	; 1 = Info icon
+	TrayTip, % Trans("Freenet Tray"),% Trans("You can browse, start and stop Freenet along with other useful things from this tray icon.") "`n`n" Trans("Doubleclick: Start/Browse Freenet") "`n" Trans("Right-click: Advanced menu"), , 1	; 1 = Info icon
 }
 
 ;
@@ -188,11 +187,11 @@ DoStatusUpdate()
 
 		Menu, TRAY, Icon, freenet.ico, , 1
 
-		Menu, TRAY, Enable, % Trans("Browse Freenet")
+		Menu, TRAY, Enable, % Trans("Launch Freenet")
 		Menu, TRAY, Disable, % Trans("Start Freenet service")
 		Menu, TRAY, Enable, % Trans("Stop Freenet service")
 
-		Menu, TRAY, Default, % Trans("Browse Freenet")
+		Menu, TRAY, Default, % Trans("Launch Freenet")
 	}
 	Else If (_LastState <> 0 && _CurrentState <> 4)
 	{
@@ -200,7 +199,7 @@ DoStatusUpdate()
 
 		Menu, TRAY, Icon, freenetoffline.ico, , 1
 
-		Menu, TRAY, Disable, % Trans("Browse Freenet")
+		Menu, TRAY, Disable, % Trans("Launch Freenet")
 		Menu, TRAY, Enable, % Trans("Start Freenet service")
 		Menu, TRAY, Disable, % Trans("Stop Freenet service")
 

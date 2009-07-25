@@ -47,7 +47,7 @@ FileRemoveDir, %A_Temp%\FreenetInstaller, 1								; Remove any old temp dir
 FileCreateDir, %A_Temp%\FreenetInstaller								; Create a new temp dir
 If (ErrorLevel)
 {
-	MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to unpack necessary installation files to:") "`n`n" A_Temp "\FreenetInstaller`n`n" Trans("Please make sure that Freenet Installer has full access to the system's temporary files folder.")	; 16 = Icon Hand (stop/error)
+	MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to unpack necessary files to:") "`n`n" A_Temp "\FreenetInstaller`n`n" Trans("Please make sure that this program has full access to the system's temporary files folder.")	; 16 = Icon Hand (stop/error)
 	ExitApp
 }
 SetWorkingDir, %A_Temp%\FreenetInstaller								; Switch to our new temp dir as working dir. *NO* FileInstall lines before this!
@@ -74,7 +74,7 @@ _MixLineTextPush := (24/2)-(_TextHeight/2)			; Used for vertically centering tex
 ;
 If not (A_IsAdmin)
 {
-	MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer requires administrator privileges to install Freenet.`nPlease make sure that your user account has administrative access to the system,`nand Freenet Installer is executed with access to use these privileges.")	; 16 = Icon Hand (stop/error)
+	MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("requires administrator privileges to manage the Freenet service. Please make sure that your user account has administrative access to the system, and this program is executed with access to use these privileges.")	; 16 = Icon Hand (stop/error)
 	Exit()
 }
 
@@ -127,7 +127,7 @@ If A_OSVersion not in WIN_2000,WIN_XP,WIN_2003,WIN_VISTA
 	; Exit button
 	;
 	_Buttonx := (_GuiWidth2/2)-(_ButtonWidth/2)							; Center our button
-	Gui, Add, Button, Default xs%_Buttonx% W%_ButtonWidth% gButtonExit, % Trans("E&xit")			; Label "Exit" is triggered upon activation
+	Gui, Add, Button, Default xs%_Buttonx% W%_ButtonWidth% gButtonExit, % Trans("E&xit")		; Label "Exit" is triggered upon activation
 
 	Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer")
 	return
@@ -149,7 +149,7 @@ If (!CheckJavaVersion())
 	_Buttonx := (_GuiWidth2/2)-(_ButtonWidth/2)							; Center our button
 	Gui, Add, Button, xs%_Buttonx% y+%_StandardMargin% W%_ButtonWidth% v_cInstallJavaButton gButtonInstallJava, % Trans("&Install Java")
 
-	Gui, Add, Text, xs+%_GBHorMargin% y+%_StandardMargin% W%_GuiWidth3%, % Trans("The installation will continue once Java version ") _RequiredJRE Trans(" or later has been installed.")
+	Gui, Add, Text, xs+%_GBHorMargin% y+%_StandardMargin% W%_GuiWidth3%, % Trans("The installation will continue once Java version") " " _RequiredJRE " " Trans("or later has been installed.")
 
 	;
 	; Exit button
@@ -173,7 +173,7 @@ If (CheckForOldUninstaller())
 	_GBHeight := CalculateGroupBoxHeight(4,1,0,2)
 	Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Installation problem")
 
-	Gui, Add, Text, W%_GuiWidth3% xs+%_GBHorMargin% ys+%_GBTopMargin%, % Trans("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:")
+	Gui, Add, Text, W%_GuiWidth3% xs+%_GBHorMargin% ys+%_GBTopMargin%, % Trans("Freenet Installer") " " Trans("has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:")
 
 	_Buttonx := (_GuiWidth2/2)-(_ButtonWidth/2)							; Center our button
 	Gui, Add, Button, xs+%_Buttonx% y+%_StandardMargin% W%_ButtonWidth% v_cUninstallButton gButtonUninstall, % Trans("&Uninstall")
@@ -194,7 +194,7 @@ If (CheckForOldUninstaller())
 ;
 ; Text: Install guideline header
 ;
-Gui, Add, Text, xs W%_GuiWidth2% Center Section, % Trans("Please check the following default settings before continuing with the installation of Freenet.")
+Gui, Add, Text, xs W%_GuiWidth2% Section, % Trans("Please check the following default settings before continuing with the installation of Freenet.")
 
 ;
 ; Groupbox: Install directory
@@ -210,7 +210,7 @@ Gui, Add, Button, xs+%_Buttonx% ys%_Buttony% W%_ButtonWidth% v_cBrowseButton gBu
 Gui, Add, Button, x+%_StandardMargin% W%_ButtonWidth% v_cDefaultButton gButtonDefault, % Trans("De&fault")
 
 _Texty := 24+_StandardMargin
-Gui, Add, Text, xs+%_GBHorMargin% yp+%_Texty% W%_GuiWidth3%, % Trans("Freenet requires ") _RequiredFreeSpace Trans(" MB free disk space on the installation drive. The actual amount of space reserved to Freenet will be configured after the installation.")
+Gui, Add, Text, xs+%_GBHorMargin% yp+%_Texty% W%_GuiWidth3%, % Trans("Freenet requires") " " _RequiredFreeSpace " " Trans("MB free disk space on the installation drive. The actual amount of space reserved to Freenet will be configured after the installation.")
 
 _StatusWidth := _GuiWidth3-50										; We won't have a whole _GuiWidth3 to play around with, as the "Status: " part will use some of it (but we don't know how much because of localization). Allocating too much space will cause a small cosmetic bug (overlapping groupbox border), so make a proper guesstimate
 Gui, Add, Text, , % Trans("Status:")
@@ -230,10 +230,10 @@ Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, % Trans("Free
 _GBHeight := CalculateGroupBoxHeight(0,0,4,0)
 Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Additional settings")
 
-Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cAutoStartTrayManager Checked%_cAutoStartTrayManager%, % Trans("Start Freenet Tray Manager on Windows startup (Recommended)")
-Gui, Add, Checkbox, v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts (Recommended)")
-Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut (Optional)")
-Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Launch Freenet &after the installation (Optional)")
+Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cAutoStartTrayManager Checked%_cAutoStartTrayManager%, % Trans("Start Freenet &Tray Manager on Windows startup") " " Trans("(Recommended)")
+Gui, Add, Checkbox, v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts") " " Trans("(Recommended)")
+Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut") " " Trans("(Optional)")
+Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Launch Freenet &after the installation") " " Trans("(Optional)")
 
 ;
 ; Status bar and main buttons
@@ -268,7 +268,7 @@ FindInstallSuffix()											; Figure out if we already have existing installat
 ;
 If (!TestInstallDirWriteAccess())
 {
-	MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer was not able to write to the selected installation directory.`nPlease select one to which you have write access.")	; 48 = Icon Exclamation
+	MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to write to the selected installation directory. Please select one to which you have write access.")	; 48 = Icon Exclamation
 	VisualInstallEnd()
 	return				
 }
@@ -364,8 +364,6 @@ If (_cInstallStartMenuShortcuts)
 	FileCreateDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%
 	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_ProgramsCommon%\Freenet%_InstallSuffix%\Freenet.lnk, , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
 	FileCreateShortcut, %_InstallDir%\bin\freenettray.exe, %A_ProgramsCommon%\Freenet%_InstallSuffix%\Freenet Tray.lnk, , , % Trans("Opens Freenet Tray Manager in the notification area"), %_InstallDir%\Freenet.ico
-	FileCreateShortcut, %_InstallDir%\bin\start.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Start Freenet") ".lnk", , , % Trans("Starts the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
-	FileCreateShortcut, %_InstallDir%\bin\stop.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Stop Freenet") ".lnk", , , % Trans("Stops the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
 }
 If (_cInstallDesktopShortcuts)
 {
@@ -379,7 +377,7 @@ GuiControl, , _cProgressBar, +1
 ;
 If (_cAutoStartTrayManager)
 {
-	Run, %_InstallDir%\bin\freenettray.exe /welcome, , UseErrorLevel
+	Run, %_InstallDir%\bin\freenettray.exe /welcome, , UseErrorLevel	; Unfortunately, this will cause the tray manager to be executed UAC-elevated as well. There doesn't seem to be any easy way around this. It will be executed non-elevated after a reboot though.
 }
 RunWait, %_InstallDir%\bin\start.exe /verysilent, , UseErrorLevel
 GuiControl, , _cProgressBar, +1
@@ -387,7 +385,7 @@ GuiControl, , _cProgressBar, +1
 ;
 ; Installation (almost) finished! (launching fproxy is done below for usability reasons)
 ;
-MsgBox, 64, % Trans("Freenet Installer"), % Trans("Installation finished successfully!") ; 64 = Icon Asterisk (info)
+MsgBox, 64, % Trans("Freenet Installer"), % Trans("Installation finished successfully!") "`n`n" Trans("Freenet Installer by:") " Christian Funder Sommerlund (Zero3)`n`n" Trans("English localization by: Christian Funder Sommerlund (Zero3)")	; 64 = Icon Asterisk (info)
 
 ;
 ; Launch fproxy
