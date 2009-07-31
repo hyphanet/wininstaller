@@ -29,7 +29,7 @@ _ButtonWidth := 100							; Width of our buttons
 _LanguageListWidth := 100						; Width of language drop-down list
 
 _RequiredJRE := 1.5							; Java version required by Freenet. If not found, user will be asked to upgrade/install via the bundled online installer
-_RequiredFreeSpace := 10+256+512					; In MB, how much free space do we require to install? (x MB installed files + x MB minimum datastore size + x MB free space for Windows and other applications to continue operating without running low)
+_RequiredFreeSpace := 10+384						; In MB, how much free space do we require to install? (x MB installed files + x MB free space for Windows and other applications to continue operating without running low)
 _InternalPathLength := 75						; Length of longest path within the Freenet installation. Installation will refuse to continue if install path + this number exceeds 255 (FAT32 and NTFS limit)
 
 _DefaultInstallDir = %A_ProgramFiles%\Freenet				; Default installation directory
@@ -210,7 +210,7 @@ Gui, Add, Button, xs+%_Buttonx% ys%_Buttony% W%_ButtonWidth% v_cBrowseButton gBu
 Gui, Add, Button, x+%_StandardMargin% W%_ButtonWidth% v_cDefaultButton gButtonDefault, % Trans("De&fault")
 
 _Texty := 24+_StandardMargin
-Gui, Add, Text, xs+%_GBHorMargin% yp+%_Texty% W%_GuiWidth3%, % Trans("Freenet requires") " " _RequiredFreeSpace " " Trans("MB free disk space on the installation drive. The actual amount of space reserved to Freenet will be configured after the installation.")
+Gui, Add, Text, xs+%_GBHorMargin% yp+%_Texty% W%_GuiWidth3%, % Trans("Freenet requires the installation drive to have at least") " " _RequiredFreeSpace " " Trans("MB free disk space. The actual amount of space reserved to Freenet will be configured after the installation.")
 
 _StatusWidth := _GuiWidth3-50										; We won't have a whole _GuiWidth3 to play around with, as the "Status: " part will use some of it (but we don't know how much because of localization). Allocating too much space will cause a small cosmetic bug (overlapping groupbox border), so make a proper guesstimate
 Gui, Add, Text, , % Trans("Status:")
