@@ -29,7 +29,7 @@ _ButtonWidth := 100							; Width of our buttons
 _LanguageListWidth := 100						; Width of language drop-down list
 
 _RequiredJRE := 1.5							; Java version required by Freenet. If not found, user will be asked to upgrade/install via the bundled online installer
-_RequiredFreeSpace := 10+384						; In MB, how much free space do we require to install? (x MB installed files + x MB free space for Windows and other applications to continue operating without running low)
+_RequiredFreeSpace := 10+256+384					; In MB, how much free space do we require to install? (x MB installed files + x MB minimum datastore size + x MB free space for Windows and other applications to continue operating without running low)
 _InternalPathLength := 75						; Length of longest path within the Freenet installation. Installation will refuse to continue if install path + this number exceeds 255 (FAT32 and NTFS limit)
 
 _DefaultInstallDir = %A_ProgramFiles%\Freenet				; Default installation directory
