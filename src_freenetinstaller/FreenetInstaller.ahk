@@ -375,11 +375,11 @@ GuiControl, , _cProgressBar, +1
 ;
 ; Start the tray manager and the node
 ;
+RunWait, %_InstallDir%\bin\start.exe /verysilent, , UseErrorLevel
 If (_cAutoStartTrayManager)
 {
 	Run, %_InstallDir%\bin\freenettray.exe /welcome, , UseErrorLevel	; Unfortunately, this will cause the tray manager to be executed UAC-elevated as well. There doesn't seem to be any easy way around this. It will be executed non-elevated after a reboot though.
 }
-RunWait, %_InstallDir%\bin\start.exe /verysilent, , UseErrorLevel
 GuiControl, , _cProgressBar, +1
 
 ;
