@@ -354,7 +354,7 @@ if not exist freenettray.exe goto error3
 FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto error3
 
 java -cp ..\lib\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 Title Freenet Update Over HTTP Script
 
 ::Copy it to the /bin folder
@@ -473,7 +473,7 @@ if not exist freenet-%RELEASE%-latest.jar goto error4
 FOR %%I IN ("freenet-%RELEASE%-latest.jar") DO if %%~zI==0 goto error4
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test freenet-%RELEASE%-latest.jar . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 echo    - Freenet-%RELEASE%-snapshot.jar downloaded and verified
 :mainjardownloadend
 
@@ -487,7 +487,7 @@ if not exist freenet-ext.jar goto error4
 FOR %%I IN ("freenet-ext.jar") DO if %%~zI==0 goto error4
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test freenet-ext.jar . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 echo    - Freenet-ext.jar downloaded and verified
 :extjardownloadend
 
@@ -501,7 +501,7 @@ if not exist wrapper-windows-x86-32.exe goto error4
 FOR %%I IN ("wrapper-windows-x86-32.exe") DO if %%~zI==0 goto error4
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test wrapper-windows-x86-32.exe . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 echo    - wrapper .exe downloaded and verified
 :wrapperexedownloadend
 
@@ -515,7 +515,7 @@ if not exist wrapper-windows-x86-32.dll goto error4
 FOR %%I IN ("wrapper-windows-x86-32.dll") DO if %%~zI==0 goto error4
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test wrapper-windows-x86-32.dll . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 echo    - wrapper .dll downloaded and verified
 :wrapperdlldownloadend
 
@@ -529,7 +529,7 @@ if not exist start.exe goto error4
 FOR %%I IN ("start.exe") DO if %%~zI==0 goto error4
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test start.exe . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 echo    - start.exe downloaded and verified
 :startexedownloadend
 
@@ -543,7 +543,7 @@ if not exist stop.exe goto error4
 FOR %%I IN ("stop.exe") DO if %%~zI==0 goto error4
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test stop.exe . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 echo    - stop.exe downloaded and verified
 :stopexedownloadend
 
@@ -557,7 +557,7 @@ if not exist freenettray.exe goto error4
 FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto error4
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 echo    - freenettray.exe downloaded and verified
 :traydownloadend
 
@@ -571,7 +571,7 @@ if not exist freenetlauncher.exe goto error4
 FOR %%I IN ("freenetlauncher.exe") DO if %%~zI==0 goto error4
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test freenetlauncher.exe . ..\%CAFILE% > NUL
-if not errorlevel 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto error4
 echo    - freenetlauncher.exe downloaded and verified
 :stoplauncherdownloadend
 Title Freenet Update Over HTTP Script
