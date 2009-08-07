@@ -676,8 +676,8 @@ echo    - Copied updated wrapper .exe
 if %WRAPPERDLLUPDATED%==0 goto wrapperdllcopyend
 copy /Y wrapper-windows-x86-32.dll ..\lib\wrapper-windows-x86-32.dll > NUL
 ::Prepare .sha1 file for next run.
-if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
-if exist wrapper-windows-x86-32.exe.sha1.new ren wrapper-windows-x86-32.exe.sha1.new wrapper-windows-x86-32.exe.sha1
+if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
+if exist wrapper-windows-x86-32.dll.sha1.new ren wrapper-windows-x86-32.dll.sha1.new wrapper-windows-x86-32.dll.sha1
 echo    - Copied updated wrapper dll
 :wrapperdllcopyend
 
