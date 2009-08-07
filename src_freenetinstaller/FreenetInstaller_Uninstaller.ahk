@@ -137,7 +137,7 @@ Loop
 	}
 	Else
 	{
-		If (!_SingalSent)
+		If (!_SignalSent)
 		{
 			_SignalSent := 1
 			Service_Stop("freenet" . _InstallSuffix)
