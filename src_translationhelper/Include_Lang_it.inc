@@ -1,5 +1,5 @@
 ;
-; Translation file - Italian (it) - by Luke771 (luke771 that-a-thingy gmail that-dot-thingy com / www.apophis.ch / FAFS freesite)
+; Translation file - Italian (it) - by Luke771 (luke771 that-a-thingy gmail that-dot-thingy com / FAFS freesite)
 ;
 
 LoadLanguage_it()
