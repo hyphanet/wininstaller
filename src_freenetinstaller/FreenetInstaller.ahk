@@ -373,23 +373,23 @@ If (_cInstallDesktopShortcuts)
 GuiControl, , _cProgressBar, +1
 
 ;
-; Start the tray manager and the node
+; Start the node
 ;
 RunWait, %_InstallDir%\bin\start.exe /verysilent, , UseErrorLevel
-If (_cAutoStartTrayManager)
-{
-	Run, %_InstallDir%\bin\freenettray.exe /welcome, , UseErrorLevel	; Unfortunately, this will cause the tray manager to be executed UAC-elevated as well. There doesn't seem to be any easy way around this. It will be executed non-elevated after a reboot though.
-}
 GuiControl, , _cProgressBar, +1
 
 ;
-; Installation (almost) finished! (launching fproxy is done below for usability reasons)
+; Installation (almost) finished! (launching of stuff is done below for usability reasons)
 ;
 MsgBox, 64, % Trans("Freenet Installer"), % Trans("Installation finished successfully!") "`n`n" Trans("Freenet Installer by:") " Christian Funder Sommerlund (Zero3)`n`n" Trans("English localization by: Christian Funder Sommerlund (Zero3)")	; 64 = Icon Asterisk (info)
 
 ;
-; Launch fproxy
+; Launch stuff 	(Unfortunately, launched executables will inherit our UAC-elevation. There doesn't seem to be any easy way around this. They will be executed non-elevated the next time.
 ;
+If (_cAutoStartTrayManager)
+{
+	Run, %_InstallDir%\bin\freenettray.exe /welcome, , UseErrorLevel
+}
 If (_cBrowseAfterInstall)
 {
 	Run, %_InstallDir%\freenetlauncher.exe, , UseErrorLevel
