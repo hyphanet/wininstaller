@@ -1,3 +1,7 @@
+;
+; Translation file - Spanish (es) - by Caco_Patane (cacopatane that-a-thingy gmail that-dot-thingy com)
+;
+
 LoadLanguage_es()
 {
 	; Installer - Common
@@ -84,21 +88,21 @@ LoadLanguage_es()
 	; Trans_Add("The development team would appreciate it very much if you can`nspare a moment and fill out a short, anonymous online`nsurvey about the reason for your uninstallation.`n`nThe survey, located on the Freenet website, will be opened`nin your browser after the uninstallation.`n`nTake the uninstallation survey?", "")
 
 	; Uninstaller - Error messageboxes
-	; Trans_Add("The uninstaller requires administrator privileges to uninstall Freenet. Please make sure that your user account has administrative access to the system, and the uninstaller is executed with access to use these privileges.", "")
-	; Trans_Add("The uninstaller was not able to unpack necessary files to:", "")
-	; Trans_Add("Please make sure that the uninstaller has full access to the system's temporary files folder.", "")
-	; Trans_Add("The uninstaller was unable to recognize your Freenet installation at:", "")
-	; Trans_Add("Please run this uninstaller from the 'bin' folder of a Freenet installation.", "")
+	Trans_Add("The uninstaller requires administrator privileges to uninstall Freenet. Please make sure that your user account has administrative access to the system, and the uninstaller is executed with access to use these privileges.", "El desinstalador requiere permisos de administrador. Asegurese que su usuario tienen permisos de administrador en el sistema y que el desinstalador este corriendo con dichos privilegios.")
+	Trans_Add("The uninstaller was not able to unpack necessary files to:", "El desinstalador no pudo descomprimir los archivos necessarios en:")
+	Trans_Add("Please make sure that the uninstaller has full access to the system's temporary files folder.", "Asegurese que el desinstalador tiene acceso completo a la carpeta temporal del sistema")
+	Trans_Add("The uninstaller was unable to recognize your Freenet installation at:", "El desinstalador no pudo reconocer su instalacion de Freenet en:")
+	Trans_Add("Please run this uninstaller from the 'bin' folder of a Freenet installation.", "Por favor, ejecute este instalador desde el directorio 'bin' de una instalacion de Freenet")
 
 	; Uninstaller - Service problems
-	; Trans_Add("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "")
-	; Trans_Add("The uninstaller was unable to find and control the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "")
-	; Trans_Add("The uninstaller was unable to stop the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "")
+	Trans_Add("The uninstaller was unable to control the Freenet system service as it appears to be stuck.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "El desintalador no pudo controlar el servicio de Freenet que parece estar atascado.`n`nPor favor intente nuevamente.`n`nSi el problema persiste, reporte este mensaje de error a los desarrolladores de Freenet.")
+	Trans_Add("The uninstaller was unable to find and control the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "El desinstalador no pudo encontrar el servicio de Freenet.`n`nPor favor, intente nuevamente.`n`nSi el problema persiste, reporte este mensaje de error a los desarrolladores de Freenet.")
+	Trans_Add("The uninstaller was unable to stop the Freenet system service.`n`nPlease try again.`n`nIf the problem keeps occurring, please report this error message to the developers.", "El desinstalador no pudo frenar el servicio de Freenet.`n`nPor favor intente nuevamente.`n`nSi el problema persiste, reporte este mensaje de error a los desarrolladores de Freenet.")
 
 	; Uninstaller - Files undeletable
-	; Trans_Add("The uninstaller was unable to delete the Freenet files located at:", "")
-	; Trans_Add("Please close all applications with open files inside this directory.", "")
-	; Trans_Add("The uninstallation was aborted.`n`nPlease manually remove the rest of your Freenet installation.", "")
+	Trans_Add("The uninstaller was unable to delete the Freenet files located at:", "El desinstalador no puedo eliminar los archivos de Freenet ubicados en:")
+	Trans_Add("Please close all applications with open files inside this directory.", "Por favor cierre todas las aplicaciones que este ejecutando que tengan archivos abiertos dentro de este directorio.")
+	Trans_Add("The uninstallation was aborted.`n`nPlease manually remove the rest of your Freenet installation.", "Se aborto el proceso de instalacion.`n`nPor favor, elimine Freenet manualmente.")
 
 	; Uninstaller - Progress statuses
 	Trans_Add("Stopping system service...", "Frenando servicio del sistema...")
