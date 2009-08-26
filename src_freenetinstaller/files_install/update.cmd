@@ -226,8 +226,7 @@ echo    - New ext jar found!
 set EXTJARUPDATED=1
 :extcheckend
 
-::Bypass this section until Toad fixes the .sha1
-goto wrapperexecheckend
+
 ::Check wrapper .exe
 if not exist ..\bin\wrapper-windows-x86-32.exe goto wrapperexecheckend
 echo - Checking wrapper .exe
@@ -253,8 +252,7 @@ echo    - New wrapper .exe found!
 set WRAPPEREXEUPDATED=1
 :wrapperexecheckend
 
-::Bypass this section until Toad fixes the .sha1
-goto wrapperdllcheckend
+
 ::Check wrapper .dll
 if not exist ..\lib\wrapper-windows-x86-32.dll goto wrapperdllcheckend
 echo - Checking wrapper .dll
@@ -281,8 +279,7 @@ echo    - New wrapper .dll found!
 set WRAPPERDLLUPDATED=1
 :wrapperdllcheckend
 
-::Bypass this section until Toad fixes the .sha1
-goto startexecheckend
+
 ::Check start.exe if present
 if not exist ..\bin\start.exe goto startexecheckend
 echo - Checking start.exe
@@ -308,8 +305,7 @@ echo    - New start.exe found!
 set STARTEXEUPDATED=1
 :startexecheckend
 
-::Bypass this section until Toad fixes the .sha1
-goto stopexecheckend
+
 ::Check stop.exe if present
 if not exist ..\bin\stop.exe goto stopexecheckend
 echo - Checking stop.exe
@@ -416,8 +412,7 @@ set TRAYUTILITYUPDATED=1
 if not exist ..\tray_die.dat type "" >> ..\tray_die.dat
 :traycheckend
 
-::Bypass this section until Toad fixes the .sha1
-goto launchercheckend
+
 ::Check launcher utility if present
 if not exist ..\freenetlauncher.exe goto launchercheckend
 echo - Checking freenetlauncher.exe
