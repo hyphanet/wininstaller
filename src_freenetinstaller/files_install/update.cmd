@@ -130,7 +130,8 @@ if not errorlevel 1 goto updaterok
 ::It has! Run new version and end self
 echo - New update script found, restarting update script...
 echo -----
-start update_temp\update.new.cmd
+copy /Y update_temp\update.new.cmd update.new.cmd > NUL
+start update.new.cmd %RELEASE%
 goto veryend
 
 ::Updater is up to date, check Freenet
