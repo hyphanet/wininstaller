@@ -177,7 +177,6 @@ if exist ..\freenet-*.url move /Y ..\freenet-*.url . > NUL
 if exist ..\freenet-*.sha1 move /Y ..\freenet-*.sha1 . > NUL
 if exist ..\freenet-stable* del ..\freenet-stable*
 if exist ..\freenet-testing* del ..\freenet-testing*
-if exist ..\update.new.cmd del /F ..\update.new.cmd > NUL
 
 ::Check for a new main jar
 echo - Checking main jar
@@ -833,7 +832,7 @@ goto veryend
 
 ::If this session was launched by an old updater, replace it now (and force exit, or we will leave a command prompt open)
 :newend
-copy /Y update_temp\update.new.cmd update.cmd > NUL
+copy /Y update.new.cmd update.cmd > NUL
 echo -----
 exit
 
