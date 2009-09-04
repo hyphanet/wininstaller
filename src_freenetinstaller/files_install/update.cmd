@@ -63,6 +63,7 @@ set STARTEXEUPDATED=0
 set STOPEXEUPDATED=0
 set TRAYUTILITYUPDATED=0
 set LAUNCHERUPDATED=0
+set SEEDUPDATED=0
 set PATH=%SYSTEMROOT%\System32\;%PATH%
 set RELEASE=stable
 if "%1"=="testing" set RELEASE=testing
@@ -438,6 +439,27 @@ echo    - New freenetlauncher.exe found!
 set LAUNCHERUPDATED=1
 :launchercheckend
 
+::Check for an updated seednodes.fref
+if exist seednodes.fref.sha1.bak del seednodes.fref.sha1.bak
+if exist seednodes.fref.sha1 copy seednodes.fref.sha1 seednodes.fref.sha1.bak > NUL
+if exist seednodes.fref.sha1.new del seednodes.fref.sha1.new
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/opennet/seednodes.fref.sha1 -O seednodes.fref.sha1.new
+Title Freenet Update Over HTTP Script
+
+if not exist seednodes.fref.sha1.new goto error3
+FOR %%I IN ("seednodes.fref.sha1.new") DO if %%~zI==0 goto error3
+
+::Do we have something old to compare with? If not, update right away
+if not exist seednodes.fref.sha1 goto seedyes
+
+fc seednodes.fref.sha1 seednodes.fref.sha1.new > NUL
+if errorlevel 1 goto seedyes
+goto seedcheckend
+
+:seedyes
+set SEEDUPDATED=1
+:seedcheckend
+
 
 ::Check if we have flagged any of the files as updated
 if %MAINJARUPDATED%==1 goto updatebegin
@@ -569,6 +591,22 @@ java -cp ..\lib\sha1test.jar Sha1Test freenetlauncher.exe . ..\%CAFILE% > NUL
 if %ERRORLEVEL% NEQ 0 goto error4
 echo    - freenetlauncher.exe downloaded and verified
 :stoplauncherdownloadend
+
+::Download an updated seednodes.fref.  We will only do this if at least one of the main files above were updated and the .sha1 of the file has changed.
+::We are stingy because we don't want people to run this script *just* to get the latest seednodes file.
+if %SEEDUPDATED%==0 goto seeddownloadend
+if exist seednodes.fref.sha1 del seednodes.fref.sha1
+if exist seednodes.fref del seednodes.fref
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/opennet/seednodes.fref -O seednodes.fref
+Title Freenet Update Over HTTP Script
+if not exist seednodes.fref goto error4
+FOR %%I IN ("seednodes.fref") DO if %%~zI==0 goto error4
+::Test the new file for integrity.
+java -cp ..\lib\sha1test.jar Sha1Test seednodes.fref . ..\%CAFILE% > NUL
+if %ERRORLEVEL% NEQ 0 goto error4
+echo    - seednodes.fref downloaded and verified
+:seeddownloadend
+
 Title Freenet Update Over HTTP Script
 
 
@@ -576,7 +614,7 @@ Title Freenet Update Over HTTP Script
 if %TRAYUTILITYUPDATED%==0 goto nodestop
 ::We can only hope the tray gets shutdown in time
 if not exist ..\tray_die.dat type "" >> ..\tray_die.dat
-::TODO code this section
+
 
 :nodestop
 ::See if we are using the new binary stop.exe
@@ -638,6 +676,9 @@ if exist ..\bin\freenettray.exe copy ..\bin\freenettray.exe freenettray.exe.bak 
 ::Backup last version of freenetlauncher.exe file, user may want to go back if something is broken in new build
 if exist freenetlauncher.exe.bak del freenetlauncher.exe.bak
 if exist ..\freenetlauncher.exe copy ..\freenetlauncher.exe freenetlauncher.exe.bak > NUL
+::Backup last version of seednodes.fref file, user may want to go back if something is broken in new build
+if exist seednodes.fref.bak del seednodes.fref.bak
+if exist ..\seednodes.fref copy ..\seednodes.fref seednodes.fref.bak > NUL
 
 echo - Installing new files...
 ::Main jar
@@ -717,6 +758,15 @@ if exist freenettray.exe.sha1.new ren freenettray.exe.sha1.new freenettray.exe.s
 echo    - Copied updated freenettray.exe
 :traycopyend
 
+::seednodes.fref
+if %SEEDUPDATED%==0 goto seedcopyend
+copy /Y seednodes.fref ..\seednodes.fref > NUL
+::Prepare .sha1 file for next run.
+if exist seednodes.fref.sha1 del seednodes.fref.sha1
+if exist seednodes.fref.sha1.new ren seednodes.fref.sha1.new seednodes.fref.sha1
+echo    - Copied updated seednodes.fref
+:seedcopyend
+
 goto end
 
 ::No update needed
@@ -770,6 +820,9 @@ if exist freenettray.exe.sha1.bak ren freenettray.exe.sha1.bak freenettray.exe.j
 ::Launcher.exe
 if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
 if exist freenetlauncher.exe.sha1.bak ren freenetlauncher.exe.sha1.bak freenetlauncher.exe.sha1
+::seednodes.fref
+if exist seednodes.fref.sha1 del seednodes.fref.sha1
+if exist seednodes.fref.sha1.bak ren seednodes.fref.sha1.bak seednodes.fref.sha1
 
 goto end
 
@@ -870,6 +923,10 @@ if exist freenettray.exe.sha1.bak ren freenettray.exe.sha1.bak freenettray.exe.j
 ::Launcher.exe
 if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
 if exist freenetlauncher.exe.sha1.bak ren freenetlauncher.exe.sha1.bak freenetlauncher.exe.sha1
+::seednodes.fref
+if exist seednodes.fref.sha1 del seednodes.fref.sha1
+if exist seednodes.fref.sha1.bak ren seednodes.fref.sha1.bak seednodes.fref.sha1
+
 pause
 
 :veryend
