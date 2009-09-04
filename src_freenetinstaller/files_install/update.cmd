@@ -165,7 +165,7 @@ echo -----
 
 ::Check for sha1test and download if needed.
 if not exist lib mkdir lib
-if not exist lib\sha1test.jar bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10  http://downloads.freenetproject.org/alpha/installer/sha1test.jar -O lib\sha1test.jar
+if not exist lib\sha1test.jar bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10  https://downloads.freenetproject.org/alpha/installer/sha1test.jar -O lib\sha1test.jar
 if not errorlevel 0 goto error3
 if not exist lib\sha1test.jar goto error3
 
