@@ -36,7 +36,7 @@ Loop, Parse, _FileRequirements, |
 {
 	IfNotExist, %A_LoopField%
 	{
-		PopupErrorMessage(Trans("Freenet Tray") " " Trans("was unable to find the following file:") "`n`n" A_LoopField "`n`n" Trans("Make sure that you are running ") Trans("Freenet Tray") Trans(" from a Freenet installation directory.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+		PopupErrorMessage(Trans("Freenet Tray") " " Trans("was unable to find the following file:") "`n`n" A_LoopField "`n`n" Trans("Make sure that you are running") " " Trans("Freenet Tray") " " Trans("from a Freenet installation directory.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 		ExitApp, 1
 	}	
 }
