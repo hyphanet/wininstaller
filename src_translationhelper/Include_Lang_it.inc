@@ -1,5 +1,5 @@
 ;
-; Translation file - Italian (it) - by Luke771 (luke771 that-a-thingy gmail that-dot-thingy com / FAFS freesite)
+; Translation file - Italian (it) - by Luke771 (luke771 that-a-thingy gmail that-dot-thingy com / www.apophis.ch / FAFS freesite)
 ;
 
 LoadLanguage_it()
@@ -43,8 +43,8 @@ LoadLanguage_it()
 	Trans_Add("Installation directory", "Directory installazione")
 	Trans_Add("&Browse", "Cam&bia")
 	Trans_Add("De&fault", "Prede&finita")
-	Trans_Add("Freenet requires", "")
-	Trans_Add("MB free disk space on the installation drive. The actual amount of space reserved to Freenet will be configured after the installation.", "")
+	Trans_Add("Freenet requires the installation drive to have at least", "")
+	Trans_Add("MB free disk space. The actual amount of space reserved to Freenet will be configured after the installation.", "")
 	Trans_Add("Status:", "Stato")
 	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "Se il percorso non contiene 'Freenet', una nuova cartella verrà creata automaticamente")
 	Trans_Add("Invalid install path!", "Percorso di installazione non valido!")
