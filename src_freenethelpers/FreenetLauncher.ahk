@@ -74,9 +74,7 @@ If (!ErrorLevel && _ChromeInstallDir <> "")
 
 	IfExist, %_ChromePath%
 	{
-;		Run, %_ChromePath% --incognito "%_URL%%_SecureSuffix%", , UseErrorLevel	; All versions of Chrome should support incognito mode
-; Unfortunately, incognito mode is buggy. If there is already a Chrome window open, urls given at the command line will be opened in a non-incognito tab. See http://code.google.com/p/chromium/issues/detail?id=9636 (bug #3376 on our bug tracker).
-		Run, %_ChromePath% --incognito "%_URL%", , UseErrorLevel ; All versions of Chrome should support incognito mode
+		Run, %_ChromePath% --incognito "%_URL%%_SecureSuffix%", , UseErrorLevel	; All versions of Chrome should support incognito mode
 		ExitApp, 0
 	}
 }
