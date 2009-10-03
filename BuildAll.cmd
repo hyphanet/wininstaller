@@ -22,6 +22,13 @@
 :: Cleanup and prepare
 ::
 if exist bin\FreenetInstaller.exe del bin\FreenetInstaller.exe
+
+if exist bin\freenetlauncher.exe del bin\freenetlauncher.exe
+if exist bin\freenettray.exe del bin\freenettray.exe
+if exist bin\start.exe del bin\start.exe
+if exist bin\stop.exe del bin\stop.exe
+if exist bin\freenetuninstaller.exe del bin\freenetuninstaller.exe
+
 if not exist src_freenetinstaller\files_install\plugins mkdir src_freenetinstaller\files_install\plugins
 copy bin\freenet.jar src_freenetinstaller\files_install\freenet.jar
 copy bin\freenet-ext.jar src_freenetinstaller\files_install\freenet-ext.jar
@@ -85,8 +92,8 @@ del src_freenetinstaller\files_install\plugins\KeyExplorer.jar
 del src_freenetinstaller\files_install\plugins\ThawIndexBrowser.jar
 del src_freenetinstaller\files_install\plugins\UPnP.jar
 del src_freenetinstaller\files_install\plugins\XMLLibrarian.jar
-move /Y src_freenetinstaller\files_install\freenetlauncher.exe bin\freenetlauncher.exe
-move /Y src_freenetinstaller\files_install\bin\freenettray.exe bin\freenettray.exe
-move /Y src_freenetinstaller\files_install\bin\start.exe bin\start.exe
-move /Y src_freenetinstaller\files_install\bin\stop.exe bin\stop.exe
-move /Y src_freenetinstaller\files_install\bin\freenetuninstaller.exe bin\freenetuninstaller.exe
+move src_freenetinstaller\files_install\freenetlauncher.exe bin\freenetlauncher.exe
+move src_freenetinstaller\files_install\bin\freenettray.exe bin\freenettray.exe
+move src_freenetinstaller\files_install\bin\start.exe bin\start.exe
+move src_freenetinstaller\files_install\bin\stop.exe bin\stop.exe
+move src_freenetinstaller\files_install\bin\freenetuninstaller.exe bin\freenetuninstaller.exe
