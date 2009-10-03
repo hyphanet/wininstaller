@@ -50,6 +50,11 @@ _ServiceName = freenet%_InstallSuffix%
 If (Service_State(_ServiceName) <> 4)
 {
 	RunWait, bin\start.exe /silent, , UseErrorLevel
+
+	If (ErrorLevel == 1)
+	{
+		ExitApp, 1					; Error message has already been handled by start.exe, so just fail silently
+	}
 }
 
 ;
