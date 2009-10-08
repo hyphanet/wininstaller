@@ -102,6 +102,9 @@ if not exist writetest goto writefail
 del writetest > NUL
 if exist writetest goto writefail
 
+::Kludge to disable setting file permissions on the the deprecated custom user "freenet" 
+if exist bin\freenettray.exe set VISTA=2
+
 :: Maybe fix bug #2556
 echo - Changing file permissions
 if %VISTA%==0 echo Y| cacls . /E /T /C /G freenet:f > NUL
