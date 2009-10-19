@@ -13,7 +13,7 @@
 :: - bin\KeyExplorer.jar (Freenet plugin jar)
 :: - bin\ThawIndexBrowser.jar (Freenet plugin jar)
 :: - bin\UPnP.jar (Freenet plugin jar)
-:: - bin\XMLLibrarian.jar (Freenet plugin jar)
+:: - bin\Library.jar (Freenet plugin jar)
 ::
 :: - src_freenetinstaller\files_install\seednodes.fref (seednodes file)
 ::
@@ -32,7 +32,7 @@ copy bin\JSTUN.jar src_freenetinstaller\files_install\plugins\JSTUN.jar
 copy bin\KeyExplorer.jar src_freenetinstaller\files_install\plugins\KeyExplorer.jar
 copy bin\ThawIndexBrowser.jar src_freenetinstaller\files_install\plugins\ThawIndexBrowser.jar
 copy bin\UPnP.jar src_freenetinstaller\files_install\plugins\UPnP.jar
-copy bin\XMLLibrarian.jar src_freenetinstaller\files_install\plugins\XMLLibrarian.jar
+copy bin\Library.jar src_freenetinstaller\files_install\plugins\Library.jar
 
 ::
 :: Patch AHK library
@@ -91,4 +91,4 @@ del src_freenetinstaller\files_install\plugins\JSTUN.jar
 del src_freenetinstaller\files_install\plugins\KeyExplorer.jar
 del src_freenetinstaller\files_install\plugins\ThawIndexBrowser.jar
 del src_freenetinstaller\files_install\plugins\UPnP.jar
-del src_freenetinstaller\files_install\plugins\XMLLibrarian.jar
+del src_freenetinstaller\files_install\plugins\Library.jar

@@ -39,4 +39,4 @@ FileInstall, files_install\plugins\JSTUN.jar,			%_InstallDir%\plugins\JSTUN.jar
 FileInstall, files_install\plugins\KeyExplorer.jar,		%_InstallDir%\plugins\KeyExplorer.jar
 FileInstall, files_install\plugins\ThawIndexBrowser.jar,	%_InstallDir%\plugins\ThawIndexBrowser.jar
 FileInstall, files_install\plugins\UPnP.jar,			%_InstallDir%\plugins\UPnP.jar
-FileInstall, files_install\plugins\XMLLibrarian.jar,		%_InstallDir%\plugins\XMLLibrarian.jar
+FileInstall, files_install\plugins\Library.jar,		%_InstallDir%\plugins\Library.jar
