@@ -28,15 +28,15 @@ _StandardMargin := 12							; Our standard margin. Must be at least 8 px.
 _ButtonWidth := 100							; Width of our buttons
 _LanguageListWidth := 100						; Width of language drop-down list
 
-_RequiredJRE := 1.5							; Java version required by Freenet. If not found, user will be asked to upgrade/install via the bundled online installer
-_UsedFreeSpace := _Inc_InstallSize+256					; What we actually need. Installation size + default datastore size
-_RequiredFreeSpace := _UsedFreeSpace+512				; In MB, how much free space do we require to install? What we actually use + enough free space for Windows to continue operating (in case install dir is on system drive... and to not block the drive in general)
+_RequiredJRE := 1.6							; Java version required by Freenet. If not found, user will be asked to upgrade/install via the bundled online installer
+_RequiredFreeSpace := 10+256+384					; In MB, how much free space do we require to install? (x MB installed files + x MB minimum datastore size + x MB free space for Windows and other applications to continue operating without running low)
 _InternalPathLength := 75						; Length of longest path within the Freenet installation. Installation will refuse to continue if install path + this number exceeds 255 (FAT32 and NTFS limit)
 
 _DefaultInstallDir = %A_ProgramFiles%\Freenet				; Default installation directory
+_cAutoStartTrayManager := 1						; Automatically start the tray manager on Windows startup by default?
 _cInstallStartMenuShortcuts := 1					; Install start menu shortcut(s) by default?
-_cInstallDesktopShortcuts := 1						; Install desktop shorctu(s) by default?
-_cBrowseAfterInstall := 1						; Browse Freenet after installation by default?
+_cInstallDesktopShortcuts := 0						; Install desktop shorctu(s) by default?
+_cBrowseAfterInstall := 0						; Browse Freenet after installation by default?
 
 ;
 ; General init stuff
@@ -47,7 +47,7 @@ FileRemoveDir, %A_Temp%\FreenetInstaller, 1								; Remove any old temp dir
 FileCreateDir, %A_Temp%\FreenetInstaller								; Create a new temp dir
 If (ErrorLevel)
 {
-	MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to unpack necessary installation files to:") "`n`n" A_Temp "\FreenetInstaller`n`n" Trans("Please make sure that Freenet Installer has full access to the system's temporary files folder.")	; 16 = Icon Hand (stop/error)
+	MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to unpack necessary files to:") "`n`n" A_Temp "\FreenetInstaller`n`n" Trans("Please make sure that this program has full access to the system's temporary files folder.")	; 16 = Icon Hand (stop/error)
 	ExitApp
 }
 SetWorkingDir, %A_Temp%\FreenetInstaller								; Switch to our new temp dir as working dir. *NO* FileInstall lines before this!
@@ -74,7 +74,7 @@ _MixLineTextPush := (24/2)-(_TextHeight/2)			; Used for vertically centering tex
 ;
 If not (A_IsAdmin)
 {
-	MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer requires administrator privileges to install Freenet.`nPlease make sure that your user account has administrative access to the system,`nand Freenet Installer is executed with access to use these privileges.")	; 16 = Icon Hand (stop/error)
+	MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("requires administrator privileges to manage the Freenet service. Please make sure that your user account has administrative access to the system, and this program is executed with access to use these privileges.")	; 16 = Icon Hand (stop/error)
 	Exit()
 }
 
@@ -127,7 +127,7 @@ If A_OSVersion not in WIN_2000,WIN_XP,WIN_2003,WIN_VISTA
 	; Exit button
 	;
 	_Buttonx := (_GuiWidth2/2)-(_ButtonWidth/2)							; Center our button
-	Gui, Add, Button, Default xs%_Buttonx% W%_ButtonWidth% gButtonExit, % Trans("E&xit")			; Label "Exit" is triggered upon activation
+	Gui, Add, Button, Default xs%_Buttonx% W%_ButtonWidth% gButtonExit, % Trans("E&xit")		; Label "Exit" is triggered upon activation
 
 	Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer")
 	return
@@ -149,7 +149,7 @@ If (!CheckJavaVersion())
 	_Buttonx := (_GuiWidth2/2)-(_ButtonWidth/2)							; Center our button
 	Gui, Add, Button, xs%_Buttonx% y+%_StandardMargin% W%_ButtonWidth% v_cInstallJavaButton gButtonInstallJava, % Trans("&Install Java")
 
-	Gui, Add, Text, xs+%_GBHorMargin% y+%_StandardMargin% W%_GuiWidth3%, % Trans("The installation will continue once Java version ") _RequiredJRE Trans(" or later has been installed.")
+	Gui, Add, Text, xs+%_GBHorMargin% y+%_StandardMargin% W%_GuiWidth3%, % Trans("The installation will continue once Java version") " " _RequiredJRE " " Trans("or later has been installed.")
 
 	;
 	; Exit button
@@ -173,7 +173,7 @@ If (CheckForOldUninstaller())
 	_GBHeight := CalculateGroupBoxHeight(4,1,0,2)
 	Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Installation problem")
 
-	Gui, Add, Text, W%_GuiWidth3% xs+%_GBHorMargin% ys+%_GBTopMargin%, % Trans("Freenet Installer has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:")
+	Gui, Add, Text, W%_GuiWidth3% xs+%_GBHorMargin% ys+%_GBTopMargin%, % Trans("Freenet Installer") " " Trans("has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:")
 
 	_Buttonx := (_GuiWidth2/2)-(_ButtonWidth/2)							; Center our button
 	Gui, Add, Button, xs+%_Buttonx% y+%_StandardMargin% W%_ButtonWidth% v_cUninstallButton gButtonUninstall, % Trans("&Uninstall")
@@ -194,7 +194,7 @@ If (CheckForOldUninstaller())
 ;
 ; Text: Install guideline header
 ;
-Gui, Add, Text, xs W%_GuiWidth2% Center Section, % Trans("Please check the following default settings before continuing with the installation of Freenet.")
+Gui, Add, Text, xs W%_GuiWidth2% Section, % Trans("Please check the following default settings before continuing with the installation of Freenet.")
 
 ;
 ; Groupbox: Install directory
@@ -210,7 +210,7 @@ Gui, Add, Button, xs+%_Buttonx% ys%_Buttony% W%_ButtonWidth% v_cBrowseButton gBu
 Gui, Add, Button, x+%_StandardMargin% W%_ButtonWidth% v_cDefaultButton gButtonDefault, % Trans("De&fault")
 
 _Texty := 24+_StandardMargin
-Gui, Add, Text, xs+%_GBHorMargin% yp+%_Texty% W%_GuiWidth3%, % Trans("Freenet requires at least ") _UsedFreeSpace Trans(" MB free disk space, but will not install with less than ") _RequiredFreeSpace Trans(" MB free. The amount of space reserved can be changed after installation.")
+Gui, Add, Text, xs+%_GBHorMargin% yp+%_Texty% W%_GuiWidth3%, % Trans("Freenet requires the installation drive to have at least") " " _RequiredFreeSpace " " Trans("MB free disk space. The actual amount of space reserved to Freenet will be configured after the installation.")
 
 _StatusWidth := _GuiWidth3-50										; We won't have a whole _GuiWidth3 to play around with, as the "Status: " part will use some of it (but we don't know how much because of localization). Allocating too much space will cause a small cosmetic bug (overlapping groupbox border), so make a proper guesstimate
 Gui, Add, Text, , % Trans("Status:")
@@ -227,12 +227,13 @@ Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, % Trans("Free
 ;
 ; Groupbox: Additional settings
 ;
-_GBHeight := CalculateGroupBoxHeight(0,0,3,0)
+_GBHeight := CalculateGroupBoxHeight(0,0,4,0)
 Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Additional settings")
 
-Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts (Freenet, Start Freenet, Stop Freenet)")
-Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut (Freenet)")
-Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Launch Freenet &after the installation")
+Gui, Add, Checkbox, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3% v_cAutoStartTrayManager Checked%_cAutoStartTrayManager%, % Trans("Start Freenet &Tray Manager on Windows startup") " " Trans("(Recommended)")
+Gui, Add, Checkbox, v_cInstallStartMenuShortcuts Checked%_cInstallStartMenuShortcuts%, % Trans("Install &start menu shortcuts") " " Trans("(Recommended)")
+Gui, Add, Checkbox, v_cInstallDesktopShortcuts Checked%_cInstallDesktopShortcuts%, % Trans("Install &desktop shortcut") " " Trans("(Optional)")
+Gui, Add, Checkbox, v_cBrowseAfterInstall Checked%_cBrowseAfterInstall%, % Trans("Launch Freenet &after the installation") " " Trans("(Optional)")
 
 ;
 ; Status bar and main buttons
@@ -250,22 +251,8 @@ Gui, Add, Button, x+%_StandardMargin% ys W%_ButtonWidth% v_cInstallButton gButto
 ; Gui layout finished, do GUI init stuff and return to "idle" state...
 ;
 SetInstallDir("")
-SetTimer, UpdateInstallDirStatusTimer, 5000
+SetTimer, UpdateInstallDirStatusTimer, 10000
 Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer")
-return
-
-;
-; Messing around with the language dropdown list triggers this
-;
-_ListSelectLanguage:
-	Gui, Submit, NoHide										; Read values of controls into their variables
-
-	If (_cLanguageSelector <> _LangNum)
-	{
-		Gui, Destroy
-		LoadLanguage(_cLanguageSelector)
-		SetTimer, GuiStart, -100
-	}
 return
 
 ;
@@ -273,7 +260,7 @@ return
 ;
 ButtonInstall:
 Gui, +OwnDialogs											; Make an eventual messagebox "stick" to the main GUI
-VisualInstallStart(9)											; Freeze GUI, show progress bar, etc... Argument is number of "ticks" in the progress bar. Should match the number of +1's during the rest of the installation
+VisualInstallStart(8)											; Freeze GUI, show progress bar, etc... Argument is number of "ticks" in the progress bar. Should match the number of +1's during the rest of the installation
 FindInstallSuffix()											; Figure out if we already have existing installations we need to take into consideration, and if so, find a proper install suffix
 
 ;
@@ -281,7 +268,7 @@ FindInstallSuffix()											; Figure out if we already have existing installat
 ;
 If (!TestInstallDirWriteAccess())
 {
-	MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer was not able to write to the selected installation directory.`nPlease select one to which you have write access.")	; 48 = Icon Exclamation
+	MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to write to the selected installation directory. Please select one to which you have write access.")	; 48 = Icon Exclamation
 	VisualInstallEnd()
 	return				
 }
@@ -316,7 +303,7 @@ GuiControl, , _cProgressBar, +1
 GuiControl, , _cProgressBar, +1
 
 ;
-; Write installation specific stuff to various files and the Windows registry
+; Patch files, file permissions and the registry
 ;
 FileAppend, %_InstallSuffix%,											%_InstallDir%\installid.dat	; Write id file in case third party software needs it. Will be empty if we are not using a suffix.
 
@@ -335,7 +322,23 @@ FileAppend, # Display name of the service`n,									%_InstallDir%\wrapper.conf
 FileAppend, wrapper.ntservice.displayname=Freenet background service%_InstallSuffix%`n,				%_InstallDir%\wrapper.conf
 FileAppend, `n,													%_InstallDir%\wrapper.conf
 FileAppend, # User account to run the serve runder`n,								%_InstallDir%\wrapper.conf
-FileAppend, wrapper.ntservice.account=.\Freenet%_InstallSuffix%`n,						%_InstallDir%\wrapper.conf
+If (A_OSVersion = "WIN_2000")
+{
+	FileAppend, wrapper.ntservice.account=`n,								%_InstallDir%\wrapper.conf	; Blank = LocalSystem. Windows 2000 lacks the LocalService and NetworkService accounts.
+}
+Else
+{
+	FileAppend, wrapper.ntservice.account=NT AUTHORITY\LocalService`n,					%_InstallDir%\wrapper.conf
+
+	If (A_OSVersion = "WIN_VISTA")
+	{
+		RunWait, %comspec% /c "icacls "%_InstallDir%" /grant LocalService:(OI)(CI)F /T /C", , Hide UseErrorLevel
+	}
+	Else
+	{
+		RunWait, %comspec% /c "cacls "%_InstallDir%" /E /T /C /G LocalService:F", , Hide UseErrorLevel
+	}
+}
 
 RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayIcon, %_InstallDir%\freenet.ico
 RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayName, Freenet%_InstallSuffix%
@@ -344,49 +347,23 @@ RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\
 GuiControl, , _cProgressBar, +1
 
 ;
-; Create our custom user
-;
-_CustomUserPassword := GenerateRandomNumberString(12)							; According to the old installer, 12 chars is max. to avoid warnings about backwards-compatability. The password itself is apparently also needed to run services under a custom account.
-RunWait, %comspec% /c "net user Freenet%_InstallSuffix% %_CustomUserPassword% /add /comment:"Freenet service user. Please do not delete!" /expires:never /passwordchg:no /fullname:"Freenet%_InstallSuffix% user"", , Hide UseErrorLevel
-
-If (A_OSVersion = "WIN_VISTA")
-{
-	RunWait, %comspec% /c "icacls "%_InstallDir%" /grant Freenet%_InstallSuffix%:(OI)(CI)F /T /C", , Hide UseErrorLevel
-}
-Else
-{
-	RunWait, %comspec% /c "cacls "%_InstallDir%" /E /T /C /G Freenet%_InstallSuffix%:F", , Hide UseErrorLevel
-}
-
-RegWrite, REG_DWORD, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList, Freenet%_InstallSuffix%, 0
-
-FileInstall, files_bundle\netuser.exe, %A_WorkingDir%\netuser.exe					; Extract 3rd party "netuser" tool. Taken from old installer.
-RunWait, %A_WorkingDir%\netuser.exe Freenet%_InstallSuffix% /pwnexp:y, , Hide UseErrorLevel		; Set "password never expires" flag on our custom user
-
-FileInstall, files_bundle\Ntrights.exe, %A_WorkingDir%\Ntrights.exe					; Extract 3rd party "Ntrights" tool. Taken from old installer. (Apparently belongs to the resource kit and is OK to redistribute)
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% +r SeServiceLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% -r SeDenyServiceLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% +r SeIncreaseBasePriorityPrivilege, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% +r SeDenyNetworkLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% +r SeDenyInteractiveLogonRight, , Hide UseErrorLevel
-RunWait, %A_WorkingDir%\Ntrights.exe -u Freenet%_InstallSuffix% -r SeShutdownPrivilege, , Hide UseErrorLevel
-GuiControl, , _cProgressBar, +1
-
-;
 ; Install service
 ;
-RunWait, %_InstallDir%\bin\wrapper-windows-x86-32.exe -i ../wrapper.conf wrapper.ntservice.password=%_CustomUserPassword%, , Hide UseErrorLevel
+RunWait, %_InstallDir%\bin\wrapper-windows-x86-32.exe -i ../wrapper.conf, , Hide UseErrorLevel
 GuiControl, , _cProgressBar, +1
 
 ;
 ; Install shortcuts
 ;
+If (_cAutoStartTrayManager)
+{
+	FileCreateShortcut, %_InstallDir%\bin\freenettray.exe, %A_StartupCommon%\Freenet Tray%_InstallSuffix%.lnk, , , % Trans("Opens Freenet Tray Manager in the notification area"), %_InstallDir%\Freenet.ico
+}
 If (_cInstallStartMenuShortcuts)
 {
 	FileCreateDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%
 	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_ProgramsCommon%\Freenet%_InstallSuffix%\Freenet.lnk, , , % Trans("Opens the Freenet proxy homepage in a web browser"), %_InstallDir%\Freenet.ico
-	FileCreateShortcut, %_InstallDir%\bin\start.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Start Freenet") ".lnk", , , % Trans("Starts the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
-	FileCreateShortcut, %_InstallDir%\bin\stop.exe, % A_ProgramsCommon "\Freenet" _InstallSuffix "\" Trans("Stop Freenet") ".lnk", , , % Trans("Stops the background service needed to use Freenet"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\bin\freenettray.exe, %A_ProgramsCommon%\Freenet%_InstallSuffix%\Freenet Tray.lnk, , , % Trans("Opens Freenet Tray Manager in the notification area"), %_InstallDir%\Freenet.ico
 }
 If (_cInstallDesktopShortcuts)
 {
@@ -402,13 +379,17 @@ RunWait, %_InstallDir%\bin\start.exe /verysilent, , UseErrorLevel
 GuiControl, , _cProgressBar, +1
 
 ;
-; Installation (almost) finished! (launching fproxy is done below for usability reasons)
+; Installation (almost) finished! (launching of stuff is done below for usability reasons)
 ;
-MsgBox, 64, % Trans("Freenet Installer"), % Trans("Installation finished successfully!") ; 64 = Icon Asterisk (info)
+MsgBox, 64, % Trans("Freenet Installer"), % Trans("Installation finished successfully!") "`n`n`n" Trans("Freenet Installer by:") " Christian Funder Sommerlund (Zero3)`n" Trans("English localization by: Christian Funder Sommerlund (Zero3)")	; 64 = Icon Asterisk (info)
 
 ;
-; Launch fproxy
+; Launch stuff 	(Unfortunately, launched executables will inherit our UAC-elevation. There doesn't seem to be any easy way around this. They will be executed non-elevated the next time.
 ;
+If (_cAutoStartTrayManager)
+{
+	Run, %_InstallDir%\bin\freenettray.exe /welcome, , UseErrorLevel
+}
 If (_cBrowseAfterInstall)
 {
 	Run, %_InstallDir%\freenetlauncher.exe, , UseErrorLevel
@@ -424,4 +405,3 @@ return
 ; Include helpers
 ;
 #Include FreenetInstaller_Include_Helpers.inc								; Include our helper functions. Should be placed at the very end because of labels
-

@@ -1,8 +1,32 @@
 ;
-; Translation file - Finnish (fi) - by Samu Voutilainen (http://smar.fi)
+; Freenet Windows Installer translation template
+;
+; Quick guide to translating:
+; 1.	Save this file as "Include_Lang_xx.inc" (xx being a standard 2-letter lowercase language code, e.g. "en" for English or "da" for Danish)
+; 2.	Remove this explanation and add a header with credit to yourself (name, e-mail, websites, etc.) in the header. Look at the other translations to get an idea.
+; 3.	Replace "xx" in "LoadLanguage_xx()" below with the same language code.
+; 4.	Translate! Format is: Trans_Add("<original text>", "<translated text>").
+;	The installer will fall back to English for empty and non-existing string translations, so feel free to translate in small bits.
+;	Hotkey letters are prefixed with "&". Feel free to change the hotkey to another letter in your translation - but make sure not to overlap with other hotkeys.
+; 5.	If possible, please let another person proof-read your translation.
+;	A lot of people are going to read it, and Freenet's creditability is directly affected of the quality of these translations :).
+; 6.	Submit your translation to git@github.com:freenet/wininstaller-staging.git or the developer mailing list (devl@freenetproject.org)
+; 	Please make sure that either yourself or another developer tests the translation for obvious layout glitches and other bugs
+;	(simply launching the installer and verifying that the main GUI looks OK should be enough most of the time)
+; 	On the first submission, a developer needs to add the translation to Include_TranslationHelper.ahk in order for the translation to actually be loaded.
+; 7.	To keep your translation updated, all you need to do is to download your translation from git (e.g. from http://github.com/freenet/wininstaller-staging/)
+;	and check for non-translated strings that has been added since your last submission.
+;
+; General note about translating the installer:
+; Because of the compact, customized GUI design, much of the text are subject to min/max size limitations. A too short translation will leave holes in the GUI and
+; a too long will mess up the layout. So try to keep the translations at the approx. same length as the original English text. The easiest way to test the
+; translation is to compile the installer and take a look around. The installer compiles and runs under WINE on Linux, but because of WINE bugs the layout will *not*
+; be completely equal to running under a real Windows installation.
+;
+; If you have any questions, please feel free to ask at the developer mailing list (devl@freenetproject.org)!
 ;
 
-LoadLanguage_fi()
+LoadLanguage_xx()
 {
 	; Translation credit string. Remember to change language and name to your own in the translated string (not in the english one). Don't add personal comments or website links here - add those to the header of this file instead if you want.
 	Trans_Add("English localization by: Christian Funder Sommerlund (Zero3)", "")
@@ -15,76 +39,76 @@ LoadLanguage_fi()
 	Trans_Add("requires administrator privileges to manage the Freenet service. Please make sure that your user account has administrative access to the system, and this program is executed with access to use these privileges.", "")
 
 	; Installer - Common
-	Trans_Add("Freenet Installer error", "Virhe asennuksessa")
-	Trans_Add("Freenet Installer", "Freenet-asennusohjelma")
-	Trans_Add("Welcome to the Freenet Installer!", "Tervetuloa asentamaan Freenettiä")
-	Trans_Add("Installation Problem", "Asennusongelma")
-	Trans_Add("E&xit", "&Poistu")
+	Trans_Add("Freenet Installer error", "")
+	Trans_Add("Freenet Installer", "")
+	Trans_Add("Welcome to the Freenet Installer!", "")
+	Trans_Add("Installation Problem", "")
+	Trans_Add("E&xit", "")
 
 	; Installer - Unsupported Windows version
-	Trans_Add("Freenet only supports the following versions of the Windows operating system:", "Freenet tukee vain seuraavia Windowsin versioita:")
-	Trans_Add("Please install one of these versions if you want to use Freenet on Windows.", "Jos haluat käyttää Freenettiä Windowsilla, asenna vain yksi seuraavista versioista.")
+	Trans_Add("Freenet only supports the following versions of the Windows operating system:", "")
+	Trans_Add("Please install one of these versions if you want to use Freenet on Windows.", "")
 
 	; Installer - Java missing
-	Trans_Add("Freenet requires the Java Runtime Environment, but your system does not appear to have an up-to-date version installed. You can install Java by using the included online installer, which will download and install the necessary files from the Java website automatically:", "Freenet tarvitsee Java Runtime Environmentin, mutta sinulla ei näyttäisi olevan tarpeeksi uutta versiota asennettuna. Voit asentaa Javan käyttämällä mukana tulevaa asennusohjelmaa, joka lataa ja asentaa tarvittavat tiedostot automaattisesti:")
-	Trans_Add("&Install Java", "&Asenna Java")
+	Trans_Add("Freenet requires the Java Runtime Environment, but your system does not appear to have an up-to-date version installed. You can install Java by using the included online installer, which will download and install the necessary files from the Java website automatically:", "")
+	Trans_Add("&Install Java", "")
 	Trans_Add("The installation will continue once Java version", "")
 	Trans_Add("or later has been installed.", "")
 
 	; Installer - Old installation detected
 	Trans_Add("has detected that you already have Freenet installed. Your current installation was installed using an older, unsupported installer. To continue, you must first uninstall your current version of Freenet using the previously created uninstaller:", "")
-	Trans_Add("&Uninstall", "&Poista")
-	Trans_Add("The installation will continue once the old installation has been removed.", "Asennus jatkuu poistettuasi vanhan version.")
+	Trans_Add("&Uninstall", "")
+	Trans_Add("The installation will continue once the old installation has been removed.", "")
 
 	; Installer - Main GUI - Header
-	Trans_Add("Please check the following default settings before continuing with the installation of Freenet.", "Tarkista seuraavat vakioasetukset ennen kuin jatkat Freenetin asentamista.")
+	Trans_Add("Please check the following default settings before continuing with the installation of Freenet.", "")
 
 	; Installer - Main GUI - Install folder
-	Trans_Add("Installation directory", "Asennushakemisto")
-	Trans_Add("&Browse", "&Selaa")
-	Trans_Add("De&fault", "&Vakio")
-	Trans_Add("Freenet requires", "")
-	Trans_Add("MB free disk space on the installation drive. The actual amount of space reserved to Freenet will be configured after the installation.", "")
-	Trans_Add("Status:", "Tila:")
-	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "Jos et valitse polkua, jossa on ”Freenet”, tämänniminen hakemisto luodaan automaattisesti.")
-	Trans_Add("Invalid install path!", "Epäkelpo asennuspolku!")
+	Trans_Add("Installation directory", "")
+	Trans_Add("&Browse", "")
+	Trans_Add("De&fault", "")
+	Trans_Add("Freenet requires the installation drive to have at least", "")
+	Trans_Add("MB free disk space. The actual amount of space reserved to Freenet will be configured after the installation.", "")
+	Trans_Add("Status:", "")
+	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "")
+	Trans_Add("Invalid install path!", "")
 	Trans_Add("(Too long for file system to handle)", "")
-	Trans_Add("Not enough free space on installation drive!", "Ei tarpeeksi vapaata tilaa kiintolevyllä!")
-	Trans_Add("Freenet already installed! Please uninstall first or choose another directory!", "Freenet on jo asennettu! Poista vanha versio tai valitse toinen hakemisto.")
-	Trans_Add("Installation directory OK!", "Asennushakemisto kunnossa.")	
+	Trans_Add("Not enough free space on installation drive!", "")
+	Trans_Add("Freenet already installed! Please uninstall first or choose another directory!", "")
+	Trans_Add("Installation directory OK!", "")	
 	
 	; Installer - Main GUI - System service
-	Trans_Add("System service", "Järjestelmäpalvelu")
-	Trans_Add("Freenet will automatically start in the background as a system service. This is required to be a part of the Freenet network, and will use a small amount of system resources. The amount of resources used can be adjusted after installation.", "Freenet käynnistää itsensä automaattisesti järjestelmäpalveluna. Tämä vaaditaan ollakseen osa Freenet-verkkoa ja se kuluttaa tietyn määrän resursseja. Resurssien käyttöä voi säätää ja hallita asennuksen jälkeen")
+	Trans_Add("System service", "")
+	Trans_Add("Freenet will automatically start in the background as a system service. This is required to be a part of the Freenet network, and will use a small amount of system resources. The amount of resources used can be adjusted after installation.", "")
 	
 	; Installer - Main GUI - Additional settings
-	Trans_Add("Additional settings", "Lisäasetukset")
+	Trans_Add("Additional settings", "")
 	Trans_Add("Start Freenet &Tray Manager on Windows startup", "")
 	Trans_Add("(Recommended)", "")
 	Trans_Add("Install &start menu shortcuts", "")
 	Trans_Add("(Optional)", "")
 	Trans_Add("Install &desktop shortcut", "")
-	Trans_Add("Launch Freenet &after the installation", "Aloita Freenetin selaaminen asennuksen jälkeen")
+	Trans_Add("Launch Freenet &after the installation", "")
 
 	; Installer - Main GUI - Footer
-	Trans_Add("Version ", "Versio ")
-	Trans_Add(" - Build ", " — build ")
-	Trans_Add("&Install", "Asenna")
+	Trans_Add("Version ", "")
+	Trans_Add(" - Build ", "")
+	Trans_Add("&Install", "")
 	
 	; Installer - Actual installation
 	Trans_Add("Opens Freenet Tray Manager in the notification area", "")
-	Trans_Add("Opens the Freenet proxy homepage in a web browser", "Avaa Freenetin selainkäyttöliittymän kotisivu selaimeen")
-	Trans_Add("Start Freenet", "Käynnistä Freenet")
-	Trans_Add("Stop Freenet", "Pysäytä Freenet")
-	Trans_Add("Installation finished successfully!", "Asennus suoritettiin onnistuneesti.")
+	Trans_Add("Opens the Freenet proxy homepage in a web browser", "")
+	Trans_Add("Start Freenet", "")
+	Trans_Add("Stop Freenet", "")
+	Trans_Add("Installation finished successfully!", "")
 	Trans_Add("Freenet Installer by:", "")
 	
 	; Installer - Error messageboxes
 	Trans_Add("was not able to find a free port on your system in the range", "")
-	Trans_Add("Please free a system port in this range to install Freenet.", "Sulje jokin ohjelma, joka varaa jonkin halutun alueen portin asentaaksesi Freenetin.")
+	Trans_Add("Please free a system port in this range to install Freenet.", "")
 	Trans_Add("was not able to create a Winsock 2.0 socket for port availability testing.", "")
 	Trans_Add("was not able to write to the selected installation directory. Please select one to which you have write access.", "")
-	Trans_Add("Error: ", "Virhe: ")
+	Trans_Add("Error: ", "")
 
 	; Shared strings (Uninstaller, Service starter, Service stopper)
 	Trans_Add("was unable to control the Freenet system service.", "")
@@ -94,24 +118,24 @@ LoadLanguage_fi()
 	Trans_Add("Service did not respond to signal.", "")
 	
 	; Uninstaller
-	Trans_Add("Freenet uninstaller", "Freenetin poistaja")
+	Trans_Add("Freenet uninstaller", "")
 	Trans_Add("was unable to recognize your Freenet installation at:", "")
 	Trans_Add("Please run this program from the 'bin' folder of a Freenet installation.", "")
-	Trans_Add("Do you really want to uninstall Freenet?", "Haluatko varmasti poistaa Freenetin?")
+	Trans_Add("Do you really want to uninstall Freenet?", "")
 	Trans_Add("The development team would appreciate it very much if you can spare a moment and fill out a short, anonymous online survey about the reason for your uninstallation.", "")
 	Trans_Add("The survey, located on the Freenet website, will be opened in your browser after the uninstallation.", "")
 	Trans_Add("Take the uninstallation survey?", "")
-	Trans_Add("Stopping system service...", "Pysäytetään järjestelmäpalvelua...")
+	Trans_Add("Stopping system service...", "")
 	Trans_Add("Shutting down tray managers...", "")
-	Trans_Add("Removing system service...", "Poistetaan järjestelmäpalvelua...")
-	Trans_Add("Removing files...", "Poistetaan tiedostoja...")
-	Trans_Add("Freenet uninstaller error", "Freenetin poistajan virhe")
+	Trans_Add("Removing system service...", "")
+	Trans_Add("Removing files...", "")
+	Trans_Add("Freenet uninstaller error", "")
 	Trans_Add("was unable to delete the Freenet files located at:", "")
-	Trans_Add("Please close all applications with open files inside this directory.", "Sulje kaikki ohjelmat, jotka ovat käynnistetty tästä hakemistosta.")
+	Trans_Add("Please close all applications with open files inside this directory.", "")
 	Trans_Add("The uninstallation was aborted.", "")
 	Trans_Add("Please manually remove the rest of your Freenet installation.", "")
-	Trans_Add("Removing registry modifications...", "Poistetaan rekisteriavaimia...")
-	Trans_Add("Freenet has been uninstalled!", "Freenet poistettiin!")
+	Trans_Add("Removing registry modifications...", "")
+	Trans_Add("Freenet has been uninstalled!", "")
 
 	; Shared strings (Launcher, Tray manager)
 	Trans_Add("was unable to find the following file:", "")
@@ -123,7 +147,7 @@ LoadLanguage_fi()
 	
 	; Launcher
 	Trans_Add("Freenet Launcher", "")
-	Trans_Add("Freenet Launcher error", "Freenet-käynnistäjän virhe")
+	Trans_Add("Freenet Launcher error", "")
 	Trans_Add("was unable to read the 'fproxy.port' value from the 'freenet.ini' configuration file.", "")
 
 	; Shared strings (Service starter, Service stopper)
@@ -140,8 +164,8 @@ LoadLanguage_fi()
 	Trans_Add("Service was already running", "")
 	Trans_Add("Freenet Starter", "")
 	Trans_Add("The Freenet service is starting...", "")
-	Trans_Add("The Freenet service has been started!", "Freenet-palvelu on käynnistetty.")
-	Trans_Add("The Freenet service is already running!", "Freenet-palvelu on jo käynnissä!")
+	Trans_Add("The Freenet service has been started!", "")
+	Trans_Add("The Freenet service is already running!", "")
 	Trans_Add("Freenet Starter error", "")
 	
 	; Service stopper
@@ -149,8 +173,8 @@ LoadLanguage_fi()
 	Trans_Add("Service was not running", "")
 	Trans_Add("Freenet Stopper", "")
 	Trans_Add("The Freenet service is stopping...", "")
-	Trans_Add("The Freenet service has been stopped!", "Freenet-palvelu on pysäytetty.")
-	Trans_Add("The Freenet service is already stopped!", "Freenet-palvelu oli jo pysäytetty!")
+	Trans_Add("The Freenet service has been stopped!", "")
+	Trans_Add("The Freenet service is already stopped!", "")
 	Trans_Add("Freenet Stopper error", "")
 
 	; Tray manager

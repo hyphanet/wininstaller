@@ -61,6 +61,17 @@ EnableCloseButton(hWnd = "")
 	DllCall("DrawMenuBar","Int",hWnd)
 }
 
+_ListSelectLanguage:
+	Gui, Submit, NoHide										; Read values of controls into their variables
+
+	If (_cLanguageSelector <> _LangNum)
+	{
+		Gui, Destroy
+		LoadLanguage(_cLanguageSelector)
+		SetTimer, GuiStart, -100
+	}
+return
+
 GuiClose:												; Triggered if user closes GUI via "the red cross"/ALT+F4/...
 ButtonExit:
 	Exit()
@@ -190,12 +201,6 @@ SetInstallDir(_NewInstallDir)
 	}
 
 	_InstallDir := _NewInstallDir
-	UpdateInstallDirStatus()
-}
-
-UpdateInstallDirStatus()
-{
-	global
 
 	If (StrLen(_InstallDir) > (_GuiWidth3 / 6))
 	{
@@ -206,6 +211,13 @@ UpdateInstallDirStatus()
 	{
 		GuiControl, Text, _cInstallDirText, %_InstallDir%
 	}
+
+	UpdateInstallDirStatus()
+}
+
+UpdateInstallDirStatus()
+{
+	global
 
 	If (_InstallDir = _DefaultInstallDir)
 	{
@@ -226,7 +238,7 @@ UpdateInstallDirStatus()
 	Else if (StrLen(_InstallDir) + _InternalPathLength > 255)
 	{
 		GuiControl, +cRed, _cInstallDirStatusText
-		GuiControl, Text, _cInstallDirStatusText, % Trans("Invalid install path! (Too long for file system to handle)")
+		GuiControl, Text, _cInstallDirStatusText, % Trans("Invalid install path!") " " Trans("(Too long for file system to handle)")
 		GuiControl, +Disabled, _cInstallButton
 	}
 	Else
@@ -315,6 +327,7 @@ VisualInstallStart(_Ticks)
 	GuiControl, +Disabled, _cDefaultButton
 	GuiControl, +Disabled, _cExitButton
 	GuiControl, +Disabled, _cInstallButton
+	GuiControl, +Disabled, _cAutoStartTraymanager
 	GuiControl, +Disabled, _cInstallStartMenuShortcuts
 	GuiControl, +Disabled, _cInstallDesktopShortcuts
 	GuiControl, +Disabled, _cBrowseAfterInstall
@@ -337,6 +350,7 @@ VisualInstallEnd()
 	GuiControl, -Disabled, _cBrowseButton
 	GuiControl, -Disabled, _cExitButton
 	GuiControl, -Disabled, _cInstallButton
+	GuiControl, -Disabled, _cAutoStartTrayManager
 	GuiControl, -Disabled, _cInstallStartMenuShortcuts
 	GuiControl, -Disabled, _cInstallDesktopShortcuts
 	GuiControl, -Disabled, _cBrowseAfterInstall
@@ -359,7 +373,7 @@ FindFreePort(_StartPort)
 		if (A_Index > 256)										; If this many tries isn't enough, checking any more in this way is probably just a waste of time. Throw an error instead.
 		{
 			_Endport := _StartPort + 256 - 1
-			MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer was not able to find a free port on your system in the range ") _StartPort "-" _EndPort ".`n" Trans("Please free a system port in this range to install Freenet.") ; 48 = Icon Exclamation
+			MsgBox, 48, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to find a free port on your system in the range") " " _StartPort "-" _EndPort ". " Trans("Please free a system port in this range to install Freenet.") ; 48 = Icon Exclamation
 			return -1
 		}
 		Else If (TestPortAvailability(_StartPort+A_Index-1))
@@ -378,14 +392,14 @@ TestPortAvailability(_Port)
 
 	If (ErrorLevel)
 	{
-		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing.") ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 	Else If (_Result)											; Non-zero, which means it failed (most Winsock functions return 0 upon success)
 	{
 		_Error := DllCall("Ws2_32\WSAGetLastError")
 		DllCall("Ws2_32\WSACleanup")
-		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 
@@ -398,7 +412,7 @@ TestPortAvailability(_Port)
 	{
 		_Error := DllCall("Ws2_32\WSAGetLastError")
 		DllCall("Ws2_32\WSACleanup")
-		MsgBox, 16, % Trans("Freenet Installer fatal error"), % Trans("Freenet Installer was not able to create a Winsock 2.0 socket`nfor port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
+		MsgBox, 16, % Trans("Freenet Installer error"), % Trans("Freenet Installer") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing.") " (" Trans("Error: ") _Error ")" ; 16 = Icon Hand (stop/error)
 		Exit()
 	}
 
@@ -429,20 +443,4 @@ InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4)
 	{
 		DllCall("RtlFillMemory", "UInt", &pDest + pOffset + A_Index-1, "UInt", 1, "UChar", pInteger >> 8*(A_Index-1) & 0xFF)
 	}
-}
-
-GenerateRandomNumberString(_RandomNumberLength)
-{
-	global
-
-	_RandomNumberString =											; Empty variable
-
-	Loop, %_RandomNumberLength%
-	{
-		Random, _RandomNumber, 0, 9
-		
-		_RandomNumberString = %_RandomNumberString%%_RandomNumber%
-	}
-
-	return _RandomNumberString
 }

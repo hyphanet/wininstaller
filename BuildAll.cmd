@@ -22,6 +22,13 @@
 :: Cleanup and prepare
 ::
 if exist bin\FreenetInstaller.exe del bin\FreenetInstaller.exe
+
+if exist bin\freenetlauncher.exe del bin\freenetlauncher.exe
+if exist bin\freenettray.exe del bin\freenettray.exe
+if exist bin\start.exe del bin\start.exe
+if exist bin\stop.exe del bin\stop.exe
+if exist bin\freenetuninstaller.exe del bin\freenetuninstaller.exe
+
 if not exist src_freenetinstaller\files_install\plugins mkdir src_freenetinstaller\files_install\plugins
 copy bin\freenet.jar src_freenetinstaller\files_install\freenet.jar
 copy bin\freenet-ext.jar src_freenetinstaller\files_install\freenet-ext.jar
@@ -52,6 +59,7 @@ del compiler\AutoHotkeySC.bin
 move /Y compiler\AutoHotkeySC_Normal.bin compiler\AutoHotkeySC.bin
 
 compiler\Ahk2Exe.exe /in "src_freenethelpers\FreenetLauncher.ahk" /out "src_freenetinstaller\files_install\freenetlauncher.exe"
+compiler\Ahk2Exe.exe /in "src_freenethelpers\FreenetTray.ahk" /out "src_freenetinstaller\files_install\bin\freenettray.exe"
 
 del compiler\AutoHotkeySC.bin
 
@@ -69,7 +77,7 @@ compiler\Ahk2Exe.exe /in "src_freenetinstaller\FreenetInstaller.ahk" /out "bin\F
 del compiler\AutoHotkeySC.bin
 
 ::
-:: Cleanup
+:: Cleanup. Delete files we copied into the source and move compiled .exe's to the bin folder in case we need them for something else.
 ::
 del compiler\Ahk2Exe.exe
 del compiler\upx.exe
@@ -79,16 +87,13 @@ del compiler\ResHack_Log_Normal.txt
 del compiler\ResHack_Log_VistaElevated.txt
 del src_freenetinstaller\files_install\freenet.jar
 del src_freenetinstaller\files_install\freenet-ext.jar
-copy src_freenetinstaller\files_install\freenetlauncher.exe bin\
-del src_freenetinstaller\files_install\freenetlauncher.exe
-copy src_freenetinstaller\files_install\bin\start.exe bin\
-del src_freenetinstaller\files_install\bin\start.exe
-copy src_freenetinstaller\files_install\bin\stop.exe bin\
-del src_freenetinstaller\files_install\bin\stop.exe
-copy src_freenetinstaller\files_install\bin\freenetuninstaller.exe bin\
-del src_freenetinstaller\files_install\bin\freenetuninstaller.exe
 del src_freenetinstaller\files_install\plugins\JSTUN.jar
 del src_freenetinstaller\files_install\plugins\KeyExplorer.jar
 del src_freenetinstaller\files_install\plugins\ThawIndexBrowser.jar
 del src_freenetinstaller\files_install\plugins\UPnP.jar
 del src_freenetinstaller\files_install\plugins\Library.jar
+move src_freenetinstaller\files_install\freenetlauncher.exe bin\freenetlauncher.exe
+move src_freenetinstaller\files_install\bin\freenettray.exe bin\freenettray.exe
+move src_freenetinstaller\files_install\bin\start.exe bin\start.exe
+move src_freenetinstaller\files_install\bin\stop.exe bin\stop.exe
+move src_freenetinstaller\files_install\bin\freenetuninstaller.exe bin\freenetuninstaller.exe

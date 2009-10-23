@@ -7,10 +7,7 @@
 ;
 ; _Inc_FreenetVersion - (string) Version of Freenet the installer contains.
 ; _Inc_FreenetBuild - (string) Build of Freenet the installer contains.
-; _Inc_InstallSize - (float) In MB, size of all files to be installed.
 ;
 
 _Inc_FreenetVersion = 0.7.5
-_Inc_FreenetBuild = #1219
-_Inc_InstallSize := 8.26
-
+_Inc_FreenetBuild = #1223

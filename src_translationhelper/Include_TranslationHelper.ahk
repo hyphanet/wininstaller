@@ -22,10 +22,10 @@ InitTranslations()
 
 	; AddLanguage() arguments: <localized language name> <language load function name from language file> <windows language code (see http://www.autohotkey.com/docs/misc/Languages.htm)>
 	; Somewhat ordered by number of speakers. Hint: http://en.wikipedia.org/wiki/List_of_countries_by_population
-	AddLanguage("English","","")															; Load English (en) translation (dummy)
-	AddLanguage("Deutsch","LoadLanguage_de","0407+0807+0c07+1007+1407")										; Make default for all variations of German
-	AddLanguage("Français","LoadLanguage_fr","040c+080c+0c0c+100c+140c+180c")									; Make default for all variations of French
-	AddLanguage("Italiano","LoadLanguage_it","0410+0810")												; Make default for all variations of Italian
+	AddLanguage("English","","")										; Load English (en) translation (dummy)
+	AddLanguage("Deutsch","LoadLanguage_de","0407+0807+0c07+1007+1407")					; Make default for all variations of German
+	AddLanguage("Français","LoadLanguage_fr","040c+080c+0c0c+100c+140c+180c")				; Make default for all variations of French
+	AddLanguage("Italiano","LoadLanguage_it","0410+0810")							; Make default for all variations of Italian
 	AddLanguage("Español","LoadLanguage_es","040a+080a+0c0a+100a+140a+180a+1c0a+200a+240a+280a+2c0a+300a+340a+380a+3c0a+400a+440a+480a+4c0a+500a")	; Make default for all variations of Spanish
 	AddLanguage("Dansk","LoadLanguage_da","0406")
 	AddLanguage("suomi","LoadLanguage_fi","040b")
@@ -77,10 +77,13 @@ Trans_Add(_OriginalText, _TranslatedText)
 {
 	global
 
-	_OriginalTextArray%_TransArray% := _OriginalText
-	_TranslatedTextArray%_TransArray% := _TranslatedText
+	If (StrLen(_TranslatedText) <> 0)									; Skip zero-length adds
+	{
+		_OriginalTextArray%_TransArray% := _OriginalText
+		_TranslatedTextArray%_TransArray% := _TranslatedText
 
-	_TransArray++
+		_TransArray++
+	}
 }
 
 Trans(_OriginalText)

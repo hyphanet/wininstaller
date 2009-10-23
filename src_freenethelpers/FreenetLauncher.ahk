@@ -16,66 +16,60 @@
 
 SendMode, Input							; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
-
 SetWorkingDir, %A_ScriptDir%					; Look for other files relative to our own location
+
+;
+; Customizable settings
+;
+_SecureSuffix = ?incognito=true					; fproxy address suffix for incognito-enabled browsers. Will make fproxy hide warning messages about it.
+_FileRequirements = installid.dat|bin\start.exe|freenet.ini	; List of files that must exist for the launcher to work. Paths are relative to own location.
 
 ;
 ; General init stuff
 ;
 InitTranslations()
 
+Loop, Parse, _FileRequirements, |
+{
+	IfNotExist, %A_LoopField%
+	{
+		PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was unable to find the following file:") "`n`n" A_LoopField "`n`n" Trans("Make sure that you are running") " " Trans("Freenet Launcher") " " Trans("from a Freenet installation directory.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+		ExitApp, 1
+	}	
+}
+
 ;
 ; Figure out what our service is called
 ;
-IfNotExist, installid.dat
-{
-	PopupErrorMessage(Trans("Freenet Launcher was unable to find the installid.dat ID file.`n`nMake sure that you are running Freenet Launcher from a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers."))
-	ExitApp, 1
-}
-Else
-{
-	FileReadLine, _InstallSuffix, installid.dat, 1
-	_ServiceName = freenet%_InstallSuffix%
-}
+FileReadLine, _InstallSuffix, installid.dat, 1
+_ServiceName = freenet%_InstallSuffix%
 
 ;
 ; Make sure that node is running
 ;
 If (Service_State(_ServiceName) <> 4)
 {
-	IfNotExist, bin\start.exe
+	RunWait, bin\start.exe /silent, , UseErrorLevel
+
+	If (ErrorLevel == 1)
 	{
-		PopupErrorMessage(Trans("Freenet Launcher was unable to find the bin\start.exe launcher.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers."))
-		ExitApp, 1
-	}
-	Else
-	{
-		RunWait, bin\start.exe /silent, , UseErrorLevel
+		ExitApp, 1					; Error message has already been handled by start.exe, so just fail silently
 	}
 }
 
 ;
 ; Put together the fproxy URL
 ;
-IfNotExist, freenet.ini
+FileRead, _INI, freenet.ini
+If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
 {
-	PopupErrorMessage(Trans("Freenet Launcher was unable to find the freenet.ini configuration file.`n`nMake sure that you are running Freenet Launcher from a Freenet installation directory.`nIf you are already doing so, please report this error message to the developers."))
+	PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was unable to read the 'fproxy.port' value from the 'freenet.ini' configuration file.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 	ExitApp, 1
 }
-Else
-{
-	FileRead, _INI, freenet.ini
-	If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
-	{
-		PopupErrorMessage(Trans("Freenet Launcher was unable to read the 'fproxy.port' value from the freenet.ini configuration file.`n`nPlease reinstall Freenet.`n`nIf the problem keeps occurring, please report this error message to the developers."))
-		ExitApp, 1
-	}
-
-	_URL = http://127.0.0.1:%_Port1%/
-}
+_URL = http://127.0.0.1:%_Port1%/
 
 ;
-; Try browser: Google Chrome (Tested versions: 1.0.154)
+; Try browser: Google Chrome (incognito-enabled) (Tested versions: 1.0.154)
 ;
 RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
 
@@ -85,13 +79,15 @@ If (!ErrorLevel && _ChromeInstallDir <> "")
 
 	IfExist, %_ChromePath%
 	{
-		Run, %_ChromePath% "%_URL%" --incognito, , UseErrorLevel
+;		Run, %_ChromePath% --incognito "%_URL%%_SecureSuffix%", , UseErrorLevel	; All versions of Chrome should support incognito mode
+; Unfortunately, incognito mode is buggy. If there is already a Chrome window open, urls given at the command line will be opened in a non-incognito tab. See http://code.google.com/p/chromium/issues/detail?id=9636 (bug #3376 on our bug tracker).
+		Run, %_ChromePath% --incognito "%_URL%", , UseErrorLevel ; All versions of Chrome should support incognito mode
 		ExitApp, 0
 	}
 }
 
 ;
-; Try browser: Mozilla FireFox (Tested versions: 3.0)
+; Try browser: Mozilla FireFox (Tested versions: 3.0, 3.5)
 ;
 RegRead, _FFVersion, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox, CurrentVersion
 
@@ -123,18 +119,9 @@ If (!ErrorLevel && _OperaPath <> "")
 }
 
 ;
-; Try browser: Internet Explorer (Tested versions: 6.0, 7.0)
+; No prioritized browser found. Fall back to system URL call.
 ;
-IfExist, %A_ProgramFiles%\Internet Explorer\iexplore.exe
-{
-	Run, %A_ProgramFiles%\Internet Explorer\iexplore.exe "%_URL%", , UseErrorLevel
-	ExitApp, 0
-}
-
-;
-; No usable browser found
-;
-PopupErrorMessage(Trans("Freenet Launcher was unable to find a supported browser.`n`nPlease install one of the supported browsers, or manually`nnavigate to: ") _URL "`n`n" Trans("Freenet Launcher supports the following browsers:") "`n- Google Chrome`n- Mozilla FireFox`n- Opera`n- Internet Explorer (" Trans("not recommended") ")")
+Run, %_URL%, , UseErrorLevel
 ExitApp, 1
 
 ;
