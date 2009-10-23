@@ -70,7 +70,7 @@ _URL = http://127.0.0.1:%_Port1%/
 
 ;
 ; Try browser: Google Chrome (incognito-enabled) (Tested versions: 1.0.154)
-;
+; Note that Google Chrome is buggy, launching with the incognito option if the browser is already open will open a new window without using incognito mode. Hence fproxy ignores this option for now, and when Chrome is fixed, will check the version string. See http://code.google.com/p/chromium/issues/detail?id=9636 or our bug 3376.
 RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
 
 If (!ErrorLevel && _ChromeInstallDir <> "")
