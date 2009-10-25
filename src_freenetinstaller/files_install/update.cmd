@@ -335,6 +335,9 @@ echo    - New stop.exe found!
 set STOPEXEUPDATED=1
 :stopexecheckend
 
+::If the tray utility already is installed, let's see if it needs upgrading.
+if exist ..\bin\freenettray.exe goto traycheck
+
 ::bypass this entire section so it won't run until the tray utility is ready.
 goto traycheckend
 ::Check tray utility if present
@@ -342,12 +345,11 @@ goto traycheckend
 if not exist ..\bin\start.exe goto traycheckend
 if not exist ..\bin\stop.exe goto traycheckend
 if not exist ..\installid.dat goto traycheckend
-if exist ..\bin\freenettray.exe goto traycheck
 
 ::Get the tray utility and put it in the \bin directory
 ::We don't need to exit the program because it's not running since it's not even installed.
 echo - Downloading freenettray.exe
-..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/freenettray.exe -O freenettray.exe
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenettray.exe -O freenettray.exe
 Title Freenet Update Over HTTP Script
 
 if not exist freenettray.exe goto error3
@@ -395,7 +397,7 @@ echo - Checking freenettray.exe
 if exist freenettray.exe.sha1.bak del freenettray.exe.sha1.bak
 if exist freenettray.exe.sha1 copy freenettray.exe.sha1 freenettray.exe.sha1.bak > NUL
 if exist freenettray.exe.sha1.new del freenettray.exe.sha1.new
-..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/freenettray.exe.sha1 -O freenettray.exe.sha1.new
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenettray.exe.sha1 -O freenettray.exe.sha1.new
 Title Freenet Update Over HTTP Script
 
 if not exist freenettray.exe.sha1.new goto error3
