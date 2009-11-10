@@ -87,7 +87,7 @@ GuiStart:												; Label to jump back to if we want to start over
 ; Image: Header logo
 ;
 FileInstall, FreenetInstaller_Header.png, %A_WorkingDir%\FreenetInstaller_Header.png
-Gui, Add, Picture, Section, FreenetInstaller_Header.png
+Gui, Add, Picture, Section Center, FreenetInstaller_Header.png
 
 ;
 ; Welcome text
