@@ -83,7 +83,7 @@ Loop
 	If (A_Index > _ServiceTimeout)
 	{
 		SplashImage, OFF
-		PopupErrorMessage(Trans("Freenet Stopper") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Timeout while managing the service") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+		PopupErrorMessage(Trans("Freenet Stopper") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Timeout while managing the service.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 		ExitApp, 1
 	}
 	Else If (_ServiceState == -1 || _ServiceState == -4)
