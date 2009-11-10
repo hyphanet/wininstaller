@@ -381,7 +381,7 @@ GuiControl, , _cProgressBar, +1
 ;
 ; Installation (almost) finished! (launching of stuff is done below for usability reasons)
 ;
-MsgBox, 64, % Trans("Freenet Installer"), % Trans("Installation finished successfully!") "`n`n`n" Trans("Freenet Installer by:") " Christian Funder Sommerlund (Zero3)`n" Trans("English localization by: Christian Funder Sommerlund (Zero3)")	; 64 = Icon Asterisk (info)
+MsgBox, 64, % Trans("Freenet Installer"), % Trans("Installation finished successfully!") "`n`n" Trans("Freenet Installer by:") " Christian Funder Sommerlund (Zero3)`n" Trans("English localization by: Christian Funder Sommerlund (Zero3)")	; 64 = Icon Asterisk (info)
 
 ;
 ; Launch stuff 	(Unfortunately, launched executables will inherit our UAC-elevation. There doesn't seem to be any easy way around this. They will be executed non-elevated the next time.
