@@ -3,7 +3,6 @@
 :: Non-committed requirements:
 ::
 :: - bin\Ahk2Exe.exe (AutoHotkey compiler - http://www.autohotkey.com/)
-:: - bin\upx.exe (UPX packer, comes with AutoHotkey compiler)
 :: - bin\AutoHotkeySC.bin (AHK library, comes with AutoHotkey compiler)
 ::
 :: - bin\freenet.jar (Freenet jar)
@@ -21,8 +20,8 @@
 ::
 :: Cleanup and prepare
 ::
+if exist compiler\upx.exe del compiler\upx.exe
 if exist bin\FreenetInstaller.exe del bin\FreenetInstaller.exe
-
 if exist bin\freenetlauncher.exe del bin\freenetlauncher.exe
 if exist bin\freenettray.exe del bin\freenettray.exe
 if exist bin\start.exe del bin\start.exe
@@ -33,7 +32,6 @@ if not exist src_freenetinstaller\files_install\plugins mkdir src_freenetinstall
 copy bin\freenet.jar src_freenetinstaller\files_install\freenet.jar
 copy bin\freenet-ext.jar src_freenetinstaller\files_install\freenet-ext.jar
 copy bin\Ahk2Exe.exe compiler\Ahk2Exe.exe
-copy bin\upx.exe compiler\upx.exe
 copy bin\ResHacker.exe compiler\ResHacker.exe
 copy bin\JSTUN.jar src_freenetinstaller\files_install\plugins\JSTUN.jar
 copy bin\KeyExplorer.jar src_freenetinstaller\files_install\plugins\KeyExplorer.jar
@@ -80,7 +78,6 @@ del compiler\AutoHotkeySC.bin
 :: Cleanup. Delete files we copied into the source and move compiled .exe's to the bin folder in case we need them for something else.
 ::
 del compiler\Ahk2Exe.exe
-del compiler\upx.exe
 del compiler\ResHacker.exe
 del compiler\ResHacker.ini
 del compiler\ResHack_Log_Normal.txt
