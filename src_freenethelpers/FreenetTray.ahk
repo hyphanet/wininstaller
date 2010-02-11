@@ -132,7 +132,7 @@ return
 ;
 OpenLog:
 
-Run, notepad.exe wrapper.log, , UseErrorLevel				; We really should just call "wrapper.log" directly and let Windows choose the viewer, but until we know for sure that all supported versions of Windows actually *have* a default .log association, we explicitly ask for Notepad. (See https://bugs.freenetproject.org/view.php?id=3245)
+Run, wrapper.log, , UseErrorLevel
 
 return
 
