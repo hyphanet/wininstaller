@@ -48,6 +48,7 @@ _ServiceName = freenet%_InstallSuffix%					; Put together our service name
 ; Fix up a tray icon and a tray menu
 ;
 Menu, TRAY, NoStandard							; Remove default tray menu items
+Menu, TRAY, Click, 1							; Activate default menu entry after a single click only (instead of default which most likely is doubleclick)
 Menu, TRAY, Icon, freenetoffline.ico, , 1				; As we don't know if the node is running yet, show as offline
 Menu, TRAY, Tip, % Trans("Freenet Tray") _InstallSuffix
 
