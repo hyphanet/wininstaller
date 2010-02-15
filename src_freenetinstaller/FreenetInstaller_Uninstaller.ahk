@@ -84,22 +84,12 @@ Else
 }
 
 ;
-; Ask for confirmation and about the uninstallation survey
+; Ask for confirmation
 ;
 MsgBox, 33, % Trans("Freenet uninstaller"), % Trans("Do you really want to uninstall Freenet?")		; 1 = OK/Cancel, 32 = Icon Question
 IfMsgBox, Cancel
 {
 	Exit()
-}
-
-MsgBox, 36, % Trans("Freenet uninstaller"), % Trans("The development team would appreciate it very much if you can spare a moment and fill out a short, anonymous online survey about the reason for your uninstallation.") "`n`n" Trans("The survey, located on the Freenet website, will be opened in your browser after the uninstallation.") "`n`n" Trans("Take the uninstallation survey?")	; 4 = Yes/No, 32 = Icon Question
-IfMsgBox, Yes
-{
-	_DoSurvey := 1
-}
-Else
-{
-	_DoSurvey := 0
 }
 
 ;
@@ -216,11 +206,6 @@ Progress, 5
 ;
 Progress, Off
 MsgBox, 64, % Trans("Freenet uninstaller"), % Trans("Freenet has been uninstalled!")			; 64 = Icon Asterisk (info)
-
-If (_DoSurvey)
-{
-	Run, http://freenetproject.org/uninstall.html, , UseErrorLevel
-}
 
 Exit()
 
