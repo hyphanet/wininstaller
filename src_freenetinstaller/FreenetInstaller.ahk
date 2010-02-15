@@ -113,7 +113,7 @@ Gui, Add, DropDownList, xp+%_Listx% yp+%_Listy% W%_LanguageListWidth% Choose%_La
 ;
 ; Check for unsupported Windows version
 ;
-If A_OSVersion not in WIN_2000,WIN_XP,WIN_2003,WIN_VISTA
+If A_OSVersion not in WIN_XP,WIN_2003,WIN_VISTA
 {
 	;
 	; Groupbox: Installation problem (OS requirement not met)
@@ -121,7 +121,7 @@ If A_OSVersion not in WIN_2000,WIN_XP,WIN_2003,WIN_VISTA
 	_GBHeight := CalculateGroupBoxHeight(8,0,0,0)
 	Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Installation problem")
 
-	Gui, Add, Text, W%_GuiWidth3% xs+%_GBHorMargin% ys+%_GBTopMargin%, % Trans("Freenet only supports the following versions of the Windows operating system:") "`n`n- Windows 2000`n- Windows XP`n- Windows Server 2003`n- Windows Vista`n`n" Trans("Please install one of these versions if you want to use Freenet on Windows.")
+	Gui, Add, Text, W%_GuiWidth3% xs+%_GBHorMargin% ys+%_GBTopMargin%, % Trans("Freenet only supports the following versions of the Windows operating system:") "`n`n- Windows XP`n- Windows Server 2003`n- Windows Vista`n- Windows 7`n`n" Trans("Please install one of these versions if you want to use Freenet on Windows.")
 
 	;
 	; Exit button
