@@ -443,4 +443,41 @@ InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4)
 	{
 		DllCall("RtlFillMemory", "UInt", &pDest + pOffset + A_Index-1, "UInt", 1, "UChar", pInteger >> 8*(A_Index-1) & 0xFF)
 	}
+
+}
+
+GetTotalPhysMem()
+{
+	VarSetCapacity(_MEMORYSTATUSEX, 64, 0)				; MEMORYSTATUSEX struct is 2*4+7*8=64 bytes long
+	NumPut(64, _MEMORYSTATUSEX)					; Put this size into dwLength (first variable of struct) as required
+
+	DllCall("GlobalMemoryStatusEx", UInt, &_MEMORYSTATUSEX)		; Fill out struct with memory info from kernel
+
+	return NumGet(_MEMORYSTATUSEX, 8, "Int64") / 1024 / 1024	; Return the float at position 8 (struct variable ullTotalPhys), divide by 1024 twice for MB
+}
+
+CalcNodeMaxMem(_TotalMemory)
+{
+	If (_TotalMemory > (4 * 1024))
+	{
+		_MaxMem := 1024
+	}
+	else if (_TotalMemory > (2 * 1024))
+	{
+		_MaxMem := 512
+	}
+	else if (_TotalMemory > (1024))
+	{
+		_MaxMem := 256
+	}
+	else if (_TotalMemory > (512))
+	{
+		_MaxMem := 192
+	}
+	else
+	{
+		_MaxMem := 128
+	}
+
+	return _MaxMem
 }

@@ -307,6 +307,7 @@ GuiControl, , _cProgressBar, +1
 ;
 FileAppend, %_InstallSuffix%,											%_InstallDir%\installid.dat	; Write id file in case third party software needs it. Will be empty if we are not using a suffix.
 
+; Write freenet.ini stuff
 FileAppend, fproxy.port=%_FProxyPort%`n,									%_InstallDir%\freenet.ini
 FileAppend, fcp.port=%_FCPPort%`n,										%_InstallDir%\freenet.ini
 FileAppend, pluginmanager.loadplugin=JSTUN;KeyExplorer;ThawIndexBrowser;UPnP;Library`n,				%_InstallDir%\freenet.ini
@@ -314,6 +315,15 @@ FileAppend, node.updater.autoupdate=true`n,									%_InstallDir%\freenet.ini
 FileAppend, node.l10n=WINDOWS%A_Language%`n,									%_InstallDir%\freenet.ini
 FileAppend, End`n,												%_InstallDir%\freenet.ini
 
+; Write memory limits/info stuff
+_TotalPhysMem := GetTotalPhysMem()
+_NodeMaxMem := CalcNodeMaxMem(_TotalPhysMem)
+FileAppend, %_TotalPhysMem%,											%_InstallDir%\memory.autolimit
+FileAppend, `n,													%_InstallDir%\wrapper.conf
+FileAppend, # Memory limit for the node`n,									%_InstallDir%\wrapper.conf
+FileAppend, wrapper.java.maxmemory=%_NodeMaxMem%`n,								%_InstallDir%\wrapper.conf
+
+; Write service settings stuff
 FileAppend, `n,													%_InstallDir%\wrapper.conf
 FileAppend, # Name of the service`n,										%_InstallDir%\wrapper.conf
 FileAppend, wrapper.ntservice.name=freenet%_InstallSuffix%`n,							%_InstallDir%\wrapper.conf
@@ -322,24 +332,19 @@ FileAppend, # Display name of the service`n,									%_InstallDir%\wrapper.conf
 FileAppend, wrapper.ntservice.displayname=Freenet background service%_InstallSuffix%`n,				%_InstallDir%\wrapper.conf
 FileAppend, `n,													%_InstallDir%\wrapper.conf
 FileAppend, # User account to run the serve runder`n,								%_InstallDir%\wrapper.conf
-If (A_OSVersion = "WIN_2000")
+FileAppend, wrapper.ntservice.account=NT AUTHORITY\LocalService`n,						%_InstallDir%\wrapper.conf
+
+; Give LocalService full permissions to the install folder (it won't have write access by default)
+If (A_OSVersion = "WIN_VISTA")
 {
-	FileAppend, wrapper.ntservice.account=`n,								%_InstallDir%\wrapper.conf	; Blank = LocalSystem. Windows 2000 lacks the LocalService and NetworkService accounts.
+	RunWait, %comspec% /c "icacls "%_InstallDir%" /grant LocalService:(OI)(CI)F /T /C", , Hide UseErrorLevel	; If Vista (or Win7)
 }
 Else
 {
-	FileAppend, wrapper.ntservice.account=NT AUTHORITY\LocalService`n,					%_InstallDir%\wrapper.conf
-
-	If (A_OSVersion = "WIN_VISTA")
-	{
-		RunWait, %comspec% /c "icacls "%_InstallDir%" /grant LocalService:(OI)(CI)F /T /C", , Hide UseErrorLevel
-	}
-	Else
-	{
-		RunWait, %comspec% /c "cacls "%_InstallDir%" /E /T /C /G LocalService:F", , Hide UseErrorLevel
-	}
+	RunWait, %comspec% /c "cacls "%_InstallDir%" /E /T /C /G LocalService:F", , Hide UseErrorLevel			; Else we are XP
 }
 
+; Write uninstall stuff to registry
 RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayIcon, %_InstallDir%\freenet.ico
 RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayName, Freenet%_InstallSuffix%
 RegWrite, REG_SZ, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, UninstallString, %_InstallDir%\bin\freenetuninstaller.exe
