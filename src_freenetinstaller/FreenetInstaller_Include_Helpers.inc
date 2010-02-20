@@ -33,34 +33,6 @@ CalculateGroupBoxHeight(_GBTextLines, _GBButtonLines, _GBCheckBoxLines, _GBSpaci
 	return _GBTopMargin+(_GBTextLines*_TextHeight)+(_GBButtonLines*24)+(_GBCheckboxLines*17)+(_GBSpacings*_StandardMargin)+_GBBottomMargin
 }
 
-DisableCloseButton(hWnd = "")
-{
-	global
-
-	If hWnd=
-	{
-		hWnd := WinExist("A")
-	}
-
-	hSysMenu:=DllCall("GetSystemMenu","Int",hWnd,"Int",FALSE)
-	nCnt:=DllCall("GetMenuItemCount","Int",hSysMenu)
-
-	DllCall("RemoveMenu","Int",hSysMenu,"UInt",nCnt-1,"Uint","0x400")
-	DllCall("RemoveMenu","Int",hSysMenu,"UInt",nCnt-2,"Uint","0x400")
-	DllCall("DrawMenuBar","Int",hWnd)
-}
-
-EnableCloseButton(hWnd = "")
-{
-	If hWnd=
-	{
-		hWnd := WinExist("A")
-	}
-
-	DllCall("GetSystemMenu","Int",hWnd,"Int",TRUE)
-	DllCall("DrawMenuBar","Int",hWnd)
-}
-
 _ListSelectLanguage:
 	Gui, Submit, NoHide										; Read values of controls into their variables
 
@@ -72,9 +44,15 @@ _ListSelectLanguage:
 	}
 return
 
-GuiClose:												; Triggered if user closes GUI via "the red cross"/ALT+F4/...
 ButtonExit:
 	Exit()
+return
+
+GuiClose:												; Triggered if user closes GUI via "the red cross"/ALT+F4/...
+	If (!_IsInstalling)
+	{
+		Exit()
+	}
 return
 
 ;
@@ -318,6 +296,8 @@ VisualInstallStart(_Ticks)
 {
 	global
 
+	_IsInstalling := 1
+
 	Gui, Submit, NoHide											; Read values of checkboxes etc. into their variables
 
 	; Disable timers and buttons
@@ -331,7 +311,6 @@ VisualInstallStart(_Ticks)
 	GuiControl, +Disabled, _cInstallStartMenuShortcuts
 	GuiControl, +Disabled, _cInstallDesktopShortcuts
 	GuiControl, +Disabled, _cBrowseAfterInstall
-	DisableCloseButton()
 
 	GuiControl, +Range0-%_Ticks%, _cProgressBar
 
@@ -344,6 +323,8 @@ VisualInstallEnd()
 {
 	global
 
+	_IsInstalling := 0
+
 	; Re-enable timers and buttons
 	SetTimer, UpdateInstallDirStatusTimer, 5000
 	GuiControl, -Disabled, _cLanguageSelector
@@ -354,7 +335,6 @@ VisualInstallEnd()
 	GuiControl, -Disabled, _cInstallStartMenuShortcuts
 	GuiControl, -Disabled, _cInstallDesktopShortcuts
 	GuiControl, -Disabled, _cBrowseAfterInstall
-	EnableCloseButton()
 
 	; Switch status text with progress bar
 	GuiControl, -Hidden, _cStatusText
