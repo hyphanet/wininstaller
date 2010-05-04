@@ -37,7 +37,7 @@ FileInstall, files_install\lib\wrapper-windows-x86-32.dll,	%_InstallDir%\lib\wra
 
 FileCreateDir,							%_InstallDir%\plugins
 FileInstall, files_install\plugins\JSTUN.jar,			%_InstallDir%\plugins\JSTUN.jar
-FileInstall, files_install\plugins\KeyExplorer.jar,		%_InstallDir%\plugins\KeyExplorer.jar
+FileInstall, files_install\plugins\KeyUtils.jar,		%_InstallDir%\plugins\KeyUtils.jar
 FileInstall, files_install\plugins\ThawIndexBrowser.jar,	%_InstallDir%\plugins\ThawIndexBrowser.jar
 FileInstall, files_install\plugins\UPnP.jar,			%_InstallDir%\plugins\UPnP.jar
 FileInstall, files_install\plugins\Library.jar,		%_InstallDir%\plugins\Library.jar

@@ -309,7 +309,7 @@ FileAppend, %_InstallSuffix%,											%_InstallDir%\installid.dat	; Write id f
 
 FileAppend, fproxy.port=%_FProxyPort%`n,									%_InstallDir%\freenet.ini
 FileAppend, fcp.port=%_FCPPort%`n,										%_InstallDir%\freenet.ini
-FileAppend, pluginmanager.loadplugin=JSTUN;KeyExplorer;ThawIndexBrowser;UPnP;Library`n,			%_InstallDir%\freenet.ini
+FileAppend, pluginmanager.loadplugin=JSTUN;KeyUtils;ThawIndexBrowser;UPnP;Library`n,			%_InstallDir%\freenet.ini
 FileAppend, node.updater.autoupdate=true`n,									%_InstallDir%\freenet.ini
 FileAppend, % "node.l10n=" UTF82Ansi(_LanguageNames%_LangNum%) "`n",						%_InstallDir%\freenet.ini
 FileAppend, End`n,												%_InstallDir%\freenet.ini
