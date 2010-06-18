@@ -341,12 +341,10 @@ echo    - New stop.exe found!
 set STOPEXEUPDATED=1
 :stopexecheckend
 
+::Check tray utility if present
 ::If the tray utility already is installed, let's see if it needs upgrading.
 if exist ..\bin\freenettray.exe goto traycheck
 
-::bypass this entire section so it won't run until the tray utility is ready.
-goto traycheckend
-::Check tray utility if present
 ::If the required start.exe and stop.exe and installid.dat are present we will offer to install the tray for them
 if not exist ..\bin\start.exe goto traycheckend
 if not exist ..\bin\stop.exe goto traycheckend
