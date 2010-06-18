@@ -507,7 +507,7 @@ echo    - Freenet-%RELEASE%-snapshot.jar downloaded and verified
 if %EXTJARUPDATED%==0 goto extjardownloadend
 if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
 if exist freenet-ext.jar del freenet-ext.jar
-..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/freenet-ext.jar -O freenet-ext.jar
+..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenet-ext.jar -O freenet-ext.jar
 Title Freenet Update Over HTTP Script
 if not exist freenet-ext.jar goto error4
 FOR %%I IN ("freenet-ext.jar") DO if %%~zI==0 goto error4
@@ -521,7 +521,7 @@ echo    - Freenet-ext.jar downloaded and verified
 if %WRAPPEREXEUPDATED%==0 goto wrapperexedownloadend
 if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
 if exist wrapper-windows-x86-32.exe del wrapper-windows-x86-32.exe
-..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/wrapper-windows-x86-32.exe -O wrapper-windows-x86-32.exe
+..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/wrapper-windows-x86-32.exe -O wrapper-windows-x86-32.exe
 Title Freenet Update Over HTTP Script
 if not exist wrapper-windows-x86-32.exe goto error4
 FOR %%I IN ("wrapper-windows-x86-32.exe") DO if %%~zI==0 goto error4
@@ -535,7 +535,7 @@ echo    - wrapper .exe downloaded and verified
 if %WRAPPERDLLUPDATED%==0 goto wrapperdlldownloadend
 if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
 if exist wrapper-windows-x86-32.dll del wrapper-windows-x86-32.dll
-..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/wrapper-windows-x86-32.dll -O wrapper-windows-x86-32.dll
+..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/wrapper-windows-x86-32.dll -O wrapper-windows-x86-32.dll
 Title Freenet Update Over HTTP Script
 if not exist wrapper-windows-x86-32.dll goto error4
 FOR %%I IN ("wrapper-windows-x86-32.dll") DO if %%~zI==0 goto error4
@@ -549,7 +549,7 @@ echo    - wrapper .dll downloaded and verified
 if %STARTEXEUPDATED%==0 goto startexedownloadend
 if exist start.exe.sha1 del start.exe.sha1
 if exist start.exe del start.exe
-..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/start.exe -O start.exe
+..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/start.exe -O start.exe
 Title Freenet Update Over HTTP Script
 if not exist start.exe goto error4
 FOR %%I IN ("start.exe") DO if %%~zI==0 goto error4
@@ -563,7 +563,7 @@ echo    - start.exe downloaded and verified
 if %STOPEXEUPDATED%==0 goto stopexedownloadend
 if exist stop.exe.sha1 del stop.exe.sha1
 if exist stop.exe del stop.exe
-..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/stop.exe -O stop.exe
+..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/stop.exe -O stop.exe
 Title Freenet Update Over HTTP Script
 if not exist stop.exe goto error4
 FOR %%I IN ("stop.exe") DO if %%~zI==0 goto error4
@@ -577,7 +577,7 @@ echo    - stop.exe downloaded and verified
 if %TRAYUTILITYUPDATED%==0 goto traydownloadend
 if exist freenettray.exe.sha1 del freenettray.exe.sha1
 if exist freenettray.exe del freenettray.exe
-..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/freenettray.exe -O freenettray.exe
+..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenettray.exe -O freenettray.exe
 Title Freenet Update Over HTTP Script
 if not exist freenettray.exe goto error4
 FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto error4
@@ -591,7 +591,7 @@ echo    - freenettray.exe downloaded and verified
 if %LAUNCHERUPDATED%==0 goto stoplauncherdownloadend
 if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
 if exist freenetlauncher.exe del freenetlauncher.exe
-..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://checksums.freenetproject.org/cc/freenetlauncher.exe -O freenetlauncher.exe
+..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenetlauncher.exe -O freenetlauncher.exe
 Title Freenet Update Over HTTP Script
 if not exist freenetlauncher.exe goto error4
 FOR %%I IN ("freenetlauncher.exe") DO if %%~zI==0 goto error4
