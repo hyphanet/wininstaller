@@ -90,9 +90,14 @@ for %%I in (%0) do set LOCATION=%%~dpI
 cd /D "%LOCATION%"
 
 ::Check if its valid, or at least looks like it
-if not exist freenet.ini goto error2
 if not exist bin\wget.exe goto error2
+if exist freenet.ini goto permcheck
+::User may have a corrupted install from our temp file bug.  Let's try to recover.
+::If no tmp file, no use trying
+if not exist freenet.ini.tmp goto error2
+ren freenet.ini.tmp freenet.ini
 
+:permcheck
 ::Simple test to see if we have enough privileges to modify files.
 echo - Checking file permissions
 if exist writetest del writetest > NUL
