@@ -307,7 +307,7 @@ VisualInstallStart(_Ticks)
 	GuiControl, +Disabled, _cDefaultButton
 	GuiControl, +Disabled, _cExitButton
 	GuiControl, +Disabled, _cInstallButton
-	GuiControl, +Disabled, _cAutoStartTraymanager
+	GuiControl, +Disabled, _cAutoStart
 	GuiControl, +Disabled, _cInstallStartMenuShortcuts
 	GuiControl, +Disabled, _cInstallDesktopShortcuts
 	GuiControl, +Disabled, _cBrowseAfterInstall
@@ -331,7 +331,7 @@ VisualInstallEnd()
 	GuiControl, -Disabled, _cBrowseButton
 	GuiControl, -Disabled, _cExitButton
 	GuiControl, -Disabled, _cInstallButton
-	GuiControl, -Disabled, _cAutoStartTrayManager
+	GuiControl, -Disabled, _cAutoStart
 	GuiControl, -Disabled, _cInstallStartMenuShortcuts
 	GuiControl, -Disabled, _cInstallDesktopShortcuts
 	GuiControl, -Disabled, _cBrowseAfterInstall

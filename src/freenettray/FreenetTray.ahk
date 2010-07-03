@@ -67,7 +67,13 @@ If (_Arg1 == "/welcome")
 ;
 ; Start wrapper
 ;
-Run, freenetwrapper.exe -c freenetwrapper.conf
+Run, wrapper\freenetwrapper.exe -c wrapper.conf, , Hide UseErrorLevel
+
+If (ErrorLevel == "ERROR")
+{
+	MsgBox, 16, % Trans("Freenet Tray error"), % Trans("Freenet Tray") " " Trans("was not able to start the Freenet node using the Freenet wrapper. Error code: ") "`n`n" A_LastError "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers.")	; 16 = Icon Hand (stop/error)
+	ExitApp
+}
 
 ;
 ; Setup regular status checks and do one now. Then return to idle.
@@ -91,7 +97,7 @@ return
 ;
 OpenLog:
 
-Run, wrapper.log, , UseErrorLevel
+Run, wrapper\wrapper.log, , UseErrorLevel
 
 return
 

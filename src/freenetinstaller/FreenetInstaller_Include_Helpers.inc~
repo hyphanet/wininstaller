@@ -86,7 +86,7 @@ CheckJavaVersion()
 ButtonInstallJava:
 	GuiControl, +Disabled, _cLanguageSelector
 	GuiControl, +Disabled, _cInstallJavaButton
-	FileInstall, files_bundle\jre-online-installer.exe, %A_WorkingDir%\jre-online-installer.exe
+	FileInstall, ..\..\res\install_bundle\jre-online-installer.exe, %A_WorkingDir%\jre-online-installer.exe
 	RunWait, %A_WorkingDir%\jre-online-installer.exe, , UseErrorLevel
 	GuiControl, -Disabled, _cLanguageSelector
 	GuiControl, -Disabled, _cInstallJavaButton

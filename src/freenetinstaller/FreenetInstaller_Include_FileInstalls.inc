@@ -17,10 +17,8 @@ FileInstall, ..\..\res\install_node\freenet-ext.jar,			%_InstallDir%\freenet-ext
 FileInstall, ..\..\res\install_node\freenet.exe,			%_InstallDir%\freenet.exe
 FileInstall, ..\..\res\install_node\freenetlauncher.exe,		%_InstallDir%\freenetlauncher.exe
 FileInstall, ..\..\res\install_node\freenetuninstaller.exe,		%_InstallDir%\freenetuninstaller.exe
-FileInstall, ..\..\res\install_node\freenetwrapper.conf,		%_InstallDir%\freenetwrapper.conf
-FileInstall, ..\..\res\install_node\freenetwrapper.dll,			%_InstallDir%\freenetwrapper.dll
-FileInstall, ..\..\res\install_node\freenetwrapper.exe,			%_InstallDir%\freenetwrapper.exe
 FileInstall, ..\..\res\install_node\seednodes.fref,			%_InstallDir%\seednodes.fref
+
 
 FileCreateDir,								%_InstallDir%\licenses
 FileInstall, ..\..\res\install_node\licenses\LICENSE.Freenet,		%_InstallDir%\licenses\LICENSE.Freenet
@@ -32,3 +30,7 @@ FileInstall, ..\..\res\install_node\plugins\KeyUtils.jar,		%_InstallDir%\plugins
 FileInstall, ..\..\res\install_node\plugins\ThawIndexBrowser.jar,	%_InstallDir%\plugins\ThawIndexBrowser.jar
 FileInstall, ..\..\res\install_node\plugins\UPnP.jar,			%_InstallDir%\plugins\UPnP.jar
 FileInstall, ..\..\res\install_node\plugins\Library.jar,		%_InstallDir%\plugins\Library.jar
+FileCreateDir,								%_InstallDir%\wrapper
+FileInstall, ..\..\res\install_node\wrapper\freenetwrapper.exe,		%_InstallDir%\wrapper\freenetwrapper.exe
+FileInstall, ..\..\res\install_node\wrapper\wrapper.conf,		%_InstallDir%\wrapper\wrapper.conf
+FileInstall, ..\..\res\install_node\wrapper\wrapper-windows-x86-32.dll,	%_InstallDir%\wrapper\wrapper-windows-x86-32.dll

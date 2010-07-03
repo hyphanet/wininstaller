@@ -10,25 +10,27 @@
 ; Remember to create any directories with FileCreateDir before doing FileInstalls to them.
 ;
 
-FileCreateDir,							%_InstallDir%
-FileInstall, files_install\freenet.ico,				%_InstallDir%\freenet.ico
-FileInstall, files_install\freenet.jar,				%_InstallDir%\freenet.jar
-FileInstall, files_install\freenet-ext.jar,			%_InstallDir%\freenet-ext.jar
-FileInstall, files_install\freenet.exe,				%_InstallDir%\freenet.exe
-FileInstall, files_install\freenetlauncher.exe,			%_InstallDir%\freenetlauncher.exe
-FileInstall, files_install\freenetuninstaller.exe,		%_InstallDir%\freenetuninstaller.exe
-FileInstall, files_install\freenetwrapper.conf,			%_InstallDir%\freenetwrapper.conf
-FileInstall, files_install\freenetwrapper.dll,			%_InstallDir%\freenetwrapper.dll
-FileInstall, files_install\freenetwrapper.exe,			%_InstallDir%\freenetwrapper.exe
-FileInstall, files_install\seednodes.fref,			%_InstallDir%\seednodes.fref
+FileCreateDir,								%_InstallDir%
+FileInstall, ..\..\res\install_node\freenet.ico,			%_InstallDir%\freenet.ico
+FileInstall, ..\..\res\install_node\freenet.jar,			%_InstallDir%\freenet.jar
+FileInstall, ..\..\res\install_node\freenet-ext.jar,			%_InstallDir%\freenet-ext.jar
+FileInstall, ..\..\res\install_node\freenet.exe,			%_InstallDir%\freenet.exe
+FileInstall, ..\..\res\install_node\freenetlauncher.exe,		%_InstallDir%\freenetlauncher.exe
+FileInstall, ..\..\res\install_node\freenetuninstaller.exe,		%_InstallDir%\freenetuninstaller.exe
+FileInstall, ..\..\res\install_node\seednodes.fref,			%_InstallDir%\seednodes.fref
 
-FileCreateDir,							%_InstallDir%\licenses
-FileInstall, files_install\licenses\LICENSE.Freenet,		%_InstallDir%\licenses\LICENSE.Freenet
-FileInstall, files_install\licenses\LICENSE.Mantissa,		%_InstallDir%\licenses\LICENSE.Mantissa
 
-FileCreateDir,							%_InstallDir%\plugins
-FileInstall, files_install\plugins\JSTUN.jar,			%_InstallDir%\plugins\JSTUN.jar
-FileInstall, files_install\plugins\KeyUtils.jar,		%_InstallDir%\plugins\KeyUtils.jar
-FileInstall, files_install\plugins\ThawIndexBrowser.jar,	%_InstallDir%\plugins\ThawIndexBrowser.jar
-FileInstall, files_install\plugins\UPnP.jar,			%_InstallDir%\plugins\UPnP.jar
-FileInstall, files_install\plugins\Library.jar,			%_InstallDir%\plugins\Library.jar
+FileCreateDir,								%_InstallDir%\licenses
+FileInstall, ..\..\res\install_node\licenses\LICENSE.Freenet,		%_InstallDir%\licenses\LICENSE.Freenet
+FileInstall, ..\..\res\install_node\licenses\LICENSE.Mantissa,		%_InstallDir%\licenses\LICENSE.Mantissa
+
+FileCreateDir,								%_InstallDir%\plugins
+FileInstall, ..\..\res\install_node\plugins\JSTUN.jar,			%_InstallDir%\plugins\JSTUN.jar
+FileInstall, ..\..\res\install_node\plugins\KeyUtils.jar,		%_InstallDir%\plugins\KeyUtils.jar
+FileInstall, ..\..\res\install_node\plugins\ThawIndexBrowser.jar,	%_InstallDir%\plugins\ThawIndexBrowser.jar
+FileInstall, ..\..\res\install_node\plugins\UPnP.jar,			%_InstallDir%\plugins\UPnP.jar
+FileInstall, ..\..\res\install_node\plugins\Library.jar,		%_InstallDir%\plugins\Library.jar
+FileCreateDir,								%_InstallDir%\wrapper
+FileInstall, ..\..\res\install_node\wrapper\freenetwrapper.exe,		%_InstallDir%\freenetwrapper.exe
+FileInstall, ..\..\res\install_node\wrapper\wrapper.conf,		%_InstallDir%\wrapper.conf
+FileInstall, ..\..\res\install_node\wrapper\wrapper-windows-x86-32.dll,	%_InstallDir%\wrapper-windows-x86-32.dll

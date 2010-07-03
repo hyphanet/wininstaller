@@ -209,10 +209,10 @@ Gui, Add, Text, W%_StatusWidth% x+4 v_cInstallDirStatusText, ...
 ;
 ; Groupbox: Running Freenet
 ;
-;_GBHeight := CalculateGroupBoxHeight(3,0,0,0)
-;Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Running Freenet")
-;
-;Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, % Trans("When running, Freenet will automatically use a small amount of system resources in order to be a part of the Freenet peer-to-peer network. The amount of resources used can be adjusted after the installation.")
+_GBHeight := CalculateGroupBoxHeight(3,0,0,0)
+Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Running Freenet")
+
+Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, % Trans("When running, Freenet will automatically use a small amount of system resources in order to be a part of the Freenet peer-to-peer network. The amount of resources used can be adjusted after the installation.")
 
 ;
 ; Groupbox: Additional settings
@@ -260,7 +260,7 @@ return
 ;
 ButtonInstall:
 ;;;;;;Gui, +OwnDialogs											; Make an eventual messagebox "stick" to the main GUI
-VisualInstallStart(6)											; Freeze GUI, show progress bar, etc... Argument is number of "ticks" in the progress bar. Should match the number of +1's during the rest of the installation
+VisualInstallStart(7)											; Freeze GUI, show progress bar, etc... Argument is number of "ticks" in the progress bar. Should match the number of +1's during the rest of the installation
 FindInstallSuffix()											; Figure out if we already have existing installations we need to take into consideration, and if so, find a proper install suffix
 
 ;
@@ -320,9 +320,9 @@ FileAppend, End`n,												%_InstallDir%\freenet.ini
 _TotalPhysMem := GetTotalPhysMem()
 _NodeMaxMem := CalcNodeMaxMem(_TotalPhysMem)
 FileAppend, %_TotalPhysMem%,											%_InstallDir%\memory.autolimit
-FileAppend, `n,													%_InstallDir%\freenetwrapper.conf
-FileAppend, # Memory limit for the node`n,									%_InstallDir%\freenetwrapper.conf
-FileAppend, wrapper.java.maxmemory=%_NodeMaxMem%`n,								%_InstallDir%\freenetwrapper.conf
+FileAppend, `n,													%_InstallDir%\wrapper\wrapper.conf
+FileAppend, # Memory limit for the node`n,									%_InstallDir%\wrapper\wrapper.conf
+FileAppend, wrapper.java.maxmemory=%_NodeMaxMem%`n,								%_InstallDir%\wrapper\wrapper.conf
 
 ; Write uninstall stuff to registry
 RegWrite, REG_SZ, HKEY_LOCAL_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayIcon, %_InstallDir%\freenet.ico
@@ -335,22 +335,29 @@ GuiControl, , _cProgressBar, +1
 ;
 If (_cAutoStart)
 {
-	FileCreateShortcut, %_InstallDir%\freenet.exe, %A_StartupCommon%\Start Freenet%_InstallSuffix%.lnk, , , % Trans("Starts Freenet"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\freenet.exe, %A_Startup%\Start Freenet%_InstallSuffix%.lnk, , , % Trans("Starts Freenet"), %_InstallDir%\Freenet.ico
 }
 If (_cInstallStartMenuShortcuts)
 {
-	FileCreateDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%
-	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_ProgramsCommon%\Freenet%_InstallSuffix%\Open Freenet.lnk, , , % Trans("Opens Freenet"), %_InstallDir%\Freenet.ico
+	FileCreateDir, %A_Programs%\Freenet%_InstallSuffix%
+	FileCreateShortcut, %_InstallDir%\freenet.exe, %A_Programs%\Freenet%_InstallSuffix%\Start Freenet%_InstallSuffix%.lnk, , , % Trans("Starts Freenet"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_Programs%\Freenet%_InstallSuffix%\Open Freenet.lnk, , , % Trans("Opens Freenet"), %_InstallDir%\Freenet.ico
 }
 If (_cInstallDesktopShortcuts)
 {
-	FileCreateDir, %A_DesktopCommon%
-	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_DesktopCommon%\Open Freenet%_InstallSuffix%.lnk, , , % Trans("Opens Freenet"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_Desktop%\Open Freenet%_InstallSuffix%.lnk, , , % Trans("Opens Freenet"), %_InstallDir%\Freenet.ico
 }
 GuiControl, , _cProgressBar, +1
 
 ;
-; Installation (almost) finished! (launching of stuff is done below for usability reasons)
+; Start Freenet
+;
+Run, %_InstallDir%\freenet.exe, , UseErrorLevel
+MsgBox, TODO: Wait until Freenet is responsive and add various error handling too
+GuiControl, , _cProgressBar, +1
+
+;
+; Installation (almost) finished!
 ;
 MsgBox, 64, % Trans("Freenet Installer"), % Trans("Installation finished successfully!") "`n`n" Trans("Freenet Installer by:") " Christian Funder Sommerlund (Zero3)`n" Trans("English localization by: Christian Funder Sommerlund (Zero3)")	; 64 = Icon Asterisk (info)
 
