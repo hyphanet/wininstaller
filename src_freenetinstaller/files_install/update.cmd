@@ -644,6 +644,10 @@ if not exist ..\tray_die.dat type "" >> ..\tray_die.dat
 
 
 :nodestop
+::Tell the user not to abort script, it gets very messy.
+echo -----
+echo - Shutting down Freenet if it is running...   (This may take a moment, please don't abort)
+echo -----
 ::See if we are using the new binary stop.exe
 if not exist ..\bin\stop.exe goto oldstopper
 :newstoppper
@@ -654,12 +658,8 @@ goto beginfilecopy
 
 :oldstopper
 net start | find "Freenet 0.7 darknet" > NUL
-if errorlevel 1 goto beginfilecopy > NUL
+if errorlevel 1 goto beginfilecopy
 set RESTART=1
-::Tell the user not to abort script, it gets very messy.
-echo -----
-echo - Shutting down Freenet...   (This may take a moment, please don't abort)
-echo -----
 call ..\bin\stop.cmd > NUL
 net start | find "Freenet 0.7 darknet" > NUL
 if errorlevel 1 goto beginfilecopy
