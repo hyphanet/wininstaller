@@ -74,6 +74,24 @@ if "%1"=="/testing" set RELEASE=testing
 echo - Release selected is: %RELEASE%
 echo -----
 
+::Warn user this script will contact our servers over the non-anoymous internet.
+echo *******************************************************************
+echo * This script will connect to the Freenetproject.org servers
+echo * and/or its mirrors over the regular internet.  
+echo * This is not anonymous!
+echo *******************************************************************
+:promptloop1
+::Set ANSWER1 to a different variable so it won't bug out when we loop
+set ANSWER1==X
+echo - 
+echo - Do you wish to continue?
+set /P ANSWER1=- Press Y to continue or N to quit. 
+if /i %ANSWER1%==Y goto promptloop1out
+if /i %ANSWER1%==N goto veryend
+::User hit a wrong key or <enter> without selecting, go around again.
+goto promptloop1
+:promptloop1out
+
 ::Check if we are on Vista/Seven if so we need to use icacls instead of cacls
 set VISTA=0
 ::Treat server 2k3/XP64 as vista as they need icacls
@@ -376,16 +394,16 @@ echo * We have downloaded the tray utility to your \bin directory.
 echo *******************************************************************
 echo -
 echo - We can also install it in your startup folder so it launches when you login.  
-:promptloop
-::Set ANSWER to a different variable so it won't bug out when we loop
-set ANSWER==X
+:promptloop2
+::Set ANSWER2 to a different variable so it won't bug out when we loop
+set ANSWER2==X
 echo - 
-set /P ANSWER=- Would you like to install it for "A"ll users, just "Y"ou or "N"one? 
-if /i %ANSWER%==A goto allusers
-if /i %ANSWER%==Y goto justyou
-if /i %ANSWER%==N goto traycheckend
+set /P ANSWER2=- Would you like to install it for "A"ll users, just "Y"ou or "N"one? 
+if /i %ANSWER2%==A goto allusers
+if /i %ANSWER2%==Y goto justyou
+if /i %ANSWER2%==N goto traycheckend
 ::User hit a wrong key or <enter> without selecting, go around again.
-goto promptloop
+goto promptloop2
 :allusers
 copy /Y freenettray.exe "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\" > NUL
 if not errorlevel 0 goto writefail
