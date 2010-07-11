@@ -265,7 +265,7 @@ FindInstallSuffix()
 			_InstallSuffix = _%A_Index%
 		}
 
-		RegRead, _Temp, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, UninstallString
+		RegRead, _Temp, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, UninstallString
 
 		If (ErrorLevel)
 		{

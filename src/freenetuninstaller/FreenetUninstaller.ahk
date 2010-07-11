@@ -16,11 +16,13 @@
 
 SendMode, Input							; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
+DetectHiddenWindows, On						; As we are going to manipulate a hidden widow, we need to actually look for it too
 
 ;
 ; Customizable settings
 ;
 _ProgressFormat = A T W300 FS10					; How our progress bar should look. The 'R' (range) parameter is added later in the script.
+_CloseTimeout := 30						; (seconds) How long to wait for the tray manager (and there by the wapper and node) to close before failing with an error
 
 ;
 ; General init stuff
@@ -59,7 +61,7 @@ Else
 	If (!FileExist(_InstallDir . "\freenet.jar") || !FileExist(_InstallDir . "\installid.dat"))
 	{
 		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to recognize your Freenet installation at:") "`n`n" _InstallDir "`n`n" Trans("Please run this program from a Freenet installation directory."))
-		Exit()
+		ExitApp
 	}
 
 	FileReadLine, _InstallSuffix, %_InstallDir%\installid.dat, 1
@@ -73,7 +75,7 @@ Else
 MsgBox, 33, % Trans("Freenet uninstaller"), % Trans("Do you really want to uninstall Freenet?")		; 1 = OK/Cancel, 32 = Icon Question
 IfMsgBox, Cancel
 {
-	Exit()
+	ExitApp
 }
 
 ;
@@ -87,19 +89,18 @@ Progress, %_ProgressFormat% R0-3, ..., , % Trans("Freenet uninstaller")					; "R
 Progress, , % Trans("Closing Freenet...")
 
 FileRead, _TrayPID, %_InstallDir%\freenet.pid
-MsgBox, ErrorLevel: %ErrorLevel% Pid: %_TrayPID%
 
 If (ErrorLevel == 0)
 {
-	WinClose, ahk_pid %_TrayPID%
-}
+	WinClose, ahk_pid %_TrayPID%, , _CloseTimeout
 
-; Double-check
-Process, Exist, %_TrayPID%
+	; Double-check
+	Process, Exist, %_TrayPID%
 
-If (ErrorLevel != 0)
-{
-	PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to close Freenet.") "^n^n" Trans("Please manually close all Freenet processes (including java.exe) before continuing."))
+	If (ErrorLevel != 0)
+	{
+		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to close Freenet.") "`n`n" Trans("Please manually close all Freenet processes (including java.exe) before continuing."))
+	}
 }
 
 Progress, 1
@@ -118,7 +119,7 @@ If (ErrorLevel)
 	IfMsgBox, Abort
 	{
 		PopupErrorMessage(Trans("The uninstallation was aborted.") "`n`n" Trans("Please manually remove the rest of your Freenet installation."))
-		Exit()
+		ExitApp
 	}
 	IfMsgBox, Retry
 	{
@@ -148,7 +149,7 @@ Progress, 3
 Progress, Off
 MsgBox, 64, % Trans("Freenet uninstaller"), % Trans("Freenet has been uninstalled!")			; 64 = Icon Asterisk (info)
 
-Exit()
+ExitApp
 
 ;
 ; Helper functions
@@ -156,20 +157,4 @@ Exit()
 PopupErrorMessage(_ErrorMessage)
 {
 	MsgBox, 16, % Trans("Freenet uninstaller error"), %_ErrorMessage%	; 16 = Icon Hand (stop/error)
-}
-
-Exit()
-{
-	; Note: This function is only used on exiting from running out of the system's temp dir.
-	; As we copied ourself into the temp dir, we should also make sure to remove ourself again.
-	global
-
-	If (A_IsCompiled)										; Only do the following if we are compiled... Just in case a test session goes wrong.
-	{
-		; Request a self-destruct at next reboot (... because we can't delete a running executable)
-		DllCall("MoveFileEx", "Str", A_ScriptFullPath, "Int", 0, "UInt", 0x4)
-		DllCall("MoveFileEx", "Str", A_ScriptDir, "Int", 0, "UInt", 0x4)
-	}
-
-	ExitApp												; Bye Bye
 }

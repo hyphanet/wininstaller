@@ -45,6 +45,7 @@ copy ..\res\tool_ahk\AutoHotkeySC.bin AutoHotkeySC.bin
 
 copy ..\res\tool_reshacker\ResHacker.exe ResHacker.exe
 copy ..\res\tool_reshacker\ResHack_Resource_Icon_Freenet.ico ResHack_Resource_Icon_Freenet.ico
+copy ..\res\tool_reshacker\ResHack_Resource_Manifest.txt ResHack_Resource_Manifest.txt
 copy ..\res\tool_reshacker\ResHack_Script_Normal.txt ResHack_Script_Normal.txt
 
 ::
@@ -79,6 +80,7 @@ del ResHacker.exe
 del ResHacker.ini
 del ResHack_Log_Normal.txt
 del ResHack_Resource_Icon_Freenet.ico
+del ResHack_Resource_Manifest.txt
 del ResHack_Script_Normal.txt
 
 echo + Fetching executables into bin folder

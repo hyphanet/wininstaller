@@ -131,7 +131,7 @@ return
 ;
 About:
 
-MsgBox, 64, % Trans("Freenet Tray"), % Trans("By:") "Christian Funder Sommerlund (Zero3)`n`nhttp://freenetproject.org/"	; 64 = Icon Asterisk (info)
+MsgBox, 64, % Trans("Freenet Tray"), % Trans("By:") " Christian Funder Sommerlund (Zero3)`n`nhttp://freenetproject.org/"	; 64 = Icon Asterisk (info)
 
 return
 
@@ -178,17 +178,15 @@ DoStatusUpdate()
 	global
 
 	; Crash check
-	If (_CurrentState == 1 && !IsWrapperRunning())
+	If (_CurrentState == 1 && !IsWrapperRunning(_PID))
 	{
 		; Wrapper has crashed. Crap.
 		ExitWithError(Trans("The Freenet wrapper terminated unexpectedly.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 	}
 }
 
-IsWrapperRunning()
+IsWrapperRunning(_PID)
 {
-	global
-
 	Process, Exist, %_PID%
 
 	If (ErrorLevel == 0)

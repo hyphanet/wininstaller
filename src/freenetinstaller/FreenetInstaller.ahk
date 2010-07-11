@@ -253,7 +253,7 @@ Else
 
 SetInstallDir("")
 SetTimer, UpdateInstallDirStatusTimer, 10000
-Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer")
+Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer" " - ALPHA TEST VERSION")
 return
 
 ;

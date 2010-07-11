@@ -1,14 +1,5 @@
-; TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-- Loop trying to connect to FCP to check if node is running
-- If not, run freenet.exe (once only), and wait x seconds
-- Wait or timeout
-; TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-
 ;
 ; Windows Freenet Launcher by Zero3 (zero3 that-a-thingy zero3 that-dot-thingy dk) - http://freenetproject.org/
-;
-; Extra credits:
-; - Service state function: heresy (http://www.autohotkey.com/forum/topic34984.html)
 ;
 
 ;
@@ -28,7 +19,9 @@ SetWorkingDir, %A_ScriptDir%					; Look for other files relative to our own loca
 ; Customizable settings
 ;
 _SecureSuffix = ?incognito=true					; fproxy address suffix for incognito-enabled browsers. Will make fproxy hide warning messages about it.
-_FileRequirements = installid.dat|freenet.exe|freenet.ini	; List of files that must exist for the launcher to work. Paths are relative to own location.
+_FileRequirements = freenet.exe|freenet.ini			; List of files that must exist for the launcher to work. Paths are relative to own location.
+_CheckInterval := 3000						; (ms) How long to wait between each check to see if fproxy is running yet?
+_CheckTimes := 10						; How many times to check if fproxy is running? (Timeout then becomes _CheckTimes * _CheckInterval)
 
 ;
 ; General init stuff
@@ -45,25 +38,17 @@ Loop, Parse, _FileRequirements, |
 }
 
 ;
-; Figure out what our service is called
-;
-FileReadLine, _InstallSuffix, installid.dat, 1
-
-;
 ; Make sure that node is running
 ;
-If (Service_State(_ServiceName) <> 4)
-{
-	RunWait, bin\start.exe /silent, , UseErrorLevel
+FileRead, _TrayPID, freenet.pid
 
-	If (ErrorLevel == 1)
-	{
-		ExitApp, 1					; Error message has already been handled by start.exe, so just fail silently
-	}
+If (ErrorLevel <> 0 || !IsWrapperRunning(_TrayPID))
+{
+	Run, freenet.exe, , UseErrorLevel
 }
 
 ;
-; Put together the fproxy URL
+; Find fproxy port and compile fproxy URL
 ;
 FileRead, _INI, freenet.ini
 If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
@@ -74,8 +59,25 @@ If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
 _URL = http://127.0.0.1:%_Port1%/
 
 ;
+; Wait for the node HTTP interface to become available
+;
+
+While (TestPortAvailability(_Port1))
+{
+	If (A_Index >= _CheckTimes)
+	{
+		PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was unable to connect to the Freenet node at port ") _Port1 "." "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+		ExitApp, 1
+	}
+
+	Sleep, _CheckInterval
+}
+
+;
 ; Try browser: Google Chrome in incognito mode (Tested versions: 1.0.154)
-; Note that Google Chrome is buggy, launching with the incognito option if the browser is already open will open a new window without using incognito mode. Hence fproxy ignores this option for now, and when Chrome is fixed, will check the version string. See http://code.google.com/p/chromium/issues/detail?id=9636 or our bug 3376.
+;
+; Note: Google Chrome suffers from a bug that causes launching with the incognito option to open a new window without incognito in some cases. See http://code.google.com/p/chromium/issues/detail?id=9636 or our bug 3376.
+;
 RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
 
 If (!ErrorLevel && _ChromeInstallDir <> "")
@@ -156,40 +158,79 @@ PopupErrorMessage(_ErrorMessage)
 	MsgBox, 16, % Trans("Freenet Launcher error"), %_ErrorMessage%	; 16 = Icon Hand (stop/error)
 }
 
-Service_State(ServiceName)
+IsWrapperRunning(_PID)
 {
-	; Return Values:
-	; -4: Service not found
-	; -1: Service could not be queried
-	; 1: SERVICE_STOPPED (The service is not running)
-	; 2: SERVICE_START_PENDING (The service is starting)
-	; 3: SERVICE_STOP_PENDING (The service is stopping)
-	; 4: SERVICE_RUNNING (The service is running)
-	; 5: SERVICE_CONTINUE_PENDING (The service continue is pending)
-	; 6: SERVICE_PAUSE_PENDING (The service pause is pending)
-	; 7: SERVICE_PAUSED (The service is paused)
+	Process, Exist, %_PID%
 
-	SCM_HANDLE := DllCall("advapi32\OpenSCManagerA"
-			, "Int", 0 ;NULL for local
-			, "Int", 0
-			, "UInt", 0x1) ;SC_MANAGER_CONNECT (0x0001)
-                           
-	if !(SC_HANDLE := DllCall("advapi32\OpenServiceA"
-			, "UInt", SCM_HANDLE
-			, "Str", ServiceName
-			, "UInt", 0x4)) ;SERVICE_QUERY_STATUS (0x0004)
-	result := -4 ;Service Not Found
+	If (ErrorLevel == 0)
+	{
+		Return, 0
+	}
+	Else
+	{
+		Return, 1
+	}
+}
 
-	VarSetCapacity(SC_STATUS, 28, 0) ;SERVICE_STATUS Struct
+TestPortAvailability(_Port)
+{
+	global
 
-	if !result
-	result := !DllCall("advapi32\QueryServiceStatus"
-			, "UInt", SC_HANDLE
-			, "UInt", &SC_STATUS)
-			? False : NumGet(SC_STATUS, 4) ;-1 or dwCurrentState
+	VarSetCapacity(wsaData, 32)
+	_Result := DllCall("Ws2_32\WSAStartup", "UShort", 0x0002, "UInt", &wsaData)				; Request Winsock 2.0 (0x0002)
 
-	DllCall("advapi32\CloseServiceHandle", "UInt", SC_HANDLE)
-	DllCall("advapi32\CloseServiceHandle", "UInt", SCM_HANDLE)
+	If (ErrorLevel)
+	{
+		PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing."))
+		ExitApp, 1
+	}
+	Else If (_Result)											; Non-zero, which means it failed (most Winsock functions return 0 upon success)
+	{
+		_Error := DllCall("Ws2_32\WSAGetLastError")
+		DllCall("Ws2_32\WSACleanup")
+		PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing.") " (" Trans("Error: ") _Error ")")
+		ExitApp, 1
+	}
 
-	return result
+	AF_INET = 2
+	SOCK_STREAM = 1
+	IPPROTO_TCP = 6
+
+	_Socket := DllCall("Ws2_32\socket", "Int", AF_INET, "Int", SOCK_STREAM, "Int", IPPROTO_TCP)
+	if (_Socket = -1)
+	{
+		_Error := DllCall("Ws2_32\WSAGetLastError")
+		DllCall("Ws2_32\WSACleanup")
+		PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was not able to create a Winsock 2.0 socket for port availability testing.") " (" Trans("Error: ") _Error ")")
+		ExitApp, 1
+	}
+
+	SizeOfSocketAddress = 16
+	VarSetCapacity(SocketAddress, SizeOfSocketAddress)
+	InsertInteger(2, SocketAddress, 0, AF_INET)
+	InsertInteger(DllCall("Ws2_32\htons", "UShort", _Port), SocketAddress, 2, 2)
+	InsertInteger(DllCall("Ws2_32\inet_addr", "Str", "127.0.0.1"), SocketAddress, 4, 4)
+
+	If DllCall("Ws2_32\connect", "UInt", _Socket, "UInt", &SocketAddress, "Int", SizeOfSocketAddress)
+	{
+		_Available := 1											; DllCall returned non-zero, e.g. fail - which means port is most likely free
+	}
+	Else
+	{
+		_Available := 0
+	}
+
+	DllCall("Ws2_32\WSACleanup")										; Do a cleanup (including closing of any open sockets)
+	return _Available
+}
+
+InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4)
+{
+	global
+
+	Loop, %pSize%												; Copy each byte in the integer into the structure as raw binary data.
+	{
+		DllCall("RtlFillMemory", "UInt", &pDest + pOffset + A_Index-1, "UInt", 1, "UChar", pInteger >> 8*(A_Index-1) & 0xFF)
+	}
+
 }
