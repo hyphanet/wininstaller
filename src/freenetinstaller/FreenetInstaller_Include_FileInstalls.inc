@@ -12,6 +12,7 @@
 
 FileCreateDir,								%_InstallDir%
 FileInstall, ..\..\res\install_node\freenet.ico,			%_InstallDir%\freenet.ico
+FileInstall, ..\..\res\install_node\freenetoffline.ico,			%_InstallDir%\freenetoffline.ico
 FileInstall, ..\..\res\install_node\freenet.jar,			%_InstallDir%\freenet.jar
 FileInstall, ..\..\res\install_node\freenet-ext.jar,			%_InstallDir%\freenet-ext.jar
 FileInstall, ..\..\res\install_node\freenet.exe,			%_InstallDir%\freenet.exe

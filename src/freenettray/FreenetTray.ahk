@@ -6,23 +6,32 @@
 ; Don't-touch-unless-you-know-what-you-are-doing settings
 ;
 #NoEnv									; Recommended for performance and compatibility with future AutoHotkey releases
-#Persistent								; Keep script alive even after we "return" from the main function
-#SingleInstance	OFF							; Allow several instances at the same time
+#Persistent								; Keep script alive even after we "return" from the main thread
+#SingleInstance	ignore							; Only allow one instance at a time
 
 #Include ..\include_translator\Include_Translator.ahk			; Include translator
 
+_CurrentState := 0							; Initial running state
+
 SendMode, Input								; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off							; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
+DetectHiddenWindows, On							; As we are going to manipulate a hidden widow, we need to actually look for it too
+OnExit, ExitHandler							; No matter what reason we are exiting, run this first
 
 ;
 ; Customizable settings
 ;
-_FileRequirements = installid.dat|freenet.ico|freenetlauncher.exe	; List of files that must exist for the tray manager to work. Paths are relative to own location.
+_FileRequirements = installid.dat|freenet.ico|freenetoffline.ico|freenetlauncher.exe	; List of files that must exist for the tray manager to work. Paths are relative to own location.
+_UpdateInterval := 15000								; (ms) How long between each wrapper crash check?
+_WrapperTimeout := 30									; (seconds) How long before timing out waiting for the wrapper
 
 ;
 ; General init stuff
 ;
 SetWorkingDir, %A_ScriptDir%						; Look for other files relative to our own location
+
+FileDelete, freenet.pid
+FileAppend, % DllCall("GetCurrentProcessId"), freenet.pid
 
 InitTranslations()
 
@@ -30,8 +39,7 @@ Loop, Parse, _FileRequirements, |
 {
 	IfNotExist, %A_LoopField%
 	{
-		PopupErrorMessage(Trans("Freenet Tray") " " Trans("was unable to find the following file:") "`n`n" A_LoopField "`n`n" Trans("Make sure that you are running") " " Trans("Freenet Tray") " " Trans("from a Freenet installation directory.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
-		ExitApp, 1
+		ExitWithError(Trans("Freenet Tray") " " Trans("was unable to find the following file:") "`n`n" A_LoopField "`n`n" Trans("Make sure that you are running") " " Trans("Freenet Tray") " " Trans("from a Freenet installation directory.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 	}	
 }
 
@@ -42,18 +50,23 @@ FileReadLine, _InstallSuffix, installid.dat, 1				; Read our install suffix from
 ;
 Menu, TRAY, NoStandard							; Remove default tray menu items
 Menu, TRAY, Click, 1							; Activate default menu entry after a single click only (instead of default which most likely is doubleclick)
-Menu, TRAY, Icon, freenet.ico, , 1					; As we don't know if the node is running yet, show as offline
+Menu, TRAY, Icon, freenetoffline.ico, , 1				; As we don't know if the node is running yet, show as offline
 Menu, TRAY, Tip, % Trans("Freenet Tray") _InstallSuffix
 
 Menu, TRAY, Add, % Trans("Open Freenet"), BrowseFreenet
+Menu, TRAY, Add								; Separator
+Menu, TRAY, Add, % Trans("Start Freenet"), Start
+Menu, TRAY, Add, % Trans("Stop Freenet"), Stop
 Menu, TRAY, Add								; Separator
 Menu, TRAY, Add, % Trans("View logfile"), OpenLog
 Menu, TRAY, Add								; Separator
 Menu, TRAY, Add, % Trans("About"), About
 Menu, TRAY, Add, % Trans("Exit"), Exit
 
+; Initially disable these
 Menu, TRAY, Disable, % Trans("Open Freenet")
-MsgBox, TODO: Disable Open Freenet while node is still not running. Add offline icon?
+Menu, TRAY, Disable, % Trans("Start Freenet")
+Menu, TRAY, Disable, % Trans("Stop Freenet")
 
 ;
 ; Display a welcome balloontip if requested in the command line
@@ -67,13 +80,7 @@ If (_Arg1 == "/welcome")
 ;
 ; Start wrapper
 ;
-Run, wrapper\freenetwrapper.exe -c wrapper.conf, , Hide UseErrorLevel
-
-If (ErrorLevel == "ERROR")
-{
-	MsgBox, 16, % Trans("Freenet Tray error"), % Trans("Freenet Tray") " " Trans("was not able to start the Freenet node using the Freenet wrapper. Error code: ") "`n`n" A_LastError "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers.")	; 16 = Icon Hand (stop/error)
-	ExitApp
-}
+StartWrapper()
 
 ;
 ; Setup regular status checks and do one now. Then return to idle.
@@ -93,6 +100,24 @@ RunWait, freenetlauncher.exe, , UseErrorLevel
 return
 
 ;
+; Label subroutine: Start
+;
+Start:
+
+StartWrapper()
+
+return
+
+;
+; Label subroutine: Stop
+;
+Stop:
+
+StopWrapper()
+
+return
+
+;
 ; Label subroutine: OpenLog
 ;
 OpenLog:
@@ -106,7 +131,7 @@ return
 ;
 About:
 
-MsgBox, 64, % Trans("Freenet Tray"), % Trans("Freenet Windows Tray Manager") "`n`nhttp://freenetproject.org/"	; 64 = Icon Asterisk (info)
+MsgBox, 64, % Trans("Freenet Tray"), % Trans("By:") "Christian Funder Sommerlund (Zero3)`n`nhttp://freenetproject.org/"	; 64 = Icon Asterisk (info)
 
 return
 
@@ -115,9 +140,20 @@ return
 ;
 Exit:
 
+Menu, TRAY, Disable, % Trans("Exit")
 ExitApp
 
 return
+
+;
+; Label subroutine: ExitHandler
+;
+ExitHandler:
+
+StopWrapper()
+FileDelete, freenet.pid
+
+ExitApp
 
 ;
 ; Label subroutine: StatusUpdate
@@ -131,20 +167,91 @@ return
 ;
 ; Helper functions
 ;
-PopupErrorMessage(_ErrorMessage)
+ExitWithError(_ErrorMessage)
 {
 	MsgBox, 16, % Trans("Freenet Tray"), %_ErrorMessage%		; 16 = Icon Hand (stop/error)
+	ExitApp
 }
 
 DoStatusUpdate()
 {
 	global
 
-	IfExist, tray_die.dat
+	; Crash check
+	If (_CurrentState == 1 && !IsWrapperRunning())
 	{
-		ExitApp							; An external process (most likely the uninstaller) requested that we shutdown, so we better do so!
+		; Wrapper has crashed. Crap.
+		ExitWithError(Trans("The Freenet wrapper terminated unexpectedly.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 	}
+}
 
-	_CurrentState := 1
+IsWrapperRunning()
+{
+	global
+
+	Process, Exist, %_PID%
+
+	If (ErrorLevel == 0)
+	{
+		Return, 0
+	}
+	Else
+	{
+		Return, 1
+	}
+}
+
+StartWrapper()
+{
+	global
+
+	If (_CurrentState == 0)
+	{
+		_CurrentState := 1
+
+		Menu, TRAY, Disable, % Trans("Start Freenet")
+		Menu, TRAY, NoDefault
+
+		Run, wrapper\freenetwrapper.exe -c wrapper.conf, , Hide UseErrorLevel, _PID
+
+		If (ErrorLevel == "ERROR")
+		{
+			ExitWithError(Trans("Freenet Tray") " " Trans("was not able to start the Freenet node using the Freenet wrapper. Error code: ") "`n`n" A_LastError "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+		}
+
+		Menu, TRAY, Icon, freenet.ico, , 1
+		Menu, TRAY, Enable, % Trans("Open Freenet")
+		Menu, TRAY, Enable, % Trans("Stop Freenet")
+		Menu, TRAY, Default, % Trans("Open Freenet")
+	}
+}
+
+StopWrapper()
+{
+	global
+
+	If (_CurrentState == 1)
+	{
+		_CurrentState := 0
+
+		Menu, TRAY, Icon, freenetoffline.ico, , 1
+		Menu, TRAY, Disable, % Trans("Open Freenet")
+		Menu, TRAY, Disable, % Trans("Stop Freenet")
+		Menu, TRAY, NoDefault
+
+		; Send CTRL + C to wrapper to make it shut down the node and itself
+		ControlSend, , ^c, ahk_pid %_PID%
+
+		; Check if wrapper is still running
+		WinWaitClose, ahk_pid %_PID%, , _WrapperTimeout
+		If (ErrorLevel == 1)
+		{
+			; Wrapper didn't exit within timeout. We shouldn't really force close the wrapper as we risk damaging the node - and we really want such issues reported anyway
+			ExitWithError(Trans("The Freenet wrapper failed to stop Freenet.") " " Trans("Please manually terminate the wrapper and node, or restart your system.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
+		}
+
+		Menu, TRAY, Enable, % Trans("Start Freenet")
+		Menu, TRAY, Default, % Trans("Start Freenet")
+	}
 }
 

@@ -17,12 +17,9 @@
 SendMode, Input							; Recommended for new scripts due to its superior speed and reliability
 StringCaseSense, Off						; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
 
-_SignalSent := 0						; Used to make sure that we only try to gracefully shut down the noce once (if it doesn't work the first time, we might as well just kill it off)
-
 ;
 ; Customizable settings
 ;
-_ShutdownTimeout := 120						; Maximum number of seconds we wait before "timing out" and throwing an error when trying to shut down the node
 _ProgressFormat = A T W300 FS10					; How our progress bar should look. The 'R' (range) parameter is added later in the script.
 
 ;
@@ -82,66 +79,30 @@ IfMsgBox, Cancel
 ;
 ; Alright. No way back!
 ;
-Progress, %_ProgressFormat% R0-4, ..., , % Trans("Freenet uninstaller")					; "Rx-y" defines number of "ticks" in the progress bar. Should match the numbers below.
+Progress, %_ProgressFormat% R0-3, ..., , % Trans("Freenet uninstaller")					; "Rx-y" defines number of "ticks" in the progress bar. Should match the numbers below.
 
 ;
 ; Shut down node
 ;
-Progress, , % Trans("Stopping Freenet...")
+Progress, , % Trans("Closing Freenet...")
 
-MsgBox, TODO: Kill tray via window message
-;Loop
-;{
-;	_ServiceState := Service_State("freenet" . _InstallSuffix)
-;
-;	If (A_Index > _ServiceTimeout)
-;	{
-;		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Timeout while managing the service."))
-;		Exit()
-;	}
-;	Else If (_ServiceState == -1)
-;	{
-;		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Could not access the service.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
-;		Exit()
-;	}
-;	Else If (_ServiceState == 2 || _ServiceState == 3 || _ServiceState == 5 || _ServiceState == 6)
-;	{
-;		Sleep, 1000
-;		Continue
-;	}
-;	Else If (_ServiceState == 1 || _ServiceState == -4)
-;	{
-;		Break						; Service is not running, or doesn't exist. Continue!
-;	}
-;	Else
-;	{
-;		If (!_SignalSent)
-;		{
-;			_SignalSent := 1
-;			Service_Stop("freenet" . _InstallSuffix)
-;			Continue
-;		}
-;		Else
-;		{
-;			PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to control the Freenet system service.") "`n`n" Trans("Reason:") " " Trans("Service did not respond to signal.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
-;			Exit()
-;		}
-;	}
-;}
+FileRead, _TrayPID, %_InstallDir%\freenet.pid
+MsgBox, ErrorLevel: %ErrorLevel% Pid: %_TrayPID%
+
+If (ErrorLevel == 0)
+{
+	WinClose, ahk_pid %_TrayPID%
+}
+
+; Double-check
+Process, Exist, %_TrayPID%
+
+If (ErrorLevel != 0)
+{
+	PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to close Freenet.") "^n^n" Trans("Please manually close all Freenet processes (including java.exe) before continuing."))
+}
 
 Progress, 1
-
-;
-; Shut down tray managers
-;
-Progress, , % Trans("Shutting down tray managers...")
-MsgBox, TODO: Kill tray this way instead?
-
-;FileAppend, Die, %_InstallDir%\tray_die.dat	; Send a "die" signal to any tray managers hooked to this installation
-;Sleep, 10000					; Should be at least as long as the update interval in any tray manager that might be running
-;FileDelete, tray_die.dat
-
-Progress, 2
 
 ;
 ; Remove files
@@ -166,21 +127,20 @@ If (ErrorLevel)
 }
 
 ; We don't really care if deletion of shortcuts fail, as the user probably just deleted / renamed / moved them around.
-MsgBox, TODO: Remove shortcuts
-;FileDelete, %A_StartupCommon%\Freenet Tray%_InstallSuffix%.lnk
-;FileRemoveDir, %A_ProgramsCommon%\Freenet%_InstallSuffix%, 1
-;FileDelete, %A_DesktopCommon%\Freenet%_InstallSuffix%.lnk
+FileDelete, %A_Startup%\Start Freenet%_InstallSuffix%.lnk
+FileRemoveDir, %A_Programs%\Freenet%_InstallSuffix%, 1
+FileDelete, %A_Desktop%\Freenet%_InstallSuffix%.lnk
 
-Progress, 3
+Progress, 2
 
 ;
 ; Remove registry edits
 ;
 Progress, , % Trans("Removing registry information...")
 
-RegDelete, HKEY_LOCAL_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%
+RegDelete, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%
 
-Progress, 4
+Progress, 3
 
 ;
 ; Done!

@@ -17,8 +17,9 @@
 SendMode, Input								; Recommended for new scripts due to its superior speed and reliability
 SetFormat, FLOAT, 0.0							; Remove trailing zeroes on floats. We won't need the precision and it looks stupid with numbers printed with 27 trailing zeroes
 StringCaseSense, Off							; Treat A-Z as equal to a-z when comparing strings. Useful when dealing with folders, as Windows treat them as equals.
+
 _FontSize := 9								; Our font size. Changing this *might* mess up some of the margin calculations! See comment for _TextHeight calculation below as well.
-Gui, +OwnDialogs							; Make messageboxes "stick" to the main GUI
+_InstallLayout := 1							; Increase by a version each time a (major) change to the installation layout is made. Might be needed for upgrades in the future.
 
 ;
 ; Customizable settings
@@ -209,10 +210,10 @@ Gui, Add, Text, W%_StatusWidth% x+4 v_cInstallDirStatusText, ...
 ;
 ; Groupbox: Running Freenet
 ;
-_GBHeight := CalculateGroupBoxHeight(3,0,0,0)
+_GBHeight := CalculateGroupBoxHeight(2,0,0,0)
 Gui, Add, GroupBox, xs w%_GuiWidth2% h%_GBHeight% Section, % Trans("Running Freenet")
 
-Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, % Trans("When running, Freenet will automatically use a small amount of system resources in order to be a part of the Freenet peer-to-peer network. The amount of resources used can be adjusted after the installation.")
+Gui, Add, Text, xs+%_GBHorMargin% ys+%_GBTopMargin% W%_GuiWidth3%, % Trans("When running, Freenet will use a moderate amount of system resources in order to take part in the Freenet peer-to-peer network. This amount can be adjusted after the installation.")
 
 ;
 ; Groupbox: Additional settings
@@ -259,7 +260,8 @@ return
 ; Actual installation thread starts here (when user presses "Install")
 ;
 ButtonInstall:
-;;;;;;Gui, +OwnDialogs											; Make an eventual messagebox "stick" to the main GUI
+Gui, +OwnDialogs											; Make an eventual messagebox "stick" to the main GUI
+
 VisualInstallStart(7)											; Freeze GUI, show progress bar, etc... Argument is number of "ticks" in the progress bar. Should match the number of +1's during the rest of the installation
 FindInstallSuffix()											; Figure out if we already have existing installations we need to take into consideration, and if so, find a proper install suffix
 
@@ -309,6 +311,9 @@ GuiControl, , _cProgressBar, +1
 ; Write installation id file. Will be empty if we are not using a suffix.
 FileAppend, %_InstallSuffix%,											%_InstallDir%\installid.dat
 
+; Write install layout version file. Used to identify which generation of the installer being used.
+FileAppend, %_InstallLayout%,											%_InstallDir%\installlayout.dat
+
 ; Write initial freenet.ini
 FileAppend, fproxy.port=%_FProxyPort%`n,									%_InstallDir%\freenet.ini
 FileAppend, fcp.port=%_FCPPort%`n,										%_InstallDir%\freenet.ini
@@ -325,9 +330,9 @@ FileAppend, # Memory limit for the node`n,									%_InstallDir%\wrapper\wrapper
 FileAppend, wrapper.java.maxmemory=%_NodeMaxMem%`n,								%_InstallDir%\wrapper\wrapper.conf
 
 ; Write uninstall stuff to registry
-RegWrite, REG_SZ, HKEY_LOCAL_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayIcon, %_InstallDir%\freenet.ico
-RegWrite, REG_SZ, HKEY_LOCAL_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayName, Freenet%_InstallSuffix%
-RegWrite, REG_SZ, HKEY_LOCAL_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, UninstallString, %_InstallDir%\freenetuninstaller.exe
+RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayIcon, %_InstallDir%\freenet.ico
+RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayName, Freenet%_InstallSuffix%
+RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, UninstallString, %_InstallDir%\freenetuninstaller.exe
 GuiControl, , _cProgressBar, +1
 
 ;
@@ -345,15 +350,18 @@ If (_cInstallStartMenuShortcuts)
 }
 If (_cInstallDesktopShortcuts)
 {
-	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_Desktop%\Open Freenet%_InstallSuffix%.lnk, , , % Trans("Opens Freenet"), %_InstallDir%\Freenet.ico
+	FileCreateShortcut, %_InstallDir%\freenetlauncher.exe, %A_Desktop%\Freenet%_InstallSuffix%.lnk, , , % Trans("Opens Freenet"), %_InstallDir%\Freenet.ico
 }
 GuiControl, , _cProgressBar, +1
 
 ;
 ; Start Freenet
 ;
-Run, %_InstallDir%\freenet.exe, , UseErrorLevel
-MsgBox, TODO: Wait until Freenet is responsive and add various error handling too
+If (_cAutoStart)
+{
+	; Assume that the user would like the tray icon started now too
+	Run, %_InstallDir%\freenet.exe /welcome, , UseErrorLevel
+}
 GuiControl, , _cProgressBar, +1
 
 ;
