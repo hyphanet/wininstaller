@@ -55,6 +55,8 @@ echo -----
 set MAGICSTRING=INDO
 set CAFILE=startssl.pem
 set RESTART=0
+
+::  For these variables 0 means nothing to do, 1 means success or yes, 2 indicates an error condition
 set MAINJARUPDATED=0
 set EXTJARUPDATED=0
 set WRAPPEREXEUPDATED=0
@@ -64,8 +66,11 @@ set STOPEXEUPDATED=0
 set TRAYUTILITYUPDATED=0
 set LAUNCHERUPDATED=0
 set SEEDUPDATED=0
+
 set COUNT=0
 set PATH=%SYSTEMROOT%\System32\;%PATH%
+
+::  Accept flags from command line
 set RELEASE=stable
 if "%1"=="testing" set RELEASE=testing
 if "%1"=="-testing" set RELEASE=testing
@@ -85,7 +90,7 @@ echo *******************************************************************
 set ANSWER1==X
 echo - 
 echo - Do you wish to continue?
-set /P ANSWER1=- Press Y to continue or N to quit. 
+set /P ANSWER1=- Press Y to continue or N to quit.
 if /i %ANSWER1%==Y goto promptloop1out
 if /i %ANSWER1%==N goto veryend
 ::User hit a wrong key or <enter> without selecting, go around again.
@@ -208,14 +213,15 @@ if exist ..\freenet-testing* del ..\freenet-testing*
 
 ::Check for a new main jar
 echo - Checking main jar
+::Backup our .sha1/.url files in case we fail later
 if exist freenet-%RELEASE%-latest.jar.url.bak del freenet-%RELEASE%-latest.jar.url.bak
 if exist freenet-%RELEASE%-latest.jar.url copy freenet-%RELEASE%-latest.jar.url freenet-%RELEASE%-latest.jar.url.bak > NUL
 if exist freenet-%RELEASE%-latest.jar.new.url del freenet-%RELEASE%-latest.jar.new.url
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/freenet-%RELEASE%-latest.jar.url -O freenet-%RELEASE%-latest.jar.new.url
 Title Freenet Update Over HTTP Script
 
-if not exist freenet-%RELEASE%-latest.jar.new.url goto error3
-FOR %%I IN ("freenet-%RELEASE%-latest.jar.new.url") DO if %%~zI==0 goto error3
+if not exist freenet-%RELEASE%-latest.jar.new.url goto maincheckfail
+FOR %%I IN ("freenet-%RELEASE%-latest.jar.new.url") DO if %%~zI==0 goto maincheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist freenet-%RELEASE%-latest.jar.url goto mainyes
@@ -225,7 +231,15 @@ fc freenet-%RELEASE%-latest.jar.url freenet-%RELEASE%-latest.jar.new.url > NUL
 if errorlevel 1 goto mainyes
 echo    - Main jar is current.
 goto maincheckend
-
+:maincheckfail
+echo    - Main jar could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set MAINJARUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Main jar
+if exist freenet-%RELEASE%-latest.jar.url del freenet-%RELEASE%-latest.jar.url
+if exist freenet-%RELEASE%-latest.jar.url.bak ren freenet-%RELEASE%-latest.jar.url.bak freenet-%RELEASE%-latest.jar.url
+goto maincheckend
 :mainyes
 echo    - New main jar found!
 set MAINJARUPDATED=1
@@ -233,20 +247,30 @@ set MAINJARUPDATED=1
 
 ::Check for a new freenet-ext.jar.
 echo - Checking ext jar
+::Backup our .sha1/.url files in case we fail later
 if exist freenet-ext.jar.sha1.bak del freenet-ext.jar.sha1.bak
 if exist freenet-ext.jar.sha1 copy freenet-ext.jar.sha1 freenet-ext.jar.sha1.bak > NUL
 if exist freenet-ext.jar.sha1.new del freenet-ext.jar.sha1.new
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/freenet-ext.jar.sha1 -O freenet-ext.jar.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist freenet-ext.jar.sha1.new goto error3
-FOR %%I IN ("freenet-ext.jar.sha1.new") DO if %%~zI==0 goto error3
+if not exist freenet-ext.jar.sha1.new goto extcheckfail
+FOR %%I IN ("freenet-ext.jar.sha1.new") DO if %%~zI==0 goto extcheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist freenet-ext.jar.sha1 goto extyes
 fc freenet-ext.jar.sha1 freenet-ext.jar.sha1.new > NUL
 if errorlevel 1 goto extyes
 echo    - ext jar is current.
+goto extcheckend
+:extcheckfail
+echo    - ext jar could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set EXTJARUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Ext jar
+if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
+if exist freenet-ext.jar.sha1.bak ren freenet-ext.jar.sha1.bak freenet-ext.jar.sha1
 goto extcheckend
 
 :extyes
@@ -258,14 +282,15 @@ set EXTJARUPDATED=1
 ::Check wrapper .exe
 if not exist ..\bin\wrapper-windows-x86-32.exe goto wrapperexecheckend
 echo - Checking wrapper .exe
+::Backup our .sha1/.url files in case we fail later
 if exist wrapper-windows-x86-32.exe.sha1.bak del wrapper-windows-x86-32.exe.sha1.bak
 if exist wrapper-windows-x86-32.exe.sha1 copy wrapper-windows-x86-32.exe.sha1 wrapper-windows-x86-32.exe.sha1.bak > NUL
 if exist wrapper-windows-x86-32.exe.sha1.new del wrapper-windows-x86-32.exe.sha1.new
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/wrapper-windows-x86-32.exe.sha1 -O wrapper-windows-x86-32.exe.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist wrapper-windows-x86-32.exe.sha1.new goto error3
-FOR %%I IN ("wrapper-windows-x86-32.exe.sha1.new") DO if %%~zI==0 goto error3
+if not exist wrapper-windows-x86-32.exe.sha1.new goto wrapperexecheckfail
+FOR %%I IN ("wrapper-windows-x86-32.exe.sha1.new") DO if %%~zI==0 goto wrapperexecheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist wrapper-windows-x86-32.exe.sha1 goto wrapperexeyes
@@ -273,6 +298,15 @@ if not exist wrapper-windows-x86-32.exe.sha1 goto wrapperexeyes
 fc wrapper-windows-x86-32.exe.sha1 wrapper-windows-x86-32.exe.sha1.new > NUL
 if errorlevel 1 goto wrapperexeyes
 echo    - wrapper .exe is current.
+goto wrapperexecheckend
+:wrapperexecheckfail
+echo    - wrapper .exe could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set WRAPPEREXEUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Wrapper .exe
+if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
+if exist wrapper-windows-x86-32.exe.sha1.bak ren wrapper-windows-x86-32.exe.sha1.bak wrapper-windows-x86-32.exe.sha1
 goto wrapperexecheckend
 
 :wrapperexeyes
@@ -284,14 +318,15 @@ set WRAPPEREXEUPDATED=1
 ::Check wrapper .dll
 if not exist ..\lib\wrapper-windows-x86-32.dll goto wrapperdllcheckend
 echo - Checking wrapper .dll
+::Backup our .sha1/.url files in case we fail later
 if exist wrapper-windows-x86-32.dll.sha1.bak del wrapper-windows-x86-32.dll.sha1.bak
 if exist wrapper-windows-x86-32.dll.sha1 copy wrapper-windows-x86-32.dll.sha1 wrapper-windows-x86-32.dll.sha1.bak > NUL
 if exist wrapper-windows-x86-32.dll.sha1.new del wrapper-windows-x86-32.dll.sha1.new
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/wrapper-windows-x86-32.dll.sha1 -O wrapper-windows-x86-32.dll.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist wrapper-windows-x86-32.dll.sha1.new goto error3
-FOR %%I IN ("wrapper-windows-x86-32.dll.sha1.new") DO if %%~zI==0 goto error3
+if not exist wrapper-windows-x86-32.dll.sha1.new goto wrapperdllcheckfail
+FOR %%I IN ("wrapper-windows-x86-32.dll.sha1.new") DO if %%~zI==0 goto wrapperdllcheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist wrapper-windows-x86-32.dll.sha1 goto wrapperdllyes
@@ -299,6 +334,15 @@ if not exist wrapper-windows-x86-32.dll.sha1 goto wrapperdllyes
 fc wrapper-windows-x86-32.dll.sha1 wrapper-windows-x86-32.dll.sha1.new > NUL
 if errorlevel 1 goto wrapperdllyes
 echo    - wrapper .dll is current.
+goto wrapperdllcheckend
+:wrapperdllcheckfail
+echo    - wrapper .dll could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set WRAPPERDLLUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Wrapper .dll
+if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
+if exist wrapper-windows-x86-32.dll.sha1.bak ren wrapper-windows-x86-32.dll.sha1.bak wrapper-windows-x86-32.dll.sha1
 goto wrapperdllcheckend
 
 :wrapperdllyes
@@ -311,14 +355,15 @@ set WRAPPERDLLUPDATED=1
 ::Check start.exe if present
 if not exist ..\bin\start.exe goto startexecheckend
 echo - Checking start.exe
+::Backup our .sha1/.url files in case we fail later
 if exist start.exe.sha1.bak del start.exe.sha1.bak
 if exist start.exe.sha1 copy start.exe.sha1 start.exe.sha1.bak > NUL
 if exist start.exe.sha1.new del start.exe.sha1.new
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/start.exe.sha1 -O start.exe.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist start.exe.sha1.new goto error3
-FOR %%I IN ("start.exe.sha1.new") DO if %%~zI==0 goto error3
+if not exist start.exe.sha1.new goto startexecheckfail
+FOR %%I IN ("start.exe.sha1.new") DO if %%~zI==0 goto startexecheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist start.exe.sha1 goto startexeyes
@@ -326,6 +371,15 @@ if not exist start.exe.sha1 goto startexeyes
 fc start.exe.sha1 start.exe.sha1.new > NUL
 if errorlevel 1 goto startexeyes
 echo    - start.exe is current.
+goto startexecheckend
+:startexecheckfail
+echo    - start.exe could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set STARTEXEUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Start.exe
+if exist start.exe.sha1 del start.exe.sha1
+if exist start.exe.sha1.bak ren start.exe.sha1.bak start.exe.sha1
 goto startexecheckend
 
 :startexeyes
@@ -337,14 +391,15 @@ set STARTEXEUPDATED=1
 ::Check stop.exe if present
 if not exist ..\bin\stop.exe goto stopexecheckend
 echo - Checking stop.exe
+::Backup our .sha1/.url files in case we fail later
 if exist stop.exe.sha1.bak del stop.exe.sha1.bak
 if exist stop.exe.sha1 copy stop.exe.sha1 stop.exe.sha1.bak > NUL
 if exist stop.exe.sha1.new del stop.exe.sha1.new
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/stop.exe.sha1 -O stop.exe.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist stop.exe.sha1.new goto error3
-FOR %%I IN ("stop.exe.sha1.new") DO if %%~zI==0 goto error3
+if not exist stop.exe.sha1.new goto stopexecheckfail
+FOR %%I IN ("stop.exe.sha1.new") DO if %%~zI==0 goto stopexecheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist stop.exe.sha1 goto stopexeyes
@@ -352,6 +407,15 @@ if not exist stop.exe.sha1 goto stopexeyes
 fc stop.exe.sha1 stop.exe.sha1.new > NUL
 if errorlevel 1 goto stopexeyes
 echo    - stop.exe is current.
+goto stopexecheckend
+:stopexecheckfail
+echo    - stop.exe could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set STOPEXEUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Stop.exe
+if exist stop.exe.sha1 del stop.exe.sha1
+if exist stop.exe.sha1.bak ren stop.exe.sha1.bak stop.exe.sha1
 goto stopexecheckend
 
 :stopexeyes
@@ -374,14 +438,14 @@ echo - Downloading freenettray.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenettray.exe -O freenettray.exe
 Title Freenet Update Over HTTP Script
 
-if not exist freenettray.exe goto error3
-FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto error3
+if not exist freenettray.exe goto traycheckfail
+FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto traycheckfail
 
 java -cp ..\lib\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto traycheckfail
 Title Freenet Update Over HTTP Script
 
-::Copy it to the /bin folder
+::Copy it to the \bin folder
 copy /Y freenettray.exe ..\bin\freenettray.exe > NUL
 if not exist ..\bin\freenettray.exe goto unknownerror
 
@@ -416,14 +480,15 @@ echo freenettray.exe copied to %USERPROFILE%\Start Menu\Programs\Startup\
 
 :traycheck
 echo - Checking freenettray.exe
+::Backup our .sha1/.url files in case we fail later
 if exist freenettray.exe.sha1.bak del freenettray.exe.sha1.bak
 if exist freenettray.exe.sha1 copy freenettray.exe.sha1 freenettray.exe.sha1.bak > NUL
 if exist freenettray.exe.sha1.new del freenettray.exe.sha1.new
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenettray.exe.sha1 -O freenettray.exe.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist freenettray.exe.sha1.new goto error3
-FOR %%I IN ("freenettray.exe.sha1.new") DO if %%~zI==0 goto error3
+if not exist freenettray.exe.sha1.new goto traycheckfail
+FOR %%I IN ("freenettray.exe.sha1.new") DO if %%~zI==0 goto traycheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist freenettray.exe.sha1 goto trayyes
@@ -433,25 +498,36 @@ if errorlevel 1 goto trayyes
 echo    - freenettray.exe is current.
 goto traycheckend
 
+:traycheckfail
+echo    - freenettray.exe could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set TRAYUTILITYUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::freenettray.exe
+if exist freenettray.exe.sha1 del freenettray.exe.sha1
+if exist freenettray.exe.sha1.new ren freenettray.exe.sha1.new freenettray.exe.sha1
+goto traycheckend
+
 :trayyes
 echo    - New freenettray.exe found!
 set TRAYUTILITYUPDATED=1
 ::We can only hope the tray gets shutdown in time, let's give it all the time we can by starting now
-if not exist ..\tray_die.dat type "" >> ..\tray_die.dat
+if not exist ..\tray_die.dat echo "" >> ..\tray_die.dat
 :traycheckend
 
 
 ::Check launcher utility if present
 if not exist ..\freenetlauncher.exe goto launchercheckend
 echo - Checking freenetlauncher.exe
+::Backup our .sha1/.url files in case we fail later
 if exist freenetlauncher.exe.sha1.bak del freenetlauncher.exe.sha1.bak
 if exist freenetlauncher.exe.sha1 copy freenetlauncher.exe.sha1 freenetlauncher.exe.sha1.bak > NUL
 if exist freenetlauncher.exe.sha1.new del freenetlauncher.exe.sha1.new
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/freenetlauncher.exe.sha1 -O freenetlauncher.exe.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist freenetlauncher.exe.sha1.new goto error3
-FOR %%I IN ("freenetlauncher.exe.sha1.new") DO if %%~zI==0 goto error3
+if not exist freenetlauncher.exe.sha1.new goto launchercheckfail
+FOR %%I IN ("freenetlauncher.exe.sha1.new") DO if %%~zI==0 goto launchercheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist freenetlauncher.exe.sha1 goto launcheryes
@@ -461,20 +537,31 @@ if errorlevel 1 goto launcheryes
 echo    - freenetlauncher.exe is current.
 goto launchercheckend
 
+:launchercheckfail
+echo    - freenetlauncher.exe could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set LAUNCHERUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::freenetlauncher.exe
+if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
+if exist freenetlauncher.exe.sha1.new ren freenetlauncher.exe.sha1.new freenetlauncher.exe.sha1
+goto launchercheckend
+
 :launcheryes
 echo    - New freenetlauncher.exe found!
 set LAUNCHERUPDATED=1
 :launchercheckend
 
 ::Check for an updated seednodes.fref
+::Backup our .sha1/.url files in case we fail later
 if exist seednodes.fref.sha1.bak del seednodes.fref.sha1.bak
 if exist seednodes.fref.sha1 copy seednodes.fref.sha1 seednodes.fref.sha1.bak > NUL
 if exist seednodes.fref.sha1.new del seednodes.fref.sha1.new
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/opennet/seednodes.fref.sha1 -O seednodes.fref.sha1.new
 Title Freenet Update Over HTTP Script
 
-if not exist seednodes.fref.sha1.new goto error3
-FOR %%I IN ("seednodes.fref.sha1.new") DO if %%~zI==0 goto error3
+if not exist seednodes.fref.sha1.new goto seedcheckfail
+FOR %%I IN ("seednodes.fref.sha1.new") DO if %%~zI==0 goto seedcheckfail
 
 ::Do we have something old to compare with? If not, update right away
 if not exist seednodes.fref.sha1 goto seedyes
@@ -483,24 +570,35 @@ fc seednodes.fref.sha1 seednodes.fref.sha1.new > NUL
 if errorlevel 1 goto seedyes
 goto seedcheckend
 
+:seedcheckfail
+echo    - seednodes.fref could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+set SEEDUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::seednodes.fref
+if exist seednodes.fref.sha1 del seednodes.fref.sha1
+if exist seednodes.fref.sha1.bak ren seednodes.fref.sha1.bak seednodes.fref.sha1
+goto seedcheckend
+
 :seedyes
 set SEEDUPDATED=1
 :seedcheckend
 
 
 ::Check if we have flagged any of the files as updated
-if %MAINJARUPDATED%==1 goto updatebegin
-if %EXTJARUPDATED%==1 goto updatebegin
-if %WRAPPEREXEUPDATED%==1 goto updatebegin
-if %WRAPPERDLLUPDATED%==1 goto updatebegin
-if %STARTEXEUPDATED%==1 goto updatebegin
-if %STOPEXEUPDATED%==1 goto updatebegin
-if %TRAYUTILITYUPDATED%==1 goto updatebegin
-if %LAUNCHERUPDATED%==1 goto updatebegin
+if %MAINJARUPDATED%==1 goto downloadbegin
+if %EXTJARUPDATED%==1 goto downloadbegin
+if %WRAPPEREXEUPDATED%==1 goto downloadbegin
+if %WRAPPERDLLUPDATED%==1 goto downloadbegin
+if %STARTEXEUPDATED%==1 goto downloadbegin
+if %STOPEXEUPDATED%==1 goto downloadbegin
+if %TRAYUTILITYUPDATED%==1 goto downloadbegin
+if %LAUNCHERUPDATED%==1 goto downloadbegin
+::Purposely not considering whether seednode is updated
 goto noupdate
 
 ::New version found, check if the node is currently running
-:updatebegin
+:downloadbegin
 echo -----
 echo - New Freenet version found!  Installing now...
 echo -----
@@ -508,134 +606,229 @@ echo -----
 echo - Downloading new files...
 
 ::Download new main jar file
-if %MAINJARUPDATED%==0 goto mainjardownloadend
+if NOT %MAINJARUPDATED%==1 goto mainjardownloadend
 if exist freenet-%RELEASE%-latest.jar del freenet-%RELEASE%-latest.jar
 ..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 -i freenet-%RELEASE%-latest.jar.new.url -O freenet-%RELEASE%-latest.jar
 Title Freenet Update Over HTTP Script
 :: Make sure it got downloaded successfully
-if not exist freenet-%RELEASE%-latest.jar goto error4
-FOR %%I IN ("freenet-%RELEASE%-latest.jar") DO if %%~zI==0 goto error4
+if not exist freenet-%RELEASE%-latest.jar goto mainjardownloadfailed
+FOR %%I IN ("freenet-%RELEASE%-latest.jar") DO if %%~zI==0 goto mainjardownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test freenet-%RELEASE%-latest.jar . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto mainjardownloadfailed
 echo    - Freenet-%RELEASE%-snapshot.jar downloaded and verified
+goto mainjardownloadend
+:mainjardownloadfailed
+echo    - Freenet-%RELEASE%-snapshot.jar failed to download
+::Set MAINJARUPDATED to 2 so it won't copy in next stage.
+set MAINJARUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Main jar
+if exist freenet-%RELEASE%-latest.jar.url del freenet-%RELEASE%-latest.jar.url
+if exist freenet-%RELEASE%-latest.jar.url.bak ren freenet-%RELEASE%-latest.jar.url.bak freenet-%RELEASE%-latest.jar.url
 :mainjardownloadend
 
 ::Download new ext jar file
-if %EXTJARUPDATED%==0 goto extjardownloadend
+if NOT %EXTJARUPDATED%==1 goto extjardownloadend
 if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
 if exist freenet-ext.jar del freenet-ext.jar
 ..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenet-ext.jar -O freenet-ext.jar
 Title Freenet Update Over HTTP Script
-if not exist freenet-ext.jar goto error4
-FOR %%I IN ("freenet-ext.jar") DO if %%~zI==0 goto error4
+if not exist freenet-ext.jar goto extjardownloadfailed
+FOR %%I IN ("freenet-ext.jar") DO if %%~zI==0 goto extjardownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test freenet-ext.jar . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto extjardownloadfailed
 echo    - Freenet-ext.jar downloaded and verified
+goto extjardownloadend
+:extjardownloadfailed
+echo    - Freenet-ext.jar failed to download
+::Set EXTJARUPDATED to 2 so it won't copy in next stage.
+set EXTJARUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Ext jar
+if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
+if exist freenet-ext.jar.sha1.bak ren freenet-ext.jar.sha1.bak freenet-ext.jar.sha1
 :extjardownloadend
 
 ::Download new wrapper.exe file
-if %WRAPPEREXEUPDATED%==0 goto wrapperexedownloadend
+if NOT %WRAPPEREXEUPDATED%==1 goto wrapperexedownloadend
 if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
 if exist wrapper-windows-x86-32.exe del wrapper-windows-x86-32.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/wrapper-windows-x86-32.exe -O wrapper-windows-x86-32.exe
 Title Freenet Update Over HTTP Script
-if not exist wrapper-windows-x86-32.exe goto error4
-FOR %%I IN ("wrapper-windows-x86-32.exe") DO if %%~zI==0 goto error4
+if not exist wrapper-windows-x86-32.exe goto wrapperexedownloadfailed
+FOR %%I IN ("wrapper-windows-x86-32.exe") DO if %%~zI==0 goto wrapperexedownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test wrapper-windows-x86-32.exe . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto wrapperexedownloadfailed
 echo    - wrapper .exe downloaded and verified
+goto wrapperexedownloadend
+:wrapperexedownloadfailed
+echo    - wrapper .exe failed to download
+::Set WRAPPEREXEUPDATED to 2 so it won't copy in next stage.
+set WRAPPEREXEUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Wrapper .exe
+if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
+if exist wrapper-windows-x86-32.exe.sha1.bak ren wrapper-windows-x86-32.exe.sha1.bak wrapper-windows-x86-32.exe.sha1
 :wrapperexedownloadend
 
 ::Download new wrapper.dll file
-if %WRAPPERDLLUPDATED%==0 goto wrapperdlldownloadend
+if NOT %WRAPPERDLLUPDATED%==1 goto wrapperdlldownloadend
 if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
 if exist wrapper-windows-x86-32.dll del wrapper-windows-x86-32.dll
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/wrapper-windows-x86-32.dll -O wrapper-windows-x86-32.dll
 Title Freenet Update Over HTTP Script
-if not exist wrapper-windows-x86-32.dll goto error4
-FOR %%I IN ("wrapper-windows-x86-32.dll") DO if %%~zI==0 goto error4
+if not exist wrapper-windows-x86-32.dll goto wrapperdlldownloadfailed
+FOR %%I IN ("wrapper-windows-x86-32.dll") DO if %%~zI==0 goto wrapperdlldownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test wrapper-windows-x86-32.dll . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto wrapperdlldownloadfailed
 echo    - wrapper .dll downloaded and verified
+goto wrapperdlldownloadend
+:wrapperdlldownloadfailed
+echo    - wrapper .dll failed to download
+::Set WRAPPERDLLUPDATED to 2 so it won't copy in next stage.
+set WRAPPERDLLUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Wrapper .dll
+if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
+if exist wrapper-windows-x86-32.dll.sha1.bak ren wrapper-windows-x86-32.dll.sha1.bak wrapper-windows-x86-32.dll.sha1
 :wrapperdlldownloadend
 
 ::Download new start.exe file
-if %STARTEXEUPDATED%==0 goto startexedownloadend
+if NOT %STARTEXEUPDATED%==1 goto startexedownloadend
 if exist start.exe.sha1 del start.exe.sha1
 if exist start.exe del start.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/start.exe -O start.exe
 Title Freenet Update Over HTTP Script
-if not exist start.exe goto error4
-FOR %%I IN ("start.exe") DO if %%~zI==0 goto error4
+if not exist start.exe goto startexedownloadfailed
+FOR %%I IN ("start.exe") DO if %%~zI==0 goto startexedownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test start.exe . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto startexedownloadfailed
 echo    - start.exe downloaded and verified
+goto startexedownloadend
+:startexedownloadfailed
+echo    - start.exe failed to download
+::Set STARTEXEUPDATED to 2 so it won't copy in next stage.
+set STARTEXEUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Start.exe
+if exist start.exe.sha1 del start.exe.sha1
+if exist start.exe.sha1.bak ren start.exe.sha1.bak start.exe.sha1
 :startexedownloadend
 
 ::Download new stop.exe file
-if %STOPEXEUPDATED%==0 goto stopexedownloadend
+if NOT %STOPEXEUPDATED%==1 goto stopexedownloadend
 if exist stop.exe.sha1 del stop.exe.sha1
 if exist stop.exe del stop.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/stop.exe -O stop.exe
 Title Freenet Update Over HTTP Script
-if not exist stop.exe goto error4
-FOR %%I IN ("stop.exe") DO if %%~zI==0 goto error4
+if not exist stop.exe goto stopexedownloadfailed
+FOR %%I IN ("stop.exe") DO if %%~zI==0 goto stopexedownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test stop.exe . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto stopexedownloadfailed
 echo    - stop.exe downloaded and verified
+goto stopexedownloadend
+:stopexedownloadfailed
+echo    - stop.exe failed to download
+::Set STOPEXEUPDATED to 2 so it won't copy in next stage.
+set STOPEXEUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Stop.exe
+if exist stop.exe.sha1 del stop.exe.sha1
+if exist stop.exe.sha1.bak ren stop.exe.sha1.bak stop.exe.sha1
 :stopexedownloadend
 
 ::Download new freenettray.exe file
-if %TRAYUTILITYUPDATED%==0 goto traydownloadend
+if NOT %TRAYUTILITYUPDATED%==1 goto traydownloadend
 if exist freenettray.exe.sha1 del freenettray.exe.sha1
 if exist freenettray.exe del freenettray.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenettray.exe -O freenettray.exe
 Title Freenet Update Over HTTP Script
-if not exist freenettray.exe goto error4
-FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto error4
+if not exist freenettray.exe goto traydownloadfailed
+FOR %%I IN ("freenettray.exe") DO if %%~zI==0 goto traydownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto traydownloadfailed
 echo    - freenettray.exe downloaded and verified
+goto traydownloadend
+:traydownloadfailed
+echo    - freenettray.exe failed to download
+::Set TRAYUTILITYUPDATED to 2 so it won't copy in next stage.
+set TRAYUTILITYUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Tray utility
+if exist freenettray.exe.sha1 del freenettray.exe.sha1
+if exist freenettray.exe.sha1.bak ren freenettray.exe.sha1.bak freenettray.exe.jar.sha1
 :traydownloadend
 
 ::Download new freenetlauncher.exe file
-if %LAUNCHERUPDATED%==0 goto stoplauncherdownloadend
+if NOT %LAUNCHERUPDATED%==1 goto launcherdownloadend
 if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
 if exist freenetlauncher.exe del freenetlauncher.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenetlauncher.exe -O freenetlauncher.exe
 Title Freenet Update Over HTTP Script
-if not exist freenetlauncher.exe goto error4
-FOR %%I IN ("freenetlauncher.exe") DO if %%~zI==0 goto error4
+if not exist freenetlauncher.exe goto launcherdownloadfailed
+FOR %%I IN ("freenetlauncher.exe") DO if %%~zI==0 goto launcherdownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test freenetlauncher.exe . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto launcherdownloadfailed
 echo    - freenetlauncher.exe downloaded and verified
-:stoplauncherdownloadend
+goto launcherdownloadend
+:launcherdownloadfailed
+echo    - freenetlauncher.exe failed to download
+::Set LAUNCHERUPDATED to 2 so it won't copy in next stage.
+set LAUNCHERUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::Launcher.exe
+if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
+if exist freenetlauncher.exe.sha1.bak ren freenetlauncher.exe.sha1.bak freenetlauncher.exe.sha1
+:launcherdownloadend
 
 ::Download an updated seednodes.fref.  We will only do this if at least one of the main files above were updated and the .sha1 of the file has changed.
 ::We are stingy because we don't want people to run this script *just* to get the latest seednodes file.
-if %SEEDUPDATED%==0 goto seeddownloadend
+if NOT %SEEDUPDATED%==1 goto seeddownloadend
 if exist seednodes.fref.sha1 del seednodes.fref.sha1
 if exist seednodes.fref del seednodes.fref
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/opennet/seednodes.fref -O seednodes.fref
 Title Freenet Update Over HTTP Script
-if not exist seednodes.fref goto error4
-FOR %%I IN ("seednodes.fref") DO if %%~zI==0 goto error4
+if not exist seednodes.fref goto seeddownloadfailed
+FOR %%I IN ("seednodes.fref") DO if %%~zI==0 goto seeddownloadfailed
 ::Test the new file for integrity.
 java -cp ..\lib\sha1test.jar Sha1Test seednodes.fref . ..\%CAFILE% > NUL
-if %ERRORLEVEL% NEQ 0 goto error4
+if %ERRORLEVEL% NEQ 0 goto seeddownloadfailed
 echo    - seednodes.fref downloaded and verified
+goto seeddownloadend
+:seeddownloadfailed
+echo    - seednodes.fref failed to download
+::Set SEEDUPDATED to 2 so it won't copy in next stage.
+set SEEDUPDATED=2
+::Restore the old .sha1 files so we can check them again next run.
+::seednodes.fref
+if exist seednodes.fref.sha1 del seednodes.fref.sha1
+if exist seednodes.fref.sha1.bak ren seednodes.fref.sha1.bak seednodes.fref.sha1
 :seeddownloadend
 
 Title Freenet Update Over HTTP Script
 
+::Check if we have any successful downloads
+if %MAINJARUPDATED%==1 goto installbegin
+if %EXTJARUPDATED%==1 goto installbegin
+if %WRAPPEREXEUPDATED%==1 goto installbegin
+if %WRAPPERDLLUPDATED%==1 goto installbegin
+if %STARTEXEUPDATED%==1 goto installbegin
+if %STOPEXEUPDATED%==1 goto installbegin
+if %TRAYUTILITYUPDATED%==1 goto installbegin
+if %LAUNCHERUPDATED%==1 goto installbegin
+::Purposely not considering whether seednode is updated
+goto error4
+
+:installbegin
+::At least one of our files are ok, let's move forward.
 
 ::Time to stop the node and if needed freenettray.exe
 if %TRAYUTILITYUPDATED%==0 goto nodestop
@@ -682,34 +875,12 @@ goto safetycheck
 ::Everything looks good, lets install it
 echo - Backing up files...
 echo -----
+echo - Installing new files...
+::Main jar
+if NOT %MAINJARUPDATED%==1 goto maincopyend
 ::Backup last version of Freenet.jar file, user may want to go back if something is broken in new build
 if exist freenet.jar.bak del freenet.jar.bak
 if exist ..\freenet.jar copy ..\freenet.jar freenet.jar.bak > NUL
-::Backup last version of wrapper.exe file, user may want to go back if something is broken in new build
-if exist wrapper-windows-x86-32.exe.bak del wrapper-windows-x86-32.exe.bak
-if exist ..\bin\wrapper-windows-x86-32.exe copy ..\bin\wrapper-windows-x86-32.exe wrapper-windows-x86-32.exe.bak > NUL
-::Backup last version of wrapper.dll file, user may want to go back if something is broken in new build
-if exist wrapper-windows-x86-32.dll.bak del wrapper-windows-x86-32.dll.bak
-if exist ..\lib\wrapper-windows-x86-32.dll copy ..\lib\wrapper-windows-x86-32.dll wrapper-windows-x86-32.dll.bak > NUL
-::Backup last version of start.exe file, user may want to go back if something is broken in new build
-if exist start.exe.bak del start.exe.bak
-if exist ..\bin\start.exe copy ..\bin\start.exe start.exe.bak > NUL
-::Backup last version of stop.exe file, user may want to go back if something is broken in new build
-if exist stop.exe.bak del stop.exe.bak
-if exist ..\bin\stop.exe copy ..\bin\stop.exe stop.exe.bak > NUL
-::Backup last version of freenettray.exe file, user may want to go back if something is broken in new build
-if exist freenettray.exe.bak del freenettray.exe.bak
-if exist ..\bin\freenettray.exe copy ..\bin\freenettray.exe freenettray.exe.bak > NUL
-::Backup last version of freenetlauncher.exe file, user may want to go back if something is broken in new build
-if exist freenetlauncher.exe.bak del freenetlauncher.exe.bak
-if exist ..\freenetlauncher.exe copy ..\freenetlauncher.exe freenetlauncher.exe.bak > NUL
-::Backup last version of seednodes.fref file, user may want to go back if something is broken in new build
-if exist seednodes.fref.bak del seednodes.fref.bak
-if exist ..\seednodes.fref copy ..\seednodes.fref seednodes.fref.bak > NUL
-
-echo - Installing new files...
-::Main jar
-if %MAINJARUPDATED%==0 goto maincopyend
 copy /Y freenet-%RELEASE%-latest.jar ..\freenet.jar > NUL
 ::Prepare shortcut file for next run.
 if exist freenet-%RELEASE%-latest.jar.url del freenet-%RELEASE%-latest.jar.url
@@ -718,7 +889,10 @@ echo    - Freenet-%RELEASE%-snapshot.jar copied to freenet.jar
 :maincopyend
 
 ::Ext jar
-if %EXTJARUPDATED%==0 goto extcopyend
+if NOT %EXTJARUPDATED%==1 goto extcopyend
+::Backup last version of Freenet-ext.jar file, user may want to go back if something is broken in new build
+if exist freenet-ext.jar.bak del freenet-ext.jar.bak
+if exist ..\freenet-ext.jar copy ..\freenet-ext.jar freenet-ext.jar.bak > NUL
 copy /Y freenet-ext.jar ..\freenet-ext.jar > NUL
 ::Prepare .sha1 file for next run.
 if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
@@ -727,7 +901,10 @@ echo    - Copied updated freenet-ext.jar
 :extcopyend
 
 ::wrapper .exe
-if %WRAPPEREXEUPDATED%==0 goto wrapperexecopyend
+if NOT %WRAPPEREXEUPDATED%==1 goto wrapperexecopyend
+::Backup last version of wrapper.exe file, user may want to go back if something is broken in new build
+if exist wrapper-windows-x86-32.exe.bak del wrapper-windows-x86-32.exe.bak
+if exist ..\bin\wrapper-windows-x86-32.exe copy ..\bin\wrapper-windows-x86-32.exe wrapper-windows-x86-32.exe.bak > NUL
 copy /Y wrapper-windows-x86-32.exe ..\bin\wrapper-windows-x86-32.exe > NUL
 ::Prepare .sha1 file for next run.
 if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
@@ -736,16 +913,22 @@ echo    - Copied updated wrapper .exe
 :wrapperexecopyend
 
 ::Wrapper .dll
-if %WRAPPERDLLUPDATED%==0 goto wrapperdllcopyend
+if NOT %WRAPPERDLLUPDATED%==1 goto wrapperdllcopyend
+::Backup last version of wrapper.dll file, user may want to go back if something is broken in new build
+if exist wrapper-windows-x86-32.dll.bak del wrapper-windows-x86-32.dll.bak
+if exist ..\lib\wrapper-windows-x86-32.dll copy ..\lib\wrapper-windows-x86-32.dll wrapper-windows-x86-32.dll.bak > NUL
 copy /Y wrapper-windows-x86-32.dll ..\lib\wrapper-windows-x86-32.dll > NUL
 ::Prepare .sha1 file for next run.
 if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
 if exist wrapper-windows-x86-32.dll.sha1.new ren wrapper-windows-x86-32.dll.sha1.new wrapper-windows-x86-32.dll.sha1
-echo    - Copied updated wrapper dll
+echo    - Copied updated wrapper .dll
 :wrapperdllcopyend
 
 ::Start.exe
-if %STARTEXEUPDATED%==0 goto startexecopyend
+if NOT %STARTEXEUPDATED%==1 goto startexecopyend
+::Backup last version of start.exe file, user may want to go back if something is broken in new build
+if exist start.exe.bak del start.exe.bak
+if exist ..\bin\start.exe copy ..\bin\start.exe start.exe.bak > NUL
 copy /Y start.exe ..\bin\start.exe > NUL
 ::Prepare .sha1 file for next run.
 if exist start.exe.sha1 del start.exe.sha1
@@ -754,7 +937,10 @@ echo    - Copied updated start.exe
 :startexecopyend
 
 ::Stop.exe
-if %STOPEXEUPDATED%==0 goto stopexecopyend
+if NOT %STOPEXEUPDATED%==1 goto stopexecopyend
+::Backup last version of stop.exe file, user may want to go back if something is broken in new build
+if exist stop.exe.bak del stop.exe.bak
+if exist ..\bin\stop.exe copy ..\bin\stop.exe stop.exe.bak > NUL
 copy /Y stop.exe ..\bin\stop.exe > NUL
 ::Prepare .sha1 file for next run.
 if exist stop.exe.sha1 del stop.exe.sha1
@@ -763,7 +949,10 @@ echo    - Copied updated stop.exe
 :stopexecopyend
 
 ::freenetlauncher.exe
-if %LAUNCHERUPDATED%==0 goto launchercopyend
+if NOT %LAUNCHERUPDATED%==1 goto launchercopyend
+::Backup last version of freenetlauncher.exe file, user may want to go back if something is broken in new build
+if exist freenetlauncher.exe.bak del freenetlauncher.exe.bak
+if exist ..\freenetlauncher.exe copy ..\freenetlauncher.exe freenetlauncher.exe.bak > NUL
 copy /Y freenetlauncher.exe ..\freenetlauncher.exe > NUL
 ::Prepare .sha1 file for next run.
 if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
@@ -771,9 +960,25 @@ if exist freenetlauncher.exe.sha1.new ren freenetlauncher.exe.sha1.new freenetla
 echo    - Copied updated freenetlauncher.exe
 :launchercopyend
 
+::seednodes.fref
+if NOT %SEEDUPDATED%==1 goto seedcopyend
+::Backup last version of seednodes.fref file, user may want to go back if something is broken in new build
+if exist seednodes.fref.bak del seednodes.fref.bak
+if exist ..\seednodes.fref copy ..\seednodes.fref seednodes.fref.bak > NUL
+copy /Y seednodes.fref ..\seednodes.fref > NUL
+::Prepare .sha1 file for next run.
+if exist seednodes.fref.sha1 del seednodes.fref.sha1
+if exist seednodes.fref.sha1.new ren seednodes.fref.sha1.new seednodes.fref.sha1
+echo    - Copied updated seednodes.fref
+:seedcopyend
+
 ::freenettray.exe
-if %TRAYUTILITYUPDATED%==0 goto traycopyend
+if NOT %TRAYUTILITYUPDATED%==1 goto traycopyend
+::Backup last version of freenettray.exe file, user may want to go back if something is broken in new build
+if exist freenettray.exe.bak del freenettray.exe.bak
+if exist ..\bin\freenettray.exe copy ..\bin\freenettray.exe freenettray.exe.bak > NUL
 :trayloop
+::Loop in case the tray utility is still shutting down.
 copy /Y freenettray.exe ..\bin\freenettray.exe > NUL
 if not errorlevel 0 goto trayloop
 ::Update the startup folder also
@@ -785,16 +990,18 @@ if exist freenettray.exe.sha1.new ren freenettray.exe.sha1.new freenettray.exe.s
 echo    - Copied updated freenettray.exe
 :traycopyend
 
-::seednodes.fref
-if %SEEDUPDATED%==0 goto seedcopyend
-copy /Y seednodes.fref ..\seednodes.fref > NUL
-::Prepare .sha1 file for next run.
-if exist seednodes.fref.sha1 del seednodes.fref.sha1
-if exist seednodes.fref.sha1.new ren seednodes.fref.sha1.new seednodes.fref.sha1
-echo    - Copied updated seednodes.fref
-:seedcopyend
-
+::Check if we have any failed downloads to report
+if %MAINJARUPDATED%==2 goto error4
+if %EXTJARUPDATED%==2 goto error4
+if %WRAPPEREXEUPDATED%==2 goto error4
+if %WRAPPERDLLUPDATED%==2 goto error4
+if %STARTEXEUPDATED%==2 goto error4
+if %STOPEXEUPDATED%==2 goto error4
+if %TRAYUTILITYUPDATED%==2 goto error4
+if %LAUNCHERUPDATED%==2 goto error4
+if %SEEDUPDATED%==2 goto error4
 goto end
+
 
 ::No update needed
 :noupdate
@@ -819,38 +1026,32 @@ goto veryend
 echo - Error! Could not download latest Freenet update information. Try again later.
 goto end
 
-::Corrupt file was downloaded, restore comparison URL's from backup.
 :error4
 echo - Error! Freenet update failed, one or more files didn't download correctly...
-::Restore the old .sha1 files so we can check them again next run.
-::Main jar
-if exist freenet-%RELEASE%-latest.jar.url del freenet-%RELEASE%-latest.jar.url
-if exist freenet-%RELEASE%-latest.jar.url.bak ren freenet-%RELEASE%-latest.jar.url.bak freenet-%RELEASE%-latest.jar.url
-::Ext jar
-if exist freenet-ext.jar.sha1 del freenet-ext.jar.sha1
-if exist freenet-ext.jar.sha1.bak ren freenet-ext.jar.sha1.bak freenet-ext.jar.sha1
-::Wrapper .exe
-if exist wrapper-windows-x86-32.exe.sha1 del wrapper-windows-x86-32.exe.sha1
-if exist wrapper-windows-x86-32.exe.sha1.bak ren wrapper-windows-x86-32.exe.sha1.bak wrapper-windows-x86-32.exe.sha1
-::Wrapper .dll
-if exist wrapper-windows-x86-32.dll.sha1 del wrapper-windows-x86-32.dll.sha1
-if exist wrapper-windows-x86-32.dll.sha1.bak ren wrapper-windows-x86-32.dll.sha1.bak wrapper-windows-x86-32.dll.sha1
-::Start.exe
-if exist start.exe.sha1 del start.exe.sha1
-if exist start.exe.sha1.bak ren start.exe.sha1.bak start.exe.sha1
-::Stop.exe
-if exist stop.exe.sha1 del stop.exe.sha1
-if exist stop.exe.sha1.bak ren stop.exe.sha1.bak stop.exe.sha1
-::Tray utility
-if exist freenettray.exe.sha1 del freenettray.exe.sha1
-if exist freenettray.exe.sha1.bak ren freenettray.exe.sha1.bak freenettray.exe.jar.sha1
-::Launcher.exe
-if exist freenetlauncher.exe.sha1 del freenetlauncher.exe.sha1
-if exist freenetlauncher.exe.sha1.bak ren freenetlauncher.exe.sha1.bak freenetlauncher.exe.sha1
-::seednodes.fref
-if exist seednodes.fref.sha1 del seednodes.fref.sha1
-if exist seednodes.fref.sha1.bak ren seednodes.fref.sha1.bak seednodes.fref.sha1
-
+echo -
+echo - The following files have succeeded:
+if %MAINJARUPDATED%==1 echo -     freenet-%RELEASE%-latest.jar
+if %EXTJARUPDATED%==1 echo -     freenet-ext.jar
+if %WRAPPEREXEUPDATED%==1 echo -     wrapper-windows-x86-32.exe
+if %WRAPPERDLLUPDATED%==1 echo -     wrapper-windows-x86-32.dll
+if %STARTEXEUPDATED%==1 echo -     start.exe
+if %STOPEXEUPDATED%==1 echo -     stop.exe
+if %TRAYUTILITYUPDATED%==1 echo -     freenettray.exe
+if %LAUNCHERUPDATED%==1 echo -     freenetlauncher.exe
+if %SEEDUPDATED%==1 echo -     seednodes.fref
+echo -
+echo - The following files have failed:
+if %MAINJARUPDATED%==2 echo -     freenet-%RELEASE%-latest.jar
+if %EXTJARUPDATED%==2 echo -     freenet-ext.jar
+if %WRAPPEREXEUPDATED%==2 echo -     wrapper-windows-x86-32.exe
+if %WRAPPERDLLUPDATED%==2 echo -     wrapper-windows-x86-32.dll
+if %STARTEXEUPDATED%==2 echo -     start.exe
+if %STOPEXEUPDATED%==2 echo -     stop.exe
+if %TRAYUTILITYUPDATED%==2 echo -     freenettray.exe
+if %LAUNCHERUPDATED%==2 echo -     freenetlauncher.exe
+if %SEEDUPDATED%==2 echo -     seednodes.fref
+echo -
+echo - Try again later.
 goto end
 
 ::Wrapper.conf is old, downloading new version and restarting update script
