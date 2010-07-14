@@ -278,7 +278,6 @@ ECHO    - New ext jar found!
 SET EXTJARUPDATED=1
 :extcheckend
 
-
 ::Check wrapper .exe
 IF NOT EXIST ..\bin\wrapper-windows-x86-32.exe GOTO wrapperexecheckend
 ECHO - Checking wrapper .exe
@@ -313,7 +312,6 @@ GOTO wrapperexecheckend
 ECHO    - New wrapper .exe found!
 SET WRAPPEREXEUPDATED=1
 :wrapperexecheckend
-
 
 ::Check wrapper .dll
 IF NOT EXIST ..\lib\wrapper-windows-x86-32.dll GOTO wrapperdllcheckend
@@ -351,7 +349,6 @@ ECHO    - New wrapper .dll found!
 SET WRAPPERDLLUPDATED=1
 :wrapperdllcheckend
 
-
 ::Check start.exe if present
 IF NOT EXIST ..\bin\start.exe GOTO startexecheckend
 ECHO - Checking start.exe
@@ -386,7 +383,6 @@ GOTO startexecheckend
 ECHO    - New start.exe found!
 SET STARTEXEUPDATED=1
 :startexecheckend
-
 
 ::Check stop.exe if present
 IF NOT EXIST ..\bin\stop.exe GOTO stopexecheckend
@@ -513,7 +509,6 @@ ECHO    - New freenettray.exe found!
 SET TRAYUTILITYUPDATED=1
 :traycheckend
 
-
 ::Check launcher utility if present
 IF NOT EXIST ..\freenetlauncher.exe GOTO launchercheckend
 ECHO - Checking freenetlauncher.exe
@@ -581,7 +576,6 @@ GOTO seedcheckend
 :seedyes
 SET SEEDUPDATED=1
 :seedcheckend
-
 
 ::Check if we have flagged any of the files as updated
 IF %MAINJARUPDATED%==1 GOTO downloadbegin
@@ -1002,7 +996,6 @@ IF %TRAYUTILITYUPDATED%==2 GOTO error4
 IF %LAUNCHERUPDATED%==2 GOTO error4
 IF %SEEDUPDATED%==2 GOTO error4
 GOTO end
-
 
 ::No update needed
 :noupdate
