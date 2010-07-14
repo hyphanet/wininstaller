@@ -82,13 +82,13 @@ ECHO -----
 ::Warn user this script will contact our servers over the non-anoymous internet.
 ECHO *******************************************************************
 ECHO * This script will connect to the Freenetproject.org servers
-ECHO * and/or its mirrors over the regular internet.  
+ECHO * and/or its mirrors over the regular internet.
 ECHO * This is not anonymous!
 ECHO *******************************************************************
 :promptloop1
 ::Set ANSWER1 to a different variable so it won't bug out when we loop
 SET ANSWER1==X
-ECHO - 
+ECHO -
 ECHO - Do you wish to continue?
 SET /P ANSWER1=- Press Y to continue or N to quit.
 IF /i %ANSWER1%==Y GOTO promptloop1out
@@ -131,7 +131,7 @@ IF NOT EXIST writetest GOTO writefail
 DEL writetest > NUL
 IF EXIST writetest GOTO writefail
 
-::Kludge to disable setting file permissions on the the deprecated custom user "freenet" 
+::Kludge to disable setting file permissions on the the deprecated custom user "freenet"
 IF EXIST bin\freenettray.exe SET VISTA=2
 
 :: Maybe fix bug #2556
@@ -451,18 +451,18 @@ IF NOT EXIST ..\bin\freenettray.exe GOTO unknownerror
 
 ::Offer to install freenettray.exe in the all users>start folder
 ECHO *******************************************************************
-ECHO * It appears you are not using the Freenet tray utility.  
+ECHO * It appears you are not using the Freenet tray utility.
 ECHO * This is likely because you have an older installation that
-ECHO * was before the tray program was created.  
+ECHO * was before the tray program was created.
 ECHO * We have downloaded the tray utility to your \bin directory.
 ECHO *******************************************************************
 ECHO -
-ECHO - We can also install it in your startup folder so it launches when you login.  
+ECHO - We can also install it in your startup folder so it launches when you login.
 :promptloop2
 ::Set ANSWER2 to a different variable so it won't bug out when we loop
 SET ANSWER2==X
-ECHO - 
-SET /P ANSWER2=- Would you like to install it for "A"ll users, just "Y"ou or "N"one? 
+ECHO -
+SET /P ANSWER2=- Would you like to install it for "A"ll users, just "Y"ou or "N"one?
 IF /i %ANSWER2%==A GOTO allusers
 IF /i %ANSWER2%==Y GOTO justyou
 IF /i %ANSWER2%==N GOTO traycheckend
