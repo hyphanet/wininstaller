@@ -270,7 +270,7 @@ IF EXIST freenet-%RELEASE%-latest.jar.new.url DEL freenet-%RELEASE%-latest.jar.n
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST freenet-%RELEASE%-latest.jar.new.url GOTO maincheckfail
-FOR %%I IN ("freenet-%RELEASE%-latest.jar.new.url") DO IF %%~zI==0 GOTO maincheckfail
+FOR %%I IN ("freenet-%RELEASE%-latest.jar.new.url") DO IF %%~zI LSS 50 GOTO maincheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST freenet-%RELEASE%-latest.jar.url GOTO mainyes
@@ -304,7 +304,7 @@ IF EXIST freenet-ext.jar.sha1.new DEL freenet-ext.jar.sha1.new
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST freenet-ext.jar.sha1.new GOTO extcheckfail
-FOR %%I IN ("freenet-ext.jar.sha1.new") DO IF %%~zI==0 GOTO extcheckfail
+FOR %%I IN ("freenet-ext.jar.sha1.new") DO IF %%~zI LSS 50 GOTO extcheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST freenet-ext.jar.sha1 GOTO extyes
@@ -338,7 +338,7 @@ IF EXIST wrapper-windows-x86-32.exe.sha1.new DEL wrapper-windows-x86-32.exe.sha1
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST wrapper-windows-x86-32.exe.sha1.new GOTO wrapperexecheckfail
-FOR %%I IN ("wrapper-windows-x86-32.exe.sha1.new") DO IF %%~zI==0 GOTO wrapperexecheckfail
+FOR %%I IN ("wrapper-windows-x86-32.exe.sha1.new") DO IF %%~zI LSS 50 GOTO wrapperexecheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST wrapper-windows-x86-32.exe.sha1 GOTO wrapperexeyes
@@ -373,7 +373,7 @@ IF EXIST wrapper-windows-x86-32.dll.sha1.new DEL wrapper-windows-x86-32.dll.sha1
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST wrapper-windows-x86-32.dll.sha1.new GOTO wrapperdllcheckfail
-FOR %%I IN ("wrapper-windows-x86-32.dll.sha1.new") DO IF %%~zI==0 GOTO wrapperdllcheckfail
+FOR %%I IN ("wrapper-windows-x86-32.dll.sha1.new") DO IF %%~zI LSS 50 GOTO wrapperdllcheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST wrapper-windows-x86-32.dll.sha1 GOTO wrapperdllyes
@@ -409,7 +409,7 @@ IF EXIST start.exe.sha1.new DEL start.exe.sha1.new
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST start.exe.sha1.new GOTO startexecheckfail
-FOR %%I IN ("start.exe.sha1.new") DO IF %%~zI==0 GOTO startexecheckfail
+FOR %%I IN ("start.exe.sha1.new") DO IF %%~zI LSS 50 GOTO startexecheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST start.exe.sha1 GOTO startexeyes
@@ -444,7 +444,7 @@ IF EXIST stop.exe.sha1.new DEL stop.exe.sha1.new
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST stop.exe.sha1.new GOTO stopexecheckfail
-FOR %%I IN ("stop.exe.sha1.new") DO IF %%~zI==0 GOTO stopexecheckfail
+FOR %%I IN ("stop.exe.sha1.new") DO IF %%~zI LSS 50 GOTO stopexecheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST stop.exe.sha1 GOTO stopexeyes
@@ -484,7 +484,7 @@ ECHO - Downloading freenettray.exe
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST freenettray.exe GOTO traycheckfail
-FOR %%I IN ("freenettray.exe") DO IF %%~zI==0 GOTO traycheckfail
+FOR %%I IN ("freenettray.exe") DO IF %%~zI LSS 50 GOTO traycheckfail
 
 JAVA -cp ..\lib\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO traycheckfail
@@ -533,7 +533,7 @@ IF EXIST freenettray.exe.sha1.new DEL freenettray.exe.sha1.new
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST freenettray.exe.sha1.new GOTO traycheckfail
-FOR %%I IN ("freenettray.exe.sha1.new") DO IF %%~zI==0 GOTO traycheckfail
+FOR %%I IN ("freenettray.exe.sha1.new") DO IF %%~zI LSS 50 GOTO traycheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST freenettray.exe.sha1 GOTO trayyes
@@ -569,7 +569,7 @@ IF EXIST freenetlauncher.exe.sha1.new DEL freenetlauncher.exe.sha1.new
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST freenetlauncher.exe.sha1.new GOTO launchercheckfail
-FOR %%I IN ("freenetlauncher.exe.sha1.new") DO IF %%~zI==0 GOTO launchercheckfail
+FOR %%I IN ("freenetlauncher.exe.sha1.new") DO IF %%~zI LSS 50 GOTO launchercheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST freenetlauncher.exe.sha1 GOTO launcheryes
@@ -603,7 +603,7 @@ IF EXIST seednodes.fref.sha1.new DEL seednodes.fref.sha1.new
 TITLE Freenet Update Over HTTP Script
 
 IF NOT EXIST seednodes.fref.sha1.new GOTO seedcheckfail
-FOR %%I IN ("seednodes.fref.sha1.new") DO IF %%~zI==0 GOTO seedcheckfail
+FOR %%I IN ("seednodes.fref.sha1.new") DO IF %%~zI LSS 50 GOTO seedcheckfail
 
 ::Do we have something old to compare with? If not, update right away
 IF NOT EXIST seednodes.fref.sha1 GOTO seedyes
@@ -653,7 +653,7 @@ IF EXIST freenet-%RELEASE%-latest.jar DEL freenet-%RELEASE%-latest.jar
 TITLE Freenet Update Over HTTP Script
 :: Make sure it got downloaded successfully
 IF NOT EXIST freenet-%RELEASE%-latest.jar GOTO mainjardownloadfailed
-FOR %%I IN ("freenet-%RELEASE%-latest.jar") DO IF %%~zI==0 GOTO mainjardownloadfailed
+FOR %%I IN ("freenet-%RELEASE%-latest.jar") DO IF %%~zI LSS 50 GOTO mainjardownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test freenet-%RELEASE%-latest.jar . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO mainjardownloadfailed
@@ -676,7 +676,7 @@ IF EXIST freenet-ext.jar DEL freenet-ext.jar
 ..\bin\wget.exe -o NUL -c --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenet-ext.jar -O freenet-ext.jar
 TITLE Freenet Update Over HTTP Script
 IF NOT EXIST freenet-ext.jar GOTO extjardownloadfailed
-FOR %%I IN ("freenet-ext.jar") DO IF %%~zI==0 GOTO extjardownloadfailed
+FOR %%I IN ("freenet-ext.jar") DO IF %%~zI LSS 50 GOTO extjardownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test freenet-ext.jar . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO extjardownloadfailed
@@ -699,7 +699,7 @@ IF EXIST wrapper-windows-x86-32.exe DEL wrapper-windows-x86-32.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/wrapper-windows-x86-32.exe -O wrapper-windows-x86-32.exe
 TITLE Freenet Update Over HTTP Script
 IF NOT EXIST wrapper-windows-x86-32.exe GOTO wrapperexedownloadfailed
-FOR %%I IN ("wrapper-windows-x86-32.exe") DO IF %%~zI==0 GOTO wrapperexedownloadfailed
+FOR %%I IN ("wrapper-windows-x86-32.exe") DO IF %%~zI LSS 50 GOTO wrapperexedownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test wrapper-windows-x86-32.exe . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO wrapperexedownloadfailed
@@ -722,7 +722,7 @@ IF EXIST wrapper-windows-x86-32.dll DEL wrapper-windows-x86-32.dll
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/wrapper-windows-x86-32.dll -O wrapper-windows-x86-32.dll
 TITLE Freenet Update Over HTTP Script
 IF NOT EXIST wrapper-windows-x86-32.dll GOTO wrapperdlldownloadfailed
-FOR %%I IN ("wrapper-windows-x86-32.dll") DO IF %%~zI==0 GOTO wrapperdlldownloadfailed
+FOR %%I IN ("wrapper-windows-x86-32.dll") DO IF %%~zI LSS 50 GOTO wrapperdlldownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test wrapper-windows-x86-32.dll . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO wrapperdlldownloadfailed
@@ -745,7 +745,7 @@ IF EXIST start.exe DEL start.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/start.exe -O start.exe
 TITLE Freenet Update Over HTTP Script
 IF NOT EXIST start.exe GOTO startexedownloadfailed
-FOR %%I IN ("start.exe") DO IF %%~zI==0 GOTO startexedownloadfailed
+FOR %%I IN ("start.exe") DO IF %%~zI LSS 50 GOTO startexedownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test start.exe . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO startexedownloadfailed
@@ -768,7 +768,7 @@ IF EXIST stop.exe DEL stop.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/stop.exe -O stop.exe
 TITLE Freenet Update Over HTTP Script
 IF NOT EXIST stop.exe GOTO stopexedownloadfailed
-FOR %%I IN ("stop.exe") DO IF %%~zI==0 GOTO stopexedownloadfailed
+FOR %%I IN ("stop.exe") DO IF %%~zI LSS 50 GOTO stopexedownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test stop.exe . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO stopexedownloadfailed
@@ -791,7 +791,7 @@ IF EXIST freenettray.exe DEL freenettray.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenettray.exe -O freenettray.exe
 TITLE Freenet Update Over HTTP Script
 IF NOT EXIST freenettray.exe GOTO traydownloadfailed
-FOR %%I IN ("freenettray.exe") DO IF %%~zI==0 GOTO traydownloadfailed
+FOR %%I IN ("freenettray.exe") DO IF %%~zI LSS 50 GOTO traydownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO traydownloadfailed
@@ -814,7 +814,7 @@ IF EXIST freenetlauncher.exe DEL freenetlauncher.exe
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenetlauncher.exe -O freenetlauncher.exe
 TITLE Freenet Update Over HTTP Script
 IF NOT EXIST freenetlauncher.exe GOTO launcherdownloadfailed
-FOR %%I IN ("freenetlauncher.exe") DO IF %%~zI==0 GOTO launcherdownloadfailed
+FOR %%I IN ("freenetlauncher.exe") DO IF %%~zI LSS 50 GOTO launcherdownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test freenetlauncher.exe . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO launcherdownloadfailed
@@ -838,7 +838,7 @@ IF EXIST seednodes.fref DEL seednodes.fref
 ..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/opennet/seednodes.fref -O seednodes.fref
 TITLE Freenet Update Over HTTP Script
 IF NOT EXIST seednodes.fref GOTO seeddownloadfailed
-FOR %%I IN ("seednodes.fref") DO IF %%~zI==0 GOTO seeddownloadfailed
+FOR %%I IN ("seednodes.fref") DO IF %%~zI LSS 50 GOTO seeddownloadfailed
 ::Test the new file for integrity.
 JAVA -cp ..\lib\sha1test.jar Sha1Test seednodes.fref . ..\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO seeddownloadfailed
