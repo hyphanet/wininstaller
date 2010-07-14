@@ -211,6 +211,55 @@ IF EXIST ..\freenet-*.sha1 MOVE /Y ..\freenet-*.sha1 . > NUL
 IF EXIST ..\freenet-stable* DEL ..\freenet-stable*
 IF EXIST ..\freenet-testing* DEL ..\freenet-testing*
 
+::Bypass this section while Toad is fixing the startssl.pem
+::FIXME remove this goto statement
+::FIXME adjust filesize from 100000 to a number closer to the size of the corrected startssl.pem
+::Fixme adjust date as needed.
+::FIXME adjust URL as needed.
+GOTO maincheck
+::End FIXME
+
+::Work around corrupted ssl certificate bug
+::If our startssl.pem file is larger than 100kB we can assume it is corrupt and download a new one.
+FOR %%I IN (..\%CAFILE%) DO IF %%~zI LEQ 100000 GOTO maincheck
+::Warn the user
+ECHO *******************************************************************
+ECHO * It appears your installation has a corrupted security certificate.
+ECHO * Unfortunately our Windows installer included this bad file during
+ECHO * a period between April 27 and July 14 2010.  If you downloaded Freenet
+ECHO * during this time, you can try to download an updated version of
+ECHO * this file by pressing U and <enter> now.
+ECHO *
+ECHO * Warning - this file is used to make sure the files we download
+ECHO * from our website have not been tampered with.  If you are not
+ECHO * sure this is legit hit Q and <enter> to quit and ask around first.
+ECHO *******************************************************************
+:promptloop3
+::Set ANSWER3 to a different variable so it won't bug out when we loop
+SET ANSWER3==X
+ECHO -
+ECHO - Do you wish to (U)pdate, (C)ontinue anyway, or (Q)uit?
+SET /P ANSWER3=- Press U to update, C to continue or Q to quit.
+IF /i %ANSWER3%==U GOTO promptloop3out
+IF /i %ANSWER3%==C GOTO maincheck
+IF /i %ANSWER3%==Q GOTO veryend
+::User hit a wrong key or <enter> without selecting, go around again.
+GOTO promptloop3
+:promptloop3out
+::User wants to try to download a new certificate
+IF EXIST startssl.pem.new DEL startssl.pem.new
+..\bin\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10  https://checksums.freenetproject.org/latest/startssl.pem -O startssl.pem.new
+IF NOT ERRORLEVEL 0 GOTO error3
+IF NOT EXIST startssl.pem.new GOTO error3
+::File should not be smaller than 2760 bytes
+FOR %%I IN ("startssl.pem.new") DO IF %%~zI LSS 2760 GOTO error3
+::File seems to be ok, let's copy it over.
+::Back up our file first
+IF EXIST startssl.pem.bak DEL startssl.pem.bak
+IF EXIST ..\startssl.pem COPY ..\startssl.pem startssl.pem.bak > NUL
+COPY /Y startssl.pem ..\startssl.pem > NUL
+
+:maincheck
 ::Check for a new main jar
 ECHO - Checking main jar
 ::Backup our .sha1/.url files in case we fail later
