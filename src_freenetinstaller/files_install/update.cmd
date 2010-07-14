@@ -511,8 +511,6 @@ goto traycheckend
 :trayyes
 echo    - New freenettray.exe found!
 set TRAYUTILITYUPDATED=1
-::We can only hope the tray gets shutdown in time, let's give it all the time we can by starting now
-if not exist ..\tray_die.dat echo "" >> ..\tray_die.dat
 :traycheckend
 
 
@@ -830,13 +828,7 @@ goto error4
 :installbegin
 ::At least one of our files are ok, let's move forward.
 
-::Time to stop the node and if needed freenettray.exe
-if %TRAYUTILITYUPDATED%==0 goto nodestop
-::We can only hope the tray gets shutdown in time
-if not exist ..\tray_die.dat type "" >> ..\tray_die.dat
-
-
-:nodestop
+::Time to stop the node
 ::Tell the user not to abort script, it gets very messy.
 echo -----
 echo - Shutting down Freenet if it is running...   (This may take a moment, please don't abort)
@@ -867,6 +859,10 @@ echo -
 :safetycheck
 net start | find "Freenet 0.7 darknet" > NUL
 if errorlevel 1 goto beginfilecopy
+::Much cleaner way of giving us a 5 second pause to make sure the node is shut down.
+::Found at http://www.allenware.com/icsw/icswref.htm#WaitsFixedPing
+::Insert delay of 5 =6-1 seconds
+ping -n 6 127.0.0.1 >NUL
 call ..\bin\stop.cmd > NUL
 goto safetycheck
 
@@ -977,10 +973,15 @@ if NOT %TRAYUTILITYUPDATED%==1 goto traycopyend
 ::Backup last version of freenettray.exe file, user may want to go back if something is broken in new build
 if exist freenettray.exe.bak del freenettray.exe.bak
 if exist ..\bin\freenettray.exe copy ..\bin\freenettray.exe freenettray.exe.bak > NUL
-:trayloop
-::Loop in case the tray utility is still shutting down.
-copy /Y freenettray.exe ..\bin\freenettray.exe > NUL
-if not errorlevel 0 goto trayloop
+::Shut down the tray utility
+echo    - Pausing 15 seconds to allow Freenet tray utility to close...
+if not exist ..\tray_die.dat echo "" >> ..\tray_die.dat
+::Much cleaner way of giving us a 15 second pause to make sure the tray is shut down.
+::Found at http://www.allenware.com/icsw/icswref.htm#WaitsFixedPing
+::Insert delay of 15 =16-1 seconds
+ping -n 16 127.0.0.1 >NUL
+if exist ..\bin\freenettray.exe del ..\bin\freenettray.exe
+copy freenettray.exe ..\bin\freenettray.exe > NUL
 ::Update the startup folder also
 if exist "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\freenettray.exe" copy /y freenettray.exe "%ALLUSERSPROFILE%\Start Menu\Programs\Startup\" > NUL
 if exist "%USERPROFILE%\Start Menu\Programs\Startup\freenettray.exe" copy /y freenettray.exe "%USERPROFILE%\Start Menu\Programs\Startup\" > NUL
