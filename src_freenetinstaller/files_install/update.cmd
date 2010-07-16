@@ -67,17 +67,26 @@ SET TRAYUTILITYUPDATED=0
 SET LAUNCHERUPDATED=0
 SET SEEDUPDATED=0
 
+SET SKIPWARNING=no
 SET COUNT=0
 SET PATH=%SYSTEMROOT%\System32\;%PATH%
 
 ::  Accept flags from command line
 SET RELEASE=stable
+::Check if we were launched by the GUI. If so there is no need to warn user about connecting to our website.
+IF "%1"=="testinggui" SET RELEASE=testing
+IF "%1"=="testinggui" SET SKIPWARNING=yes
+IF "%1"=="stablegui" SET RELEASE=stable
+IF "%1"=="stablegui" SET SKIPWARNING=yes
+
 IF "%1"=="testing" SET RELEASE=testing
 IF "%1"=="-testing" SET RELEASE=testing
 IF "%1"=="/testing" SET RELEASE=testing
 
 ECHO - Release selected is: %RELEASE%
 ECHO -----
+
+IF %SKIPWARNING%==yes GOTO promptloop1out
 
 ::Warn user this script will contact our servers over the non-anoymous internet.
 ECHO *******************************************************************
