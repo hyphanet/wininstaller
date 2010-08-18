@@ -13,6 +13,7 @@
 #Include ..\src_translationhelper\Include_Lang_es.inc								; Include Spanish (es) translation
 #Include ..\src_translationhelper\Include_Lang_da.inc								; Include Danish (da) translation
 #Include ..\src_translationhelper\Include_Lang_fi.inc								; Include Finnish (fi) translation
+#Include ..\src_translationhelper\Include_Lang_ru.inc								; Include Russian (ru) translation
 
 InitTranslations()
 {
@@ -20,7 +21,7 @@ InitTranslations()
 
 	_LangArray := 1												; Set initial position for languages array
 
-	; AddLanguage() arguments: <localized language name> <language load function name from language file> <windows language code (see http://www.autohotkey.com/docs/misc/Languages.htm)>
+	; AddLanguage() arguments: <localized language name> <language load function name from language file> <windows language code(s) (see http://www.autohotkey.com/docs/misc/Languages.htm)>
 	; Somewhat ordered by number of speakers. Hint: http://en.wikipedia.org/wiki/List_of_countries_by_population
 	AddLanguage("English","","")										; Load English (en) translation (dummy)
 	AddLanguage("Deutsch","LoadLanguage_de","0407+0807+0c07+1007+1407")					; Make default for all variations of German
@@ -29,6 +30,7 @@ InitTranslations()
 	AddLanguage("Español","LoadLanguage_es","040a+080a+0c0a+100a+140a+180a+1c0a+200a+240a+280a+2c0a+300a+340a+380a+3c0a+400a+440a+480a+4c0a+500a")	; Make default for all variations of Spanish
 	AddLanguage("Dansk","LoadLanguage_da","0406")
 	AddLanguage("suomi","LoadLanguage_fi","040b")
+	AddLanguage("русский","LoadLanguage_ru","0419")
 
 	LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
 }

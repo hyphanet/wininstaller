@@ -69,7 +69,7 @@ If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
 _URL = http://127.0.0.1:%_Port1%/
 
 ;
-; Try browser: Google Chrome (incognito-enabled) (Tested versions: 1.0.154)
+; Try browser: Google Chrome in incognito mode (Tested versions: 1.0.154)
 ; Note that Google Chrome is buggy, launching with the incognito option if the browser is already open will open a new window without using incognito mode. Hence fproxy ignores this option for now, and when Chrome is fixed, will check the version string. See http://code.google.com/p/chromium/issues/detail?id=9636 or our bug 3376.
 RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
 
@@ -85,7 +85,28 @@ If (!ErrorLevel && _ChromeInstallDir <> "")
 }
 
 ;
-; Try browser: Mozilla FireFox (Tested versions: 3.0, 3.5)
+; Try browser: Mozilla Firfox in Private browsing mode (Tested versions: 3.6)
+;
+RegRead, _FFVersion, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox, CurrentVersion
+
+If (!ErrorLevel && _FFVersion <> "")
+{
+	StringSplit, _FFVersionNum, _FFVersion, %A_Space%	; Strip language suffix from version string (example: "3.6 (en-GB)")
+
+	If (_FFVersionNum1 >= 3.6)				; Private browsing supported since version 3.6
+	{
+		RegRead, _FFPath, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox\%_FFVersion%\Main, PathToExe
+
+		If (!ErrorLevel && _FFPath <> "" && FileExist(_FFPath))
+		{
+			Run, %_FFPath% -private "%_URL%%_SecureSuffix%", , UseErrorLevel
+			ExitApp, 0
+		}
+	}
+}
+
+;
+; Try browser: Mozilla Firefox (Tested versions: 3.0, 3.5)
 ;
 RegRead, _FFVersion, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox, CurrentVersion
 

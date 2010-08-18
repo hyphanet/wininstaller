@@ -48,6 +48,7 @@ _ServiceName = freenet%_InstallSuffix%					; Put together our service name
 ; Fix up a tray icon and a tray menu
 ;
 Menu, TRAY, NoStandard							; Remove default tray menu items
+Menu, TRAY, Click, 1							; Activate default menu entry after a single click only (instead of default which most likely is doubleclick)
 Menu, TRAY, Icon, freenetoffline.ico, , 1				; As we don't know if the node is running yet, show as offline
 Menu, TRAY, Tip, % Trans("Freenet Tray") _InstallSuffix
 
@@ -72,7 +73,7 @@ Menu, TRAY, Disable, % Trans("Stop Freenet service")
 _Arg1 = %1%
 If (_Arg1 == "/welcome")
 {
-	TrayTip, % Trans("Freenet Tray"),% Trans("You can browse, start and stop Freenet along with other useful things from this tray icon.") "`n`n" Trans("Doubleclick: Start/Browse Freenet") "`n" Trans("Right-click: Advanced menu"), , 1	; 1 = Info icon
+	TrayTip, % Trans("Freenet Tray"),% Trans("You can browse, start and stop Freenet along with other useful things from this tray icon.") "`n`n" Trans("Left-click: Start/Browse Freenet") "`n" Trans("Right-click: Advanced menu"), , 1	; 1 = Info icon
 }
 
 ;
@@ -131,7 +132,7 @@ return
 ;
 OpenLog:
 
-Run, notepad.exe wrapper.log, , UseErrorLevel				; We really should just call "wrapper.log" directly and let Windows choose the viewer, but until we know for sure that all supported versions of Windows actually *have* a default .log association, we explicitly ask for Notepad. (See https://bugs.freenetproject.org/view.php?id=3245)
+Run, wrapper.log, , UseErrorLevel
 
 return
 
