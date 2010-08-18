@@ -438,11 +438,7 @@ GetTotalPhysMem()
 
 CalcNodeMaxMem(_TotalMemory)
 {
-	If (_TotalMemory > (4 * 1024))
-	{
-		_MaxMem := 1024
-	}
-	else if (_TotalMemory > (2 * 1024))
+	If (_TotalMemory > (2 * 1024))
 	{
 		_MaxMem := 512
 	}
