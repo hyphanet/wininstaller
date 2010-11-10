@@ -131,6 +131,8 @@ IF NOT EXIST updater MKDIR updater
 IF EXIST bin\wget.exe MOVE /Y bin\wget.exe \updater > NUL
 IF EXIST lib\sha1test.jar MOVE /Y lib\sha1test.jar \updater > NUL
 IF EXIST startssl.pem MOVE /Y startssl.pem \updater > NUL
+::Point CAFILE to the new location
+IF EXIST updater\startssl.pem SET CAFILE=updater\startssl.pem
 
 ::Check if its valid, or at least looks like it
 IF NOT EXIST updater\wget.exe GOTO error2
@@ -152,6 +154,7 @@ IF EXIST writetest GOTO writefail
 
 ::Kludge to disable setting file permissions on the the deprecated custom user "freenet"
 IF EXIST bin\freenettray.exe SET VISTA=2
+IF %NEWINSTALL%==1 SET VISTA=2
 
 :: Maybe fix bug #2556
 ECHO - Changing file permissions
