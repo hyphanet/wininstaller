@@ -131,8 +131,6 @@ IF NOT EXIST updater MKDIR updater
 IF EXIST bin\wget.exe MOVE /Y bin\wget.exe \updater > NUL
 IF EXIST lib\sha1test.jar MOVE /Y lib\sha1test.jar \updater > NUL
 IF EXIST startssl.pem MOVE /Y startssl.pem \updater > NUL
-::Point CAFILE to the new location
-IF EXIST updater\startssl.pem SET CAFILE=updater\startssl.pem
 
 ::Check if its valid, or at least looks like it
 IF NOT EXIST updater\wget.exe GOTO error2
@@ -234,7 +232,7 @@ IF EXIST ..\freenet-testing* DEL ..\freenet-testing*
 
 ::Work around corrupted ssl certificate bug
 ::If our startssl.pem file is larger than 100kB we can assume it is corrupt and download a new one.
-FOR %%I IN (..\%CAFILE%) DO IF %%~zI LEQ 100000 GOTO maincheck
+FOR %%I IN (..\updater\%CAFILE%) DO IF %%~zI LEQ 100000 GOTO maincheck
 ::Warn the user
 ECHO *******************************************************************
 ECHO * It appears your installation has a corrupted security certificate.
@@ -269,8 +267,8 @@ FOR %%I IN ("startssl.pem.new") DO IF %%~zI LSS 2760 GOTO error3
 ::File seems to be ok, let's copy it over.
 ::Back up our file first
 IF EXIST startssl.pem.bak DEL startssl.pem.bak
-IF EXIST ..\startssl.pem COPY ..\startssl.pem startssl.pem.bak > NUL
-COPY /Y startssl.pem.new ..\startssl.pem > NUL
+IF EXIST ..\updater\startssl.pem COPY ..\updater\startssl.pem startssl.pem.bak > NUL
+COPY /Y startssl.pem.new ..\updater\startssl.pem > NUL
 
 :maincheck
 ::Check for a new main jar
@@ -499,7 +497,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST freenettray.exe GOTO traycheckfail
 FOR %%I IN ("freenettray.exe") DO IF %%~zI LSS 50 GOTO traycheckfail
 
-JAVA -cp ..\updater\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test freenettray.exe . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO traycheckfail
 TITLE Freenet Update Over HTTP Script
 
@@ -668,7 +666,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST freenet-%RELEASE%-latest.jar GOTO mainjardownloadfailed
 FOR %%I IN ("freenet-%RELEASE%-latest.jar") DO IF %%~zI LSS 50 GOTO mainjardownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test freenet-%RELEASE%-latest.jar . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test freenet-%RELEASE%-latest.jar . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO mainjardownloadfailed
 ECHO    - Freenet-%RELEASE%-snapshot.jar downloaded and verified
 GOTO mainjardownloadend
@@ -691,7 +689,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST freenet-ext.jar GOTO extjardownloadfailed
 FOR %%I IN ("freenet-ext.jar") DO IF %%~zI LSS 50 GOTO extjardownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test freenet-ext.jar . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test freenet-ext.jar . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO extjardownloadfailed
 ECHO    - Freenet-ext.jar downloaded and verified
 GOTO extjardownloadend
@@ -714,7 +712,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST wrapper-windows-x86-32.exe GOTO wrapperexedownloadfailed
 FOR %%I IN ("wrapper-windows-x86-32.exe") DO IF %%~zI LSS 50 GOTO wrapperexedownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test wrapper-windows-x86-32.exe . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test wrapper-windows-x86-32.exe . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO wrapperexedownloadfailed
 ECHO    - wrapper .exe downloaded and verified
 GOTO wrapperexedownloadend
@@ -737,7 +735,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST wrapper-windows-x86-32.dll GOTO wrapperdlldownloadfailed
 FOR %%I IN ("wrapper-windows-x86-32.dll") DO IF %%~zI LSS 50 GOTO wrapperdlldownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test wrapper-windows-x86-32.dll . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test wrapper-windows-x86-32.dll . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO wrapperdlldownloadfailed
 ECHO    - wrapper .dll downloaded and verified
 GOTO wrapperdlldownloadend
@@ -760,7 +758,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST start.exe GOTO startexedownloadfailed
 FOR %%I IN ("start.exe") DO IF %%~zI LSS 50 GOTO startexedownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test start.exe . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test start.exe . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO startexedownloadfailed
 ECHO    - start.exe downloaded and verified
 GOTO startexedownloadend
@@ -783,7 +781,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST stop.exe GOTO stopexedownloadfailed
 FOR %%I IN ("stop.exe") DO IF %%~zI LSS 50 GOTO stopexedownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test stop.exe . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test stop.exe . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO stopexedownloadfailed
 ECHO    - stop.exe downloaded and verified
 GOTO stopexedownloadend
@@ -806,7 +804,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST freenettray.exe GOTO traydownloadfailed
 FOR %%I IN ("freenettray.exe") DO IF %%~zI LSS 50 GOTO traydownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test freenettray.exe . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test freenettray.exe . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO traydownloadfailed
 ECHO    - freenettray.exe downloaded and verified
 GOTO traydownloadend
@@ -829,7 +827,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST freenetlauncher.exe GOTO launcherdownloadfailed
 FOR %%I IN ("freenetlauncher.exe") DO IF %%~zI LSS 50 GOTO launcherdownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test freenetlauncher.exe . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test freenetlauncher.exe . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO launcherdownloadfailed
 ECHO    - freenetlauncher.exe downloaded and verified
 GOTO launcherdownloadend
@@ -853,7 +851,7 @@ TITLE Freenet Update Over HTTP Script
 IF NOT EXIST seednodes.fref GOTO seeddownloadfailed
 FOR %%I IN ("seednodes.fref") DO IF %%~zI LSS 50 GOTO seeddownloadfailed
 ::Test the new file for integrity.
-JAVA -cp ..\updater\sha1test.jar Sha1Test seednodes.fref . ..\%CAFILE% > NUL
+JAVA -cp ..\updater\sha1test.jar Sha1Test seednodes.fref . ..\updater\%CAFILE% > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO seeddownloadfailed
 ECHO    - seednodes.fref downloaded and verified
 GOTO seeddownloadend
