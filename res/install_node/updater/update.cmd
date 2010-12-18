@@ -887,6 +887,9 @@ GOTO error4
 ECHO -----
 ECHO - Shutting down Freenet if it is running...   (This may take a moment, please don't abort)
 ECHO -----
+::If we are using the newest install method, for now we need the user to manually shutdown the node.
+IF %NEWINSTALL%==1 GOTO manualshutdownprompt
+
 ::See if we are using the new binary stop.exe
 IF NOT EXIST ..\bin\stop.exe GOTO oldstopper
 :newstoppper
@@ -919,6 +922,18 @@ IF ERRORLEVEL 1 GOTO beginfilecopy
 PING -n 6 127.0.0.1 > NUL
 CALL ..\bin\stop.cmd > NUL
 GOTO safetycheck
+
+::We are using the newest install method, for now we need the user to manually shutdown the node.
+:manualshutdownprompt
+ECHO -
+ECHO - We are currently not able to automatically shutdown Freenet with this script.
+ECHO - You need to manually stop Freenet using the tray icon then press any key to continue.
+ECHO -
+PAUSE
+::Let's give the node a few seconds to shutdown cleanly
+ECHO - Continuing in 15 seconds...
+::Insert delay of 15 =16-1 seconds
+PING -n 16 127.0.0.1 > NUL
 
 ::Ok Freenet is stopped, it is safe to copy files.
 :beginfilecopy
@@ -1142,6 +1157,9 @@ ECHO - Changing file permissions
 IF %VISTA%==0 ECHO Y| CACLS . /E /T /C /G freenet:F > NUL
 IF %VISTA%==1 ECHO y| ICACLS . /grant freenet:(OI)(CI)F /T /C > NUL
 
+::If we are using the newest install method, for now we need the user to manually start the node.
+IF %NEWINSTALL%==1 GOTO manualstartprompt
+
 ::Try to restart the tray if it was flagged as updated
 IF %TRAYUTILITYUPDATED%==0 GOTO restart
 IF EXIST tray_die.dat DEL tray_die.dat
@@ -1158,6 +1176,14 @@ GOTO unknownerror
 
 :oldstarter
 CALL bin\start.cmd > NUL
+
+:manualstartprompt
+ECHO -
+ECHO - We are currently not able to automatically start Freenet with this script.
+ECHO - You need to manually start Freenet using the tray icon then press any key to continue.
+ECHO - You can also leave Freenet shutdown and press any key to continue.
+ECHO -
+PAUSE
 
 :cleanup2
 IF %FILENAME%==update.new.cmd GOTO newend
