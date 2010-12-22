@@ -253,7 +253,11 @@ If (_DefaultInstallDir == "\Freenet")
 }
 If (_DefaultInstallDir == "\Freenet")
 {
-	_DefaultInstallDir = C:\Freenet
+	_DefaultInstallDir = %A_ProgramFiles%\Freenet
+}
+If (_DefaultInstallDir == "\Freenet")
+{
+	_DefaultInstallDir = "C:\Freenet"
 }
 
 SetInstallDir("")
