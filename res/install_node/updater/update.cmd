@@ -65,6 +65,7 @@ SET STARTEXEUPDATED=0
 SET STOPEXEUPDATED=0
 SET TRAYUTILITYUPDATED=0
 SET LAUNCHERUPDATED=0
+SET LAUNCHERUPDATEDNEW=0
 SET SEEDUPDATED=0
 
 SET SKIPWARNING=no
@@ -569,6 +570,10 @@ ECHO    - New freenettray.exe found!
 SET TRAYUTILITYUPDATED=1
 :traycheckend
 
+::Separate URL for new version
+
+IF %NEWINSTALL%==1 GOTO newlauncher
+
 ::Check launcher utility if present
 IF NOT EXIST ..\freenetlauncher.exe GOTO launchercheckend
 ECHO - Checking freenetlauncher.exe
@@ -604,6 +609,48 @@ GOTO launchercheckend
 ECHO    - New freenetlauncher.exe found!
 SET LAUNCHERUPDATED=1
 :launchercheckend
+
+GOTO finallaunchercheckend
+
+:newlauncher
+::Check launcher utility if present
+IF NOT EXIST ..\freenetlauncher.exe GOTO newlaunchercheckend
+ECHO - Checking freenetlauncher.exe new version
+::Backup our .sha1/.url files in case we fail later
+IF EXIST freenetlauncher.exe.sha1.bak DEL freenetlauncher.exe.sha1.bak
+IF EXIST freenetlauncher.exe.sha1 COPY freenetlauncher.exe.sha1 freenetlauncher.exe.sha1.bak > NUL
+IF EXIST freenetlauncher.exe.sha1.new DEL freenetlauncher.exe.sha1.new
+..\updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/installer/freenetlauncher-new.exe.sha1 -O freenetlauncher-new.exe.sha1.new
+TITLE Freenet Update Over HTTP Script
+
+IF NOT EXIST freenetlauncher-new.exe.sha1.new GOTO newlaunchercheckfail
+FOR %%I IN ("freenetlauncher-new.exe.sha1.new") DO IF %%~zI LSS 50 GOTO newlaunchercheckfail
+
+::Do we have something old to compare with? If not, update right away
+IF NOT EXIST freenetlauncher.exe.sha1 GOTO newlauncheryes
+
+FC freenetlauncher-new.exe.sha1 freenetlauncher-new.exe.sha1.new > NUL
+IF ERRORLEVEL 1 GOTO newlauncheryes
+ECHO    - freenetlauncher.exe is current.
+GOTO newlaunchercheckend
+
+:newlaunchercheckfail
+ECHO    - freenetlauncher.exe could not be checked, perhaps a server issue or broken link?
+::Set to 2 to indicate error
+SET LAUNCHERUPDATEDNEW=2
+::Restore the old .sha1 files so we can check them again next run.
+::freenetlauncher.exe
+IF EXIST freenetlauncher-new.exe.sha1 DEL freenetlauncher-new.exe.sha1
+IF EXIST freenetlauncher-new.exe.sha1.new REN freenetlauncher-new.exe.sha1.new freenetlauncher-new.exe.sha1
+GOTO newlaunchercheckend
+
+:newlauncheryes
+ECHO    - New freenetlauncher.exe found!
+SET LAUNCHERUPDATEDNEW=1
+:newlaunchercheckend
+
+
+:finallaunchercheckend
 
 ::Check for an updated seednodes.fref
 ::Backup our .sha1/.url files in case we fail later
@@ -646,6 +693,7 @@ IF %STARTEXEUPDATED%==1 GOTO downloadbegin
 IF %STOPEXEUPDATED%==1 GOTO downloadbegin
 IF %TRAYUTILITYUPDATED%==1 GOTO downloadbegin
 IF %LAUNCHERUPDATED%==1 GOTO downloadbegin
+IF %LAUNCHERUPDATEDNEW%==1 GOTO downloadbegin
 ::Purposely not considering whether seednode is updated
 GOTO noupdate
 
@@ -840,6 +888,33 @@ SET LAUNCHERUPDATED=2
 IF EXIST freenetlauncher.exe.sha1 DEL freenetlauncher.exe.sha1
 IF EXIST freenetlauncher.exe.sha1.bak REN freenetlauncher.exe.sha1.bak freenetlauncher.exe.sha1
 :launcherdownloadend
+
+::Download new freenetlauncher.exe file for non service installs
+IF NOT %LAUNCHERUPDATEDNEW%==1 GOTO newlauncherdownloadend
+IF EXIST freenetlauncher-new.exe.sha1 DEL freenetlauncher-new.exe.sha1
+IF EXIST freenetlauncher-new.exe DEL freenetlauncher-new.exe
+..\updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://checksums.freenetproject.org/latest/freenetlauncher-new.exe -O freenetlauncher-new.exe
+TITLE Freenet Update Over HTTP Script
+IF NOT EXIST freenetlauncher-new.exe GOTO newlauncherdownloadfailed
+FOR %%I IN ("freenetlauncher-new.exe") DO IF %%~zI LSS 50 GOTO newlauncherdownloadfailed
+::Test the new file for integrity.
+JAVA -cp ..\updater\sha1test.jar Sha1Test freenetlauncher-new.exe . ..\updater\%CAFILE% > NUL
+IF %ERRORLEVEL% NEQ 0 GOTO newlauncherdownloadfailed
+ECHO    - freenetlauncher.exe downloaded and verified
+::Arrange for the next stage to use the exe
+REN freenetlauncher-new.exe freenetlauncher.exe
+SET LAUNCHERUPDATEDNEW=2
+SET LAUNCHERUPDATED=1
+GOTO newlauncherdownloadend
+:newlauncherdownloadfailed
+ECHO    - freenetlauncher.exe failed to download
+::Set LAUNCHERUPDATED to 2 so it won't copy in next stage.
+SET LAUNCHERUPDATEDNEW=2
+::Restore the old .sha1 files so we can check them again next run.
+::Launcher.exe
+IF EXIST freenetlauncher-new.exe.sha1 DEL freenetlauncher-new.exe.sha1
+IF EXIST freenetlauncher-new.exe.sha1.bak REN freenetlauncher-new.exe.sha1.bak freenetlauncher.exe.sha1
+:newlauncherdownloadend
 
 ::Download an updated seednodes.fref.  We will only do this if at least one of the main files above were updated and the .sha1 of the file has changed.
 ::We are stingy because we don't want people to run this script *just* to get the latest seednodes file.
