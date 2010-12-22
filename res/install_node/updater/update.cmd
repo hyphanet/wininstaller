@@ -886,6 +886,7 @@ JAVA -cp ..\updater\sha1test.jar Sha1Test freenetlauncher-new.exe . ..\updater\%
 IF %ERRORLEVEL% NEQ 0 GOTO newlauncherdownloadfailed
 ECHO    - freenetlauncher.exe downloaded and verified
 ::Arrange for the next stage to use the exe
+DEL freenetlauncher.exe
 REN freenetlauncher-new.exe freenetlauncher.exe
 SET LAUNCHERUPDATEDNEW=2
 SET LAUNCHERUPDATED=1
