@@ -58,7 +58,7 @@ Else
 {
 	_InstallDir = %1%										; Fetch installdir from the command line parameter
 
-	If (!FileExist(_InstallDir . "\freenet.jar") || !FileExist(_InstallDir . "\installid.dat"))
+	If (!(FileExist(_InstallDir . "\freenet.jar") || FileExist(_InstallDir . "\freenet.jar.new")) || !FileExist(_InstallDir . "\installid.dat"))
 	{
 		PopupErrorMessage(Trans("Freenet uninstaller") " " Trans("was unable to recognize your Freenet installation at:") "`n`n" _InstallDir "`n`n" Trans("Please run this program from a Freenet installation directory."))
 		ExitApp
