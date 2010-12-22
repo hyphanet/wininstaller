@@ -241,14 +241,19 @@ Gui, Add, Button, x+%_StandardMargin% ys W%_ButtonWidth% v_cInstallButton gButto
 ;
 ; Gui layout finished, do GUI init stuff and return to "idle" state...
 ;
+_DefaultInstallDir = "\Freenet"
 If A_OSVersion in WIN_XP
 {
 	_DefaultInstallDir = %A_AppData%\Freenet
 }
-Else
+If _DefaultInstallDir == "\Freenet"
 {
 	EnvGet, _LocalAppData, LOCALAPPDATA
 	_DefaultInstallDir = %_LocalAppData%\Freenet
+}
+If _DefaultInstallDir == "\Freenet"
+{
+	_DefaultInstallDir = "C:\Freenet"
 }
 
 SetInstallDir("")
