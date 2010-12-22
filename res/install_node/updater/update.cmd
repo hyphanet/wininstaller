@@ -76,8 +76,8 @@ SET NEWINSTALL=0
 :: Check for the lastest install method and adapt
 IF EXIST installlayout.dat SET NEWINSTALL=1
 
-WRAPPER=wrapper.conf
-WRAPPERBAK=wrapper.conf.bak
+SET WRAPPER=wrapper.conf
+SET WRAPPERBAK=wrapper.conf.bak
 IF %NEWINSTALL%==1 SET WRAPPER=wrapper\wrapper.conf
 IF %NEWINSTALL%==1 SET WRAPPERBAK=wrapper\wrapper.conf.bak
 
