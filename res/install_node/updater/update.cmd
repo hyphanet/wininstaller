@@ -611,7 +611,7 @@ IF NOT EXIST freenetlauncher-new.exe.sha1.new GOTO newlaunchercheckfail
 FOR %%I IN ("freenetlauncher-new.exe.sha1.new") DO IF %%~zI LSS 50 GOTO newlaunchercheckfail
 
 ::Do we have something old to compare with? If not, update right away
-IF NOT EXIST freenetlauncher.exe.sha1 GOTO newlauncheryes
+IF NOT EXIST freenetlauncher-new.exe.sha1 GOTO newlauncheryes
 
 FC freenetlauncher-new.exe.sha1 freenetlauncher-new.exe.sha1.new > NUL
 IF ERRORLEVEL 1 GOTO newlauncheryes
