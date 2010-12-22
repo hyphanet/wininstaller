@@ -1188,12 +1188,12 @@ ECHO - Your wrapper.conf needs to be updated .... updating it; please restart th
 :: Let's try falling back to the old version of the wrapper so we can keep our memory settings.  If it doesn't work we'll get a new one next time around.
 IF NOT EXIST %WRAPPERBAK% GOTO newwrapper
 IF EXIST %WRAPPER% DEL %WRAPPER%
-REN %WRAPPERBAK% %WRAPPER%
+MOVE %WRAPPERBAK% %WRAPPER%
 START update.cmd
 GOTO veryend
 
 :newwrapper
-IF EXIST %WRAPPER% REN %WRAPPER% %WRAPPERBAK%
+IF EXIST %WRAPPER% MOVE %WRAPPER% %WRAPPERBAK%
 :: This will set the memory settings back to default, but it can't be helped.
 updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/update/wrapper.conf -O %WRAPPER%
 IF NOT EXIST %WRAPPER% GOTO wrappererror
@@ -1202,7 +1202,7 @@ START update.cmd
 GOTO veryend
 
 :wrappererror
-IF EXIST %WRAPPERBAK% REN %WRAPPERBAK% %WRAPPER%
+IF EXIST %WRAPPERBAK% MOVE %WRAPPERBAK% %WRAPPER%
 GOTO error3
 
 ::Cleanup and restart if needed.
