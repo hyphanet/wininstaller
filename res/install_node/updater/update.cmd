@@ -76,6 +76,11 @@ SET NEWINSTALL=0
 :: Check for the lastest install method and adapt
 IF EXIST installlayout.dat SET NEWINSTALL=1
 
+WRAPPER=wrapper.conf
+WRAPPERBAK=wrapper.conf.bak
+IF %NEWINSTALL%==1 SET WRAPPER=wrapper\wrapper.conf
+IF %NEWINSTALL%==1 SET WRAPPERBAK=wrapper\wrapper.conf.bak
+
 ::  Accept flags from command line
 SET RELEASE=stable
 ::Check if we were launched by the GUI. If so there is no need to warn user about connecting to our website.
@@ -172,14 +177,14 @@ IF NOT EXIST update_temp MKDIR update_temp
 ECHO    - Update script is current.
 ECHO -----
 
-FIND "freenet.jar" wrapper.conf > NUL
+FIND "freenet.jar" %WRAPPER% > NUL
 IF ERRORLEVEL 1 GOTO error5
 
-FIND "freenet.jar.new" wrapper.conf > NUL
+FIND "freenet.jar.new" %WRAPPER% > NUL
 IF NOT ERRORLEVEL 1 GOTO error5
 
 :: fix #1527
-FIND "freenet-ext.jar.new" wrapper.conf > NUL
+FIND "freenet-ext.jar.new" %WRAPPER% > NUL
 IF ERRORLEVEL 1 GOTO skipit
 IF NOT EXIST freenet-ext.jar.new GOTO skipit
 IF EXIST freenet-ext.jar DEL /F freenet-ext.jar > NUL
@@ -1181,23 +1186,23 @@ GOTO end
 :error5
 ECHO - Your wrapper.conf needs to be updated .... updating it; please restart the script when done.
 :: Let's try falling back to the old version of the wrapper so we can keep our memory settings.  If it doesn't work we'll get a new one next time around.
-IF NOT EXIST wrapper.conf.bak GOTO newwrapper
-IF EXIST wrapper.conf DEL wrapper.conf
-REN wrapper.conf.bak wrapper.conf
+IF NOT EXIST %WRAPPERBAK% GOTO newwrapper
+IF EXIST %WRAPPER% DEL %WRAPPER%
+REN %WRAPPERBAK% %WRAPPER%
 START update.cmd
 GOTO veryend
 
 :newwrapper
-IF EXIST wrapper.conf REN wrapper.conf wrapper.conf.bak
+IF EXIST %WRAPPER% REN %WRAPPER% %WRAPPERBAK%
 :: This will set the memory settings back to default, but it can't be helped.
-updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/update/wrapper.conf -O wrapper.conf
-IF NOT EXIST wrapper.conf GOTO wrappererror
-IF EXIST wrapper.password type wrapper.password >> wrapper.conf
+updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/update/wrapper.conf -O %WRAPPER%
+IF NOT EXIST %WRAPPER% GOTO wrappererror
+IF EXIST wrapper.password type wrapper.password >> %WRAPPER%
 START update.cmd
 GOTO veryend
 
 :wrappererror
-IF EXIST wrapper.conf.bak REN wrapper.conf.bak wrapper.conf
+IF EXIST %WRAPPERBAK% REN %WRAPPERBAK% %WRAPPER%
 GOTO error3
 
 ::Cleanup and restart if needed.
