@@ -246,12 +246,12 @@ If A_OSVersion in WIN_XP
 {
 	_DefaultInstallDir = %A_AppData%\Freenet
 }
-If _DefaultInstallDir == "\Freenet"
+If (_DefaultInstallDir == "\Freenet")
 {
 	EnvGet, _LocalAppData, LOCALAPPDATA
 	_DefaultInstallDir = %_LocalAppData%\Freenet
 }
-If _DefaultInstallDir == "\Freenet"
+If (_DefaultInstallDir == "\Freenet")
 {
 	_DefaultInstallDir = "C:\Freenet"
 }
