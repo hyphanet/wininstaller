@@ -172,6 +172,27 @@ IF %FILENAME%==update.new.cmd GOTO updaterok
 ::New folder for keeping our temp files for this updater.
 IF NOT EXIST update_temp MKDIR update_temp
 
+::Download latest updater and verify it
+IF EXIST update_temp\update.new.cmd DEL update_temp\update.new.cmd
+ECHO - Checking for newer version of this update script...
+updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 http://downloads.freenetproject.org/alpha/update/update-new.cmd -O update_temp\update.new.cmd
+TITLE Freenet Update Over HTTP Script
+
+IF NOT EXIST update_temp\update.new.cmd GOTO error1
+FIND "FREENET W%MAGICSTRING%WS UPDATE SCRIPT" update_temp\update.new.cmd > NUL
+IF ERRORLEVEL 1 GOTO error1
+
+::Check if updater has been updated
+FC update.cmd update_temp\update.new.cmd > NUL
+IF not ERRORLEVEL 1 GOTO updaterok
+
+::It has! Run new version and end self
+ECHO - New update script found, restarting update script...
+ECHO -----
+COPY /Y update_temp\update.new.cmd update.new.cmd > NUL
+START update.new.cmd %RELEASE%
+GOTO veryend
+
 ::Updater is up to date, check Freenet
 :updaterok
 ECHO    - Update script is current.
