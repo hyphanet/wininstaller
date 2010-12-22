@@ -128,9 +128,9 @@ CD /D "%LOCATION%"
 
 ::The newest installer changes directory structures, we will make ours make it match now
 IF NOT EXIST updater MKDIR updater
-IF EXIST bin\wget.exe MOVE /Y bin\wget.exe \updater > NUL
-IF EXIST lib\sha1test.jar MOVE /Y lib\sha1test.jar \updater > NUL
-IF EXIST startssl.pem MOVE /Y startssl.pem \updater > NUL
+IF EXIST bin\wget.exe MOVE /Y bin\wget.exe updater > NUL
+IF EXIST lib\sha1test.jar MOVE /Y lib\sha1test.jar updater > NUL
+IF EXIST startssl.pem MOVE /Y startssl.pem updater > NUL
 
 ::Check if its valid, or at least looks like it
 IF NOT EXIST updater\wget.exe GOTO error2
