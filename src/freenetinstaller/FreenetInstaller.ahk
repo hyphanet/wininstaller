@@ -262,7 +262,7 @@ If (_DefaultInstallDir == "\Freenet")
 
 SetInstallDir("")
 SetTimer, UpdateInstallDirStatusTimer, 10000
-Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer" " - ALPHA TEST VERSION")
+Gui, Show, W%_GuiWidth%, % Trans("Freenet Installer")
 return
 
 ;
