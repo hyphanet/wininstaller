@@ -1259,6 +1259,7 @@ GOTO unknownerror
 
 :oldstarter
 CALL bin\start.cmd > NUL
+goto cleanup2
 
 :manualstartprompt
 ECHO -
