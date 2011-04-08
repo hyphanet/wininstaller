@@ -19,7 +19,7 @@ FileInstall, ..\..\res\install_node\freenet.exe,			%_InstallDir%\freenet.exe
 FileInstall, ..\..\res\install_node\freenetlauncher.exe,		%_InstallDir%\freenetlauncher.exe
 FileInstall, ..\..\res\install_node\freenetuninstaller.exe,		%_InstallDir%\freenetuninstaller.exe
 FileInstall, ..\..\res\install_node\seednodes.fref,			%_InstallDir%\seednodes.fref
-
+FileInstall, ..\..\res\install_node\README.txt,				%_InstallDir%\README.txt
 
 FileCreateDir,								%_InstallDir%\licenses
 FileInstall, ..\..\res\install_node\licenses\LICENSE.Freenet,		%_InstallDir%\licenses\LICENSE.Freenet
