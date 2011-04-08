@@ -58,12 +58,17 @@ downloading and uploading large files, Freenet will use most system resources ju
 you start it up, so you should avoid this where possible.
 
 BASIC SECURITY:
+The easiest option is to use the system tray applet to launch Freenet. This will try to
+load a browser (Chrome or Firefox) in privacy/incognito mode. If the browser is in privacy
+mode it will tell you. Browser bugs might result in it not being in privacy mode so be
+careful of this.
+
 You MUST use a separate browser to access Freenet than the one you use to access
-the WWW at large. Browser history stealing attacks enable malicious websites to
-probe for specific freesites you have visited. It may also be possible for hostile 
-websites to probe for the existence of Freenet by javascript port scanning or 
-similar attacks, or possibly even time loads of specific pages from Freenet, from
-the browser you use for the web; this last attack is unconfirmed at the time of 
+the WWW at large (or use one with privacy mode enabled). Browser history stealing attacks
+enable malicious websites to probe for specific freesites you have visited. It may also
+be possible for hostile websites to probe for the existence of Freenet by javascript port
+scanning or similar attacks, or possibly even time loads of specific pages from Freenet,
+from the browser you use for the web; this last attack is unconfirmed at the time of 
 writing.
 
 MORE SECURITY:
