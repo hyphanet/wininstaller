@@ -49,9 +49,13 @@ http://freenetproject.org/donate.html
 Press enquiries should be directed to Ian Clarke.
 
 ALWAYS ON:
-The installer will create a cron job to run Freenet on startup. You should run Freenet as
-close to 24x7 as possible for good performance. It is however possible to remove the cron
-job (with the remove cron job script in bin/).
+The installer will load the system tray applet (the rabbit icon on the bottom left) when
+you log in. We strongly recommend you run Freenet as close to 24x7 as possible for good
+performance. However, you can remove this from the startup menu if you don't want this 
+to happen. Also, you can easily use the tray icon to turn Freenet on and off when you
+need to free up bandwidth and CPU. However, bear in mind that unless you are regularly
+downloading and uploading large files, Freenet will use most system resources just after
+you start it up, so you should avoid this where possible.
 
 BASIC SECURITY:
 You MUST use a separate browser to access Freenet than the one you use to access
@@ -106,10 +110,5 @@ other code:
   licenses.
 
 UNINSTALLING:
-On Linux or OS/X, use the jar in the Uninstaller directory.
-In most cases we will have created a shortcut for uninstalling, on the system menu
-and/or the desktop. If you want to make Freenet not start on startup, on Linux or OS/X
- use the remove_cronjob.sh script in bin/. However please only do this if you
-*absolutely have to*: Freenet functions much better if it can run more or less
-continually. On Windows, use Add/Remove Programs in Control Panel. However, you should
-not really use this installer on Windows, the other one is better.
+Use a Add/Remove Programs in the Control Panel. You may need to shut down Freenet
+using the tray icon first.
