@@ -2,7 +2,7 @@
 ; Translation file - Dutch (nl) - by Thomas Markus
 ;
  
-LoadLanguage_de()
+LoadLanguage_nl()
 {
 	; Translation credit string. Remember to change language and name to your own in the translated string (not in the english one). Don't add personal comments or website links here - add those to the header of this file instead if you want.
 	Trans_Add("English localization by: Christian Funder Sommerlund (Zero3)", "Dutch localization by: Thomas Markus")
