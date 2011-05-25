@@ -32,6 +32,7 @@ InitTranslations()
 	AddLanguage("Dansk","LoadLanguage_da","0406")
 	AddLanguage("suomi","LoadLanguage_fi","040b")
 	AddLanguage("русский","LoadLanguage_ru","0419")
+	AddLanguage("Nederlands","LoadLanguage_nl","0413+0813+0013")						; Netherlands Dutch, Belgian Dutch, and generic Dutch
 
 	LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
 }
