@@ -100,7 +100,7 @@ If (!ErrorLevel && _FFVersion <> "")
 {
 	StringSplit, _FFVersionNum, _FFVersion, %A_Space%	; Strip language suffix from version string (example: "3.6 (en-GB)")
 
-	If (_FFVersionNum1 >= 3.6)				; Private browsing supported since version 3.6
+	If (_FFVersionNum1 >= 3.6.19)				; Private browsing supported since version 3.6, but 3.6.18 and earlier do bad things, specifically dumping all tabs without saving them
 	{
 		RegRead, _FFPath, HKEY_LOCAL_MACHINE, Software\Mozilla\Mozilla Firefox\%_FFVersion%\Main, PathToExe
 
