@@ -17,7 +17,7 @@ Trans_Add("requires administrator privileges to manage the Freenet service. Plea
 ; Installer - Common
 Trans_Add("Freenet Installer error", "B³¹d instalatora Freenet")
 Trans_Add("Freenet Installer", "Instalator Freenet")
-Trans_Add("Welcome to the Freenet Installer!", "Witaj w instalatorze programy Freenet!")
+Trans_Add("Welcome to the Freenet Installer!", "Witaj w instalatorze programu Freenet!")
 Trans_Add("Installation Problem", "B³¹d podczas instalacji")
 Trans_Add("E&xit", "&Wyjœcie")
 
