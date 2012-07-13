@@ -14,6 +14,7 @@
 #Include ..\src_translationhelper\Include_Lang_da.inc								; Include Danish (da) translation
 #Include ..\src_translationhelper\Include_Lang_fi.inc								; Include Finnish (fi) translation
 #Include ..\src_translationhelper\Include_Lang_ru.inc								; Include Russian (ru) translation
+#Include ..\src_translationhelper\Include_Lang_pl.inc								; Include Polish (pl) translation
 
 InitTranslations()
 {
@@ -31,6 +32,7 @@ InitTranslations()
 	AddLanguage("Dansk","LoadLanguage_da","0406")
 	AddLanguage("suomi","LoadLanguage_fi","040b")
 	AddLanguage("русский","LoadLanguage_ru","0419")
+	AddLanguage("polszczyzna","LoadLanguage_pl","0415")
 
 	LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
 }
