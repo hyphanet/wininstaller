@@ -32,7 +32,7 @@ InitTranslations()
 	AddLanguage("Dansk","LoadLanguage_da","0406")
 	AddLanguage("suomi","LoadLanguage_fi","040b")
 	AddLanguage("русский","LoadLanguage_ru","0419")
-	AddLanguage("polszczyzna","LoadLanguage_pl","0415")
+	AddLanguage("polski","LoadLanguage_pl","0415")
 
 	LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
 }
