@@ -34,7 +34,7 @@ InitTranslations()
 	AddLanguage("suomi","LoadLanguage_fi","040b")
 	AddLanguage("русский","LoadLanguage_ru","0419")
 	AddLanguage("Nederlands","LoadLanguage_nl","0413+0813+0013")						; Netherlands Dutch, Belgian Dutch, and generic Dutch
-	AddLanguage("Português brasileiro", "LoadLanguage_pt-br", "0416")					; Brazilian Portuguese, FIXME CHECK THE LOCALISED NAME!
+	AddLanguage("Português brasileiro", "LoadLanguage_pt_br", "0416")					; Brazilian Portuguese, FIXME CHECK THE LOCALISED NAME!
 
 	LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
 }
