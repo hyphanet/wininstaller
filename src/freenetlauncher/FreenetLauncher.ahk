@@ -76,7 +76,7 @@ While (TestPortAvailability(_Port1))
 ;
 ; Try browser: Google Chrome in incognito mode (Tested versions: 1.0.154)
 ;
-; Note: Google Chrome suffers from a bug that causes launching with the incognito option to open a new window without incognito in some cases. See http://code.google.com/p/chromium/issues/detail?id=9636 or our bug 3376.
+; Note: Older versions of Google Chrome suffer from a bug that causes launching with the incognito option to open a new window without incognito in some cases. See http://code.google.com/p/chromium/issues/detail?id=9636 or our bug 3376.
 ;
 RegRead, _ChromeInstallDir, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome, InstallLocation
 
