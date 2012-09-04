@@ -64,11 +64,16 @@ LoadLanguage_pt_br()
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "Opções Adicionais")
 	Trans_Add("Start Freenet &Tray Manager on Windows startup", "Iniciar Freenet & Gerenciador de Tarefas no início do Windows")
+	Trans_Add("Start Freenet on Windows startup", "Iniciar a Freenet juntamente com o Windows")
 	Trans_Add("(Recommended)", "Recomendado")
 	Trans_Add("Install &start menu shortcuts", "Criar atalhos no &Menu &Iniciar")
 	Trans_Add("(Optional)", "Opcional")
 	Trans_Add("Install &desktop shortcut", "Criar atalho na &Área de &Trabalho")
 	Trans_Add("Launch Freenet &after the installation", "Executar Freenet &após a instalação")
+
+	; Running Freenet box
+	Trans_Add("Running Freenet", "Rodando a Freenet")
+	Trans_Add("When running, Freenet will use a moderate amount of system resources in order to take part in the Freenet peer-to-peer network. This amount can be adjusted after the installation.", "Quando em execução, a Freenet vai usar uma quantia moderada de recursos do sistema de modo a fazer parte da rede ponto-a-ponto Freenet. Esta quantia poderá ser ajustada após a instalação.")
 
 	; Installer - Main GUI - Footer
 	Trans_Add("Version ", "Versão")
