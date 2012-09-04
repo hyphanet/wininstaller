@@ -57,7 +57,7 @@ LoadLanguage_es()
 
 	; Installer - Main GUI - System service
 	Trans_Add("System service", "Servicio del sistema")
-	Trans_Add("Freenet will automatically start in the background as a system service. This is required to be a part of the Freenet network, and will use a small amount of system resources. The amount of resources used can be adjusted after installation.", "Freenet iniciara automaticamente como servicio del sistema. Esto usara una pequeña parte de los recursos del sistema. La cantidad de estos recursos puede ajustarse al finalizar la instalacion.")
+	Trans_Add("Freenet will automatically start in the background as a system service. This is required to be a part of the Freenet network, and will use a small amount of system resources. The amount of resources used can be adjusted after installation.", "Freenet iniciara automaticamente como servicio del sistema. Esto usara una pequeÃ±a parte de los recursos del sistema. La cantidad de estos recursos puede ajustarse al finalizar la instalacion.")
 
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "Configuraciones adicionales")
