@@ -6,14 +6,14 @@
 ; Enjoy the translation =D
 ; -------------------------  End -------------------------------------
 
-LoadLanguage_pt_br()
+LoadLanguage_pt-br()
 {
 	; Translation credit string. Remember to change language and name to your own in the translated string (not in the english one). Don't add personal comments or website links here - add those to the header of this file instead if you want.
 	Trans_Add("English localization by: Christian Funder Sommerlund (Zero3)", "Tradução para Português do Brasil por: Fernando Paladini")
 
 	; Shared strings (Installer, Uninstaller)
-	Trans_Add("was not able to unpack necessary files to:", "não é possível descompactar arquivos necessários para:")
-	Trans_Add("Please make sure that this program has full access to the system's temporary files folder.", "Por favor tenha certeza que este programa tem TOTAL ACESSO às pastas temporárias do sistema.")
+	Trans_Add("was not able to unpack necessary files to:", "não foi possível descompactar os arquivos necessários para:")
+	Trans_Add("Please make sure that this program has full access to the system's temporary files folder.", "Por favor tenha certeza que este programa tem TOTAL ACESSO �s pastas tempor�rias do sistema.")
 
 	; Shared strings (Installer, Uninstaller, Service starter, Service stopper)
 	Trans_Add("requires administrator privileges to manage the Freenet service. Please make sure that your user account has administrative access to the system, and this program is executed with access to use these privileges.", "é necessário privilégios de administrador para gerenciar os serviços do Freenet. Por favor, verifique se essa conta tem privilégios de administrador, e se este programa esta sendo executado de modo a permitir que ele use esses privilégios.")
@@ -32,7 +32,7 @@ LoadLanguage_pt_br()
 	; Installer - Java missing
 	Trans_Add("Freenet requires the Java Runtime Environment, but your system does not appear to have an up-to-date version installed. You can install Java by using the included online installer, which will download and install the necessary files from the Java website automatically:", "Freenet precisa do Java Runtime Environment para funcionar, mas seu sistema não aparenta ter uma versão atualizada instalada. Você pode instalar o Java usando o instalador online, que irá baixar e instalar a versão mais recente do Java.")
 	Trans_Add("&Install Java", "&Instalar Java")
-	Trans_Add("The installation will continue once Java version", "A instalação continuará quando a versão Java")
+	Trans_Add("The installation will continue once Java version", "A instalação vai continuar quando a versão Java")
 	Trans_Add("or later has been installed.", "ou mais nova for instalada.")
 
 	; Installer - Old installation detected
@@ -41,7 +41,7 @@ LoadLanguage_pt_br()
 	Trans_Add("The installation will continue once the old installation has been removed.", "&A instalação continuará somente quando a velha instalação for deletada.")
 
 	; Installer - Main GUI - Header
-	Trans_Add("Please check the following default settings before continuing with the installation of Freenet.", "Por favor, veja as seguintes configurações padrões antes de continuar com a instalação do Freenet.")
+	Trans_Add("Please check the following default settings before continuing with the installation of Freenet.", "Por favor, veja as seguintes configurações padrões antes de continuar com a instalação da Freenet.")
 
 	; Installer - Main GUI - Install folder
 	Trans_Add("Installation directory", "Diretório da Instalação")
@@ -50,10 +50,10 @@ LoadLanguage_pt_br()
 	Trans_Add("Freenet requires the installation drive to have at least", "A instalação da Freenet no computador requer no mínimo")
 	Trans_Add("MB free disk space. The actual amount of space reserved to Freenet will be configured after the installation.", "MB de espaço em disco livre. A quantidade atual de espaço reservada para a Freenet será configurada depois da instalação.")
 	Trans_Add("Status:", "Status")
-	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "Se você não escolher uma pasta contendo 'Freenet' no diretório, uma pasta será criada automaticamente para você.")
+	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "Se você não escolher uma pasta contendo "Freenet" no diretório, uma pasta será criada automaticamente para você.")
 	Trans_Add("Invalid install path!", "Diretório de instalação inválido!")
 	Trans_Add("(Too long for file system to handle)", "Arquivo do sistema muito longo para manipular")
-	Trans_Add("Not enough free space on installation drive!", "Não há espaço livre no Disco Local que a Freenet está sendo instalada.")
+	Trans_Add("Not enough free space on installation drive!", "Não há espaço livre no Disco Local em que a Freenet está sendo instalada.")
 	Trans_Add("Freenet already installed! Please uninstall first or choose another directory!", "Freenet já está instalada! Por favor unistale a Freenet ou escolha um outro diretório primeiro.")
 	Trans_Add("Installation directory OK!", "Diretório da Instalação - Ok!")	
 
@@ -64,16 +64,11 @@ LoadLanguage_pt_br()
 	; Installer - Main GUI - Additional settings
 	Trans_Add("Additional settings", "Opções Adicionais")
 	Trans_Add("Start Freenet &Tray Manager on Windows startup", "Iniciar Freenet & Gerenciador de Tarefas no início do Windows")
-	Trans_Add("Start Freenet on Windows startup", "Iniciar a Freenet juntamente com o Windows")
 	Trans_Add("(Recommended)", "Recomendado")
 	Trans_Add("Install &start menu shortcuts", "Criar atalhos no &Menu &Iniciar")
 	Trans_Add("(Optional)", "Opcional")
 	Trans_Add("Install &desktop shortcut", "Criar atalho na &Área de &Trabalho")
 	Trans_Add("Launch Freenet &after the installation", "Executar Freenet &após a instalação")
-
-	; Running Freenet box
-	Trans_Add("Running Freenet", "Rodando a Freenet")
-	Trans_Add("When running, Freenet will use a moderate amount of system resources in order to take part in the Freenet peer-to-peer network. This amount can be adjusted after the installation.", "Quando em execução, a Freenet vai usar uma quantia moderada de recursos do sistema de modo a fazer parte da rede ponto-a-ponto Freenet. Esta quantia poderá ser ajustada após a instalação.")
 
 	; Installer - Main GUI - Footer
 	Trans_Add("Version ", "Versão")
@@ -92,7 +87,7 @@ LoadLanguage_pt_br()
 	Trans_Add("was not able to find a free port on your system in the range", "não é capaz de procurar uma porta livre no seu sistema.")
 	Trans_Add("Please free a system port in this range to install Freenet.", "Por favor, libere uma porta do sistema nessa 'série' para instalar a Freenet.")
 	Trans_Add("was not able to create a Winsock 2.0 socket for port availability testing.", "não é capaz de criar um socket Winsock 2.0 para tester a disponibilidade das portas.")
-	Trans_Add("was not able to write to the selected installation directory. Please select one to which you have write access.", "não é possível gravar no diretório de instalação selecionado. Por favor, seleciona outro diretório em que a Freenet possa ser instalada.")
+	Trans_Add("was not able to write to the selected installation directory. Please select one to which you have write access.", "não é possível gravar no diretório de instalaçao selecionado. Por favor, seleciona outro diretório em que a Freenet possa ser instalada.")
 	Trans_Add("Error: ", "Erro:")
 
 	; Shared strings (Uninstaller, Service starter, Service stopper)
@@ -105,7 +100,7 @@ LoadLanguage_pt_br()
 	; Uninstaller
 	Trans_Add("Freenet uninstaller", "Desinstalador do Freenet")
 	Trans_Add("was unable to recognize your Freenet installation at:", "foi incapaz de reconhecer a instalação do Freenet em:")
-	Trans_Add("Please run this program from the 'bin' folder of a Freenet installation.", "Por favor, rode esse programa da pasta 'bin' que está onde a Freenet foi instalada.")
+	Trans_Add("Please run this program from the 'bin' folder of a Freenet installation.", "Por favor, rode esse programa da pasta 'bin' que estão onde a Freenet foi instalada.")
 	Trans_Add("Do you really want to uninstall Freenet?", "Você realmente deseja desinstalar a Freenet?")
 	Trans_Add("Stopping system service...", "Parando serviços do sistema...")
 	Trans_Add("Shutting down tray managers...", "Desligando gerenciadores de tarefas...")
@@ -155,7 +150,7 @@ LoadLanguage_pt_br()
 	Trans_Add("Service was not running", "Serviço não está sendo executado")
 	Trans_Add("Freenet Stopper", "Parador da Freenet")
 	Trans_Add("The Freenet service is stopping...", "O serviço Freenet está parando...")
-	Trans_Add("The Freenet service has been stopped!", "O serviço Freenet foi parado!")
+	Trans_Add("The Freenet service has been stopped!", "O servço Freenet foi parado!")
 	Trans_Add("The Freenet service is already stopped!", "O serviço Freenet já foi parado!")
 	Trans_Add("Freenet Stopper error", "Erro no 'Parador da Freenet' ")
 
@@ -168,11 +163,11 @@ LoadLanguage_pt_br()
 	Trans_Add("View logfile", "Ver logfile")
 	Trans_Add("About", "Sobre")
 	Trans_Add("Exit", "Sair")
-	Trans_Add("You can browse, start and stop Freenet along with other useful things from this tray icon.", "Você pode buscar, iniciar e parar a Freenet por esse ícone que está na bandeja do sistema.")
+	Trans_Add("You can browse, start and stop Freenet along with other useful things from this tray icon.", "Voccê pode buscar, iniciar e parar a Freenet por esse ícone que está na bandeja do sistema.")
 	Trans_Add("Left-click: Start/Browse Freenet", "Botão esquerdo do mouse: Iniciar/Buscar Freenet")
 	Trans_Add("Right-click: Advanced menu", "Botão direito do mouse: Menu avançado")
 	Trans_Add("Warning: Using the manual update check will update Freenet and its helper tools from the official Freenet website.", "Aviso: Usando a atualização manual irá atualizar a Freenet e suas ferramentas de ajuda direto do site oficial da Freenet.")
-	Trans_Add("Freenet already has a secure built-in autoupdate feature that will keep itself up-to-date automatically.", "Freenet já está em um modo de auto-atualização e isto irá atualizá-la automaticamente quando necessário.")
+	Trans_Add("Freenet already has a secure built-in autoupdate feature that will keep itself up-to-date automatically.", "Freenet já está em um modo de auto-atualização, isto irá atualizá-la automaticamente quando necessário.")
 	Trans_Add("You should only use this manual update check if your installation is broken or you need updated versions of the helper tools.", "Você deve apenas utilizar esta atualização manual se sua instalação estiver com problemas ou precisar de atualizações das ferramentas de ajuda.")
 	Trans_Add("Freenet Windows Tray Manager", "Gerenciador do 'System Tray' do Windows")
 }
