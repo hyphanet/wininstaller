@@ -32,9 +32,14 @@ FileInstall, ..\..\res\install_node\plugins\ThawIndexBrowser.jar,	%_InstallDir%\
 FileInstall, ..\..\res\install_node\plugins\UPnP.jar,			%_InstallDir%\plugins\UPnP.jar
 FileInstall, ..\..\res\install_node\plugins\Library.jar,		%_InstallDir%\plugins\Library.jar
 FileCreateDir,								%_InstallDir%\wrapper
-FileInstall, ..\..\res\install_node\wrapper\freenetwrapper.exe,		%_InstallDir%\wrapper\freenetwrapper.exe
+if(!Is64Bit()) {
+	FileInstall, ..\..\res\install_node\wrapper\freenetwrapper.exe,		   %_InstallDir%\wrapper\freenetwrapper.exe
+	FileInstall, ..\..\res\install_node\wrapper\wrapper-windows-x86-32.dll,    %_InstallDir%\wrapper\wrapper-windows-x86-32.dll
+} else {
+	FileInstall, ..\..\res\install_node\wrapper\freenetwrapper-64.exe,         %_InstallDir%\wrapper\freenetwrapper.exe
+	FileInstall, ..\..\res\install_node\wrapper\wrapper-windows-x86-64.dll,    %_InstallDir%\wrapper\wrapper-windows-x86-64.dll
+}
 FileInstall, ..\..\res\install_node\wrapper\wrapper.conf,		%_InstallDir%\wrapper\wrapper.conf
-FileInstall, ..\..\res\install_node\wrapper\wrapper-windows-x86-32.dll,	%_InstallDir%\wrapper\wrapper-windows-x86-32.dll
 FileCreateDir,								%_InstallDir%\updater
 FileInstall, ..\..\res\install_node\updater\update.cmd,		%_InstallDir%\update.cmd
 FileInstall, ..\..\res\install_node\updater\sha1test.jar,		%_InstallDir%\updater\sha1test.jar
