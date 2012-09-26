@@ -186,6 +186,11 @@ If (CheckForOldUninstaller())
 ; Text: Install guideline header
 ;
 Gui, Add, Text, xs W%_GuiWidth2% Section, % Trans("Please check the following default settings before continuing with the installation of Freenet.")
+If(Is64Bit()) {
+	Gui, Add, Text, xs W%_GuiWidth2% Section, "64-bit Windows detected"
+} else {
+	Gui, Add, Text, xs W%_GuiWidth2% Section, "32-bit Windows detected"
+}
 
 ;
 ; Groupbox: Install directory
