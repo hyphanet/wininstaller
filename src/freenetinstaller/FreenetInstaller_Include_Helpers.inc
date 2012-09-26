@@ -457,3 +457,29 @@ CalcNodeMaxMem(_TotalMemory)
 
 	return _MaxMem
 }
+
+Is64Bit() {
+	if(IsWoW64()) {
+		return 1
+	}
+	If(A_PtrSize = 8) {
+		return 1
+	}
+	if(InStr(A_ProgramFiles, "x86") > 0) {
+		return 1
+	}
+	if(InStr(ProgramFiles, "x86") > 0) {
+		return 1
+	}
+	return 0
+}
+
+IsWoW64() {
+	ThisProcess := DllCall("GetCurrentProcess") 
+	; If IsWow64Process() fails or can not be found, assume this process is not running under wow64. 
+	; Otherwise, use the value returned in IsWow64Process. 
+	if !DllCall("IsWow64Process", "uint", ThisProcess, "int*", IsWow64Process) {
+		IsWow64Process := 0 ; I don't understand why they had := 1 here???
+	}
+	return IsWow64Process
+}
