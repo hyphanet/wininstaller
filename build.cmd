@@ -7,8 +7,9 @@
 ::
 :: The following files are not packed and need to be manually added before compiling:
 ::
-:: - res\tool_ahk\Ahk2Exe.exe (AutoHotkey compiler - http://www.autohotkey.com/)
-:: - res\tool_ahk\AutoHotkeySC.bin (AHK library, comes with AutoHotkey compiler)
+:: - res\tool_ahk\Ahk2Exe.exe (AutoHotkey_L compiler - http://l.autohotkey.net/)
+:: - res\tool_ahk\AutoHotkeySC.bin (AHKL library, comes with AutoHotkey_L compiler)
+:: - res\tool_ahk\Unicode 32-bit.bin (AHKL library, comes with AutoHotkey_L compiler)
 ::
 :: - res\install_node\freenet.jar (Freenet jar)
 :: - res\install_node\freenet-ext.jar (Freenet jar)
@@ -42,6 +43,7 @@ echo + Copying files into bin folder...
 
 copy ..\res\tool_ahk\Ahk2Exe.exe Ahk2Exe.exe
 copy ..\res\tool_ahk\AutoHotkeySC.bin AutoHotkeySC.bin
+copy "..\res\tool_ahk\Unicode 32-bit.bin" "Unicode 32-bit.bin"
 
 copy ..\res\tool_reshacker\ResHacker.exe ResHacker.exe
 copy ..\res\tool_reshacker\ResHack_Resource_Icon_Freenet.ico ResHack_Resource_Icon_Freenet.ico
@@ -76,6 +78,7 @@ echo +++++
 echo + Cleaning up...
 del Ahk2Exe.exe
 del AutoHotkeySC.bin
+del "Unicode 32-bit.bin"
 del ResHacker.exe
 del ResHacker.ini
 del ResHack_Log_Normal.txt
