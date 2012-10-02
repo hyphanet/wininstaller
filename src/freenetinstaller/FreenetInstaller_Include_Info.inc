@@ -10,4 +10,4 @@
 ;
 
 _Inc_FreenetVersion = 0.7.5
-_Inc_FreenetBuild = #1260
+_Inc_FreenetBuild = #1417
