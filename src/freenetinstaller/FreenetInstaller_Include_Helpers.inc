@@ -60,7 +60,8 @@ return
 ;
 CheckJavaVersion()
 {
-	global
+	global _RequiredJRE
+
 
 	RegRead, _JavaVersion, HKEY_LOCAL_MACHINE, SOFTWARE\JavaSoft\Java Runtime Environment, CurrentVersion
 
