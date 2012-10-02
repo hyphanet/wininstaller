@@ -1,4 +1,4 @@
-;
+﻿;
 ; Translation file - Spanish (es) - by Caco_Patane (cacopatane that-a-thingy gmail that-dot-thingy com)
 ;
 
