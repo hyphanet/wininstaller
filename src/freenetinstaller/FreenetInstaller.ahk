@@ -104,7 +104,7 @@ Gui, Add, DropDownList, xp+%_Listx% yp+%_Listy% W%_LanguageListWidth% Choose%_La
 ;
 ; Check for unsupported Windows version
 ;
-If A_OSVersion not in WIN_XP,WIN_2003,WIN_VISTA ; Windows 7 is included in WIN_VISTA
+If A_OSVersion not in WIN_XP,WIN_2003,WIN_VISTA,WIN_7
 {
 	;
 	; Groupbox: Installation problem (OS requirement not met)
