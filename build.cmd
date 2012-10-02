@@ -57,9 +57,6 @@ echo + Patching AHK library...
 
 ResHacker.exe -script ResHack_Script_Normal.txt
 
-del AutoHotkeySC.bin
-move /Y AutoHotkeySC_Normal.bin AutoHotkeySC.bin
-
 ::
 :: Compile non-elevated executables
 ::
