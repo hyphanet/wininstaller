@@ -6,7 +6,7 @@
 ; Enjoy the translation =D
 ; -------------------------  End -------------------------------------
 
-LoadLanguage_pt_br()
+LoadLanguage_pt-br()
 {
 	; Translation credit string. Remember to change language and name to your own in the translated string (not in the english one). Don't add personal comments or website links here - add those to the header of this file instead if you want.
 	Trans_Add("English localization by: Christian Funder Sommerlund (Zero3)", "Tradução para Português do Brasil por: Fernando Paladini")
@@ -50,7 +50,7 @@ LoadLanguage_pt_br()
 	Trans_Add("Freenet requires the installation drive to have at least", "A instalação da Freenet no computador requer no mínimo")
 	Trans_Add("MB free disk space. The actual amount of space reserved to Freenet will be configured after the installation.", "MB de espaço em disco livre. A quantidade atual de espaço reservada para a Freenet será configurada depois da instalação.")
 	Trans_Add("Status:", "Status")
-	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "Se você não escolher uma pasta contendo 'Freenet' no diretório, uma pasta será criada automaticamente para você.")
+	Trans_Add("If you do not choose a folder containing 'Freenet' in the path, a folder will be created for you automatically.", "Se você não escolher uma pasta contendo "Freenet" no diretório, uma pasta será criada automaticamente para você.")
 	Trans_Add("Invalid install path!", "Diretório de instalação inválido!")
 	Trans_Add("(Too long for file system to handle)", "Arquivo do sistema muito longo para manipular")
 	Trans_Add("Not enough free space on installation drive!", "Não há espaço livre no Disco Local em que a Freenet está sendo instalada.")
