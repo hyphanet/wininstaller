@@ -1,4 +1,4 @@
-;
+﻿;
 ; Freenet Windows Installer - Include file - File installs
 ;
 ; This file contains the raw installation commands for the node files, and will be included directly

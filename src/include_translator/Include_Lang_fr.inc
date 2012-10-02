@@ -1,4 +1,4 @@
-;
+﻿;
 ; Translation file - French (fr) - by Romain Dalmaso (artefact2 that-a-thingy gmail that-dot-thingy com)
 ;
 

@@ -1,4 +1,4 @@
-;
+﻿;
 ; Windows Freenet Installer - Include file - Helpers
 ;
 ; This file contains helpers (functions) used throughout the installer. Placed here to not clutter
