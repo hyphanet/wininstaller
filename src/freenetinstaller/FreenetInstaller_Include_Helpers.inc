@@ -62,8 +62,17 @@ CheckJavaVersion()
 {
 	global _RequiredJRE
 
+	SoftwareSubkey := ""
 
+	; Attempt to read key for native word size JVM.
 	RegRead, _JavaVersion, HKEY_LOCAL_MACHINE, SOFTWARE\JavaSoft\Java Runtime Environment, CurrentVersion
+
+	If (ErrorLevel)
+	{
+		; Attempt to read key for a 32-bit JVM on a 64-bit OS.
+		SoftwareSubkey := "Wow6432Node\"
+		RegRead, _JavaVersion, HKEY_LOCAL_MACHINE, SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment, CurrentVersion
+	}
 
 	If (ErrorLevel || _JavaVersion < _RequiredJRE)
 	{
@@ -71,7 +80,7 @@ CheckJavaVersion()
 	}
 	else
 	{
-		RegRead, _JavaLib, HKEY_LOCAL_MACHINE, SOFTWARE\JavaSoft\Java Runtime Environment\%_JavaVersion%, RuntimeLib
+		RegRead, _JavaLib, HKEY_LOCAL_MACHINE, SOFTWARE\%SoftwareSubkey%JavaSoft\Java Runtime Environment\%_JavaVersion%, RuntimeLib
 
 		If (ErrorLevel || !FileExist(_JavaLib))
 		{
