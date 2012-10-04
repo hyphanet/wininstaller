@@ -2,7 +2,7 @@
 ::
 :: This script will build the Freenet Windows Installer.
 ::
-:: To build from a Windows command promt: "build.cmd"
+:: To build from a Windows command prompt: "build.cmd"
 :: To build from a linux terminal: "wine cmd /c build.cmd"
 ::
 :: The following files are not packed and need to be manually added before compiling:
@@ -20,7 +20,7 @@
 :: - res\install_node\plugins\UPnP.jar (Freenet plugin jar)
 :: - res\install_node\plugins\Library.jar (Freenet plugin jar)
 ::
-:: Remember to update src\install_node\FreenetInstaller_Include_Info.inc with the latest version information.
+:: Remember to update src\freenetinstaller\FreenetInstaller_Include_Info.inc with the latest version information.
 
 ::
 :: Cleanup and prepare
