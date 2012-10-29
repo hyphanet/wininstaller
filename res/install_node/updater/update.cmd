@@ -198,6 +198,17 @@ GOTO veryend
 ECHO    - Update script is current.
 ECHO -----
 
+:: Check for dependencies.
+:: Check for bcprov-jdk15on-147.jar
+:: Necessary to run 1422 and later.
+
+IF NOT EXIST bcprov-jdk15on-147.jar updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://downloads.freenetproject.org/alpha/deps/bcprov-jdk15on-147.jar -O bcprov-jdk15on-147.jar
+
+FIND "bcprov-jdk15on-147.jar" %WRAPPER% > NUL
+IF ERRORLEVEL 1 GOTO newwrapper
+
+:checkeddeps
+
 FIND "freenet.jar" %WRAPPER% > NUL
 IF ERRORLEVEL 1 GOTO error5
 
