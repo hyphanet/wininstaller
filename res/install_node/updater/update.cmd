@@ -207,7 +207,7 @@ IF NOT EXIST bcprov-jdk15on-147.jar updater\wget.exe -o NUL --timeout=5 --tries=
 FIND "bcprov-jdk15on-147.jar" %WRAPPER% > NUL
 IF NOT ERRORLEVEL 1 GOTO checkeddeps
 :: We can simply append to wrapper.conf, no need to clobber it.
-ECHO "wrapper.java.classpath.3=bcprov-jdk15on-147.jar" >> %WRAPPER%
+ECHO wrapper.java.classpath.3=bcprov-jdk15on-147.jar >> %WRAPPER%
 
 :checkeddeps
 
