@@ -23,6 +23,8 @@
 ::
 :: Remember to update src\freenetinstaller\FreenetInstaller_Include_Info.inc with the latest version information.
 
+:: If running under Wine, you should install the relevant wine-gecko MSI file where wine expects to find it.
+
 ::
 :: Cleanup and prepare
 ::
@@ -66,9 +68,13 @@ echo + Compiling executables...
 echo +++++
 
 Ahk2Exe.exe /in "..\src\freenetlauncher\FreenetLauncher.ahk" /out "..\res\install_node\freenetlauncher.exe"
+echo Compiled freenetlauncher.exe
 Ahk2Exe.exe /in "..\src\freenettray\FreenetTray.ahk" /out "..\res\install_node\freenet.exe"
+echo Compiled freenet.exe
 Ahk2Exe.exe /in "..\src\freenetuninstaller\FreenetUninstaller.ahk" /out "..\res\install_node\freenetuninstaller.exe"
+echo Compiled freenetuninstaller.exe
 Ahk2Exe.exe /in "..\src\freenetinstaller\FreenetInstaller.ahk" /out "FreenetInstaller.exe"
+echo Compiled FreenetInstaller.exe
 
 ::
 :: Cleanup and delete files we copied into the source and move compiled .exe's to the bin folder in case we need them for something else.
