@@ -196,6 +196,7 @@ TestPortAvailability(_Port)
 	SOCK_STREAM = 1
 	IPPROTO_TCP = 6
 
+	; Create an IPv4 TCP stream socket.
 	_Socket := DllCall("Ws2_32\socket", "Int", AF_INET, "Int", SOCK_STREAM, "Int", IPPROTO_TCP)
 	if (_Socket = -1)
 	{
