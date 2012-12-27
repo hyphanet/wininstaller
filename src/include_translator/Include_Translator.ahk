@@ -16,6 +16,7 @@
 #Include ..\include_translator\Include_Lang_ru.inc								; Include Russian (ru) translation
 #Include ..\include_translator\Include_Lang_nl.inc								; Include Dutch (nl) translation
 #Include ..\include_translator\Include_Lang_pt-br.inc								; Include Brazilian Portuguese (pt-br) translation
+#Include ..\include_translator\Include_Lang_ja.inc								; Include Japanese (ja) translation
 
 InitTranslations()
 {
