@@ -1,4 +1,4 @@
-;
+﻿;
 ; Translation file - Finnish (fi) - by Samu Voutilainen (http://smar.fi)
 ;
 

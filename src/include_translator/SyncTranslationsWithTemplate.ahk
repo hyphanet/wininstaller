@@ -1,4 +1,4 @@
-;
+﻿;
 ; Freenet Windows Installer translation file synchronizer
 ;
 ; This script should be run every time the translation template has been updated. It will basically create new translation files
