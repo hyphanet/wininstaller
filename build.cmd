@@ -47,31 +47,19 @@ echo + Copying files into bin folder...
 copy ..\res\tool_ahk\Ahk2Exe.exe Ahk2Exe.exe
 copy "..\res\tool_ahk\Unicode 32-bit.bin" "Unicode 32-bit.bin"
 
-copy ..\res\tool_reshacker\ResHacker.exe ResHacker.exe
-copy ..\res\tool_reshacker\ResHack_Resource_Icon_Freenet.ico ResHack_Resource_Icon_Freenet.ico
-copy ..\res\tool_reshacker\ResHack_Resource_Manifest.txt ResHack_Resource_Manifest.txt
-copy ..\res\tool_reshacker\ResHack_Script_Normal.txt ResHack_Script_Normal.txt
-
-::
-:: Patch AHK library
-::
-echo + Patching AHK library...
-
-ResHacker.exe -script ResHack_Script_Normal.txt
-
 ::
 :: Compile non-elevated executables
 ::
 echo + Compiling executables...
 echo +++++
 
-Ahk2Exe.exe /in "..\src\freenetlauncher\FreenetLauncher.ahk" /out "..\res\install_node\freenetlauncher.exe" /bin "Unicode 32-bit.bin"
+Ahk2Exe.exe /in "..\src\freenetlauncher\FreenetLauncher.ahk" /out "..\res\install_node\freenetlauncher.exe" /bin "Unicode 32-bit.bin" /icon "..\res\install_node\freenet.ico"
 echo Compiled freenetlauncher.exe
-Ahk2Exe.exe /in "..\src\freenettray\FreenetTray.ahk" /out "..\res\install_node\freenet.exe" /bin "Unicode 32-bit.bin"
+Ahk2Exe.exe /in "..\src\freenettray\FreenetTray.ahk" /out "..\res\install_node\freenet.exe" /bin "Unicode 32-bit.bin" /icon "..\res\install_node\freenet.ico"
 echo Compiled freenet.exe
-Ahk2Exe.exe /in "..\src\freenetuninstaller\FreenetUninstaller.ahk" /out "..\res\install_node\freenetuninstaller.exe" /bin "Unicode 32-bit.bin"
+Ahk2Exe.exe /in "..\src\freenetuninstaller\FreenetUninstaller.ahk" /out "..\res\install_node\freenetuninstaller.exe" /bin "Unicode 32-bit.bin" /icon "..\res\install_node\freenet.ico"
 echo Compiled freenetuninstaller.exe
-Ahk2Exe.exe /in "..\src\freenetinstaller\FreenetInstaller.ahk" /out "FreenetInstaller.exe" /bin "Unicode 32-bit.bin"
+Ahk2Exe.exe /in "..\src\freenetinstaller\FreenetInstaller.ahk" /out "FreenetInstaller.exe" /bin "Unicode 32-bit.bin" /icon "..\res\install_node\freenet.ico"
 echo Compiled FreenetInstaller.exe
 
 ::
@@ -81,12 +69,6 @@ echo +++++
 echo + Cleaning up...
 del Ahk2Exe.exe
 del "Unicode 32-bit.bin"
-del ResHacker.exe
-del ResHacker.ini
-del ResHack_Log_Normal.txt
-del ResHack_Resource_Icon_Freenet.ico
-del ResHack_Resource_Manifest.txt
-del ResHack_Script_Normal.txt
 
 echo + Fetching executables into bin folder
 move ..\res\install_node\freenetlauncher.exe freenetlauncher.exe
