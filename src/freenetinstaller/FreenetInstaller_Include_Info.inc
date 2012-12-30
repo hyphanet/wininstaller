@@ -1,4 +1,4 @@
-;
+﻿;
 ; Windows Freenet Installer - Include file - Build info
 ;
 ; This file contains build info variables used for displaying info in the installer. These values should

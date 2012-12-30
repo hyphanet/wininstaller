@@ -1,4 +1,4 @@
-;
+﻿;
 ; Windows Freenet Launcher by Zero3 (zero3 that-a-thingy zero3 that-dot-thingy dk) - http://freenetproject.org/
 ;
 
@@ -196,6 +196,7 @@ TestPortAvailability(_Port)
 	SOCK_STREAM = 1
 	IPPROTO_TCP = 6
 
+	; Create an IPv4 TCP stream socket.
 	_Socket := DllCall("Ws2_32\socket", "Int", AF_INET, "Int", SOCK_STREAM, "Int", IPPROTO_TCP)
 	if (_Socket = -1)
 	{
@@ -209,7 +210,7 @@ TestPortAvailability(_Port)
 	VarSetCapacity(SocketAddress, SizeOfSocketAddress)
 	InsertInteger(2, SocketAddress, 0, AF_INET)
 	InsertInteger(DllCall("Ws2_32\htons", "UShort", _Port), SocketAddress, 2, 2)
-	InsertInteger(DllCall("Ws2_32\inet_addr", "Str", "127.0.0.1"), SocketAddress, 4, 4)
+	InsertInteger(DllCall("Ws2_32\inet_addr", "AStr", "127.0.0.1"), SocketAddress, 4, 4)
 
 	If DllCall("Ws2_32\connect", "UInt", _Socket, "UInt", &SocketAddress, "Int", SizeOfSocketAddress)
 	{

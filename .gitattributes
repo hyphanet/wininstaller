@@ -1,0 +1,19 @@
+﻿# Handle everything automatically by default.
+* text=auto
+
+# These files are text - normalize their line endings.
+*.ahk eol=crlf
+*.cmd eol=crlf
+*.conf eol=crlf
+.gitattributes text
+.gitignore text
+*.inc eol=crlf
+*.pem text
+*.txt text
+
+# These files are binary - do not modify their line endings.
+*.dll binary
+*.exe binary
+*.ico binary
+*.jar binary
+*.png binary

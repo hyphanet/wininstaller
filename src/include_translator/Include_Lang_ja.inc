@@ -1,4 +1,4 @@
-; Windows Freenet Installer Japanese Translation by Emmanuel Goldstein <emmanuelgoldstein@eureka.freemail>
+﻿; Windows Freenet Installer Japanese Translation by Emmanuel Goldstein <emmanuelgoldstein@eureka.freemail>
 ; Updated: 2012-10-01
 
 LoadLanguage_ja()
