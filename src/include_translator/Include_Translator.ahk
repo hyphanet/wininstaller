@@ -17,6 +17,7 @@
 #Include ..\include_translator\Include_Lang_nl.inc								; Include Dutch (nl) translation
 #Include ..\include_translator\Include_Lang_pt-br.inc								; Include Brazilian Portuguese (pt-br) translation
 #Include ..\include_translator\Include_Lang_ja.inc								; Include Japanese (ja) translation
+#Include ..\src_translationhelper\Include_Lang_pl.inc								; Include Polish (pl) translation
 
 InitTranslations()
 {
@@ -36,6 +37,7 @@ InitTranslations()
 	AddLanguage("русский","LoadLanguage_ru","0419")
 	AddLanguage("Nederlands","LoadLanguage_nl","0413+0813+0013")						; Netherlands Dutch, Belgian Dutch, and generic Dutch
 	AddLanguage("Português brasileiro", "LoadLanguage_pt_br", "0416")					; Brazilian Portuguese, FIXME CHECK THE LOCALISED NAME!
+	AddLanguage("polski","LoadLanguage_pl","0415")
 
 	LoadLanguage(LanguageCodeToID(A_Language))								; Load language matching OS language (will fall back to English if no match)
 }
