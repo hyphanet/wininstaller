@@ -1,4 +1,4 @@
-;
+﻿;
 ; Windows Freenet Installer - Include file - Helpers
 ;
 ; This file contains helpers (functions) used throughout the installer. Placed here to not clutter
@@ -60,7 +60,8 @@ return
 ;
 CheckJavaVersion()
 {
-	global
+	global _RequiredJRE
+
 
 	RegRead, _JavaVersion, HKEY_LOCAL_MACHINE, SOFTWARE\JavaSoft\Java Runtime Environment, CurrentVersion
 
@@ -400,7 +401,7 @@ TestPortAvailability(_Port)
 	VarSetCapacity(SocketAddress, SizeOfSocketAddress)
 	InsertInteger(2, SocketAddress, 0, AF_INET)
 	InsertInteger(DllCall("Ws2_32\htons", "UShort", _Port), SocketAddress, 2, 2)
-	InsertInteger(DllCall("Ws2_32\inet_addr", "Str", "127.0.0.1"), SocketAddress, 4, 4)
+	InsertInteger(DllCall("Ws2_32\inet_addr", "AStr", "127.0.0.1"), SocketAddress, 4, 4)
 
 	If DllCall("Ws2_32\connect", "UInt", _Socket, "UInt", &SocketAddress, "Int", SizeOfSocketAddress)
 	{

@@ -1,4 +1,4 @@
-; ------------------------   Translator -------------------------
+﻿; ------------------------   Translator -------------------------
 ;Name: Fernando Paladini
 ;Website: www.techsempre.com
 ;E-mail: fernandopalad@gmail.com
