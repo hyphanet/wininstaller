@@ -1,4 +1,4 @@
-;
+﻿;
 ; Windows Freenet Installer by Zero3 (zero3 that-a-thingy zero3 that-dot-thingy dk) - http://freenetproject.org/
 ;
 ; Extra credits:
@@ -95,7 +95,7 @@ _LanguageList =
 
 Loop % _LangArray-1
 {
-	_LanguageList := _LanguageList UTF82Ansi(_LanguageNames%A_Index%) "|"
+	_LanguageList := _LanguageList _LanguageNames%A_Index% "|"
 }
 _Listx := _GuiWidth2-_LanguageListWidth
 _Listy := ((_TextHeight*3)/2)-(21/2)
@@ -104,7 +104,7 @@ Gui, Add, DropDownList, xp+%_Listx% yp+%_Listy% W%_LanguageListWidth% Choose%_La
 ;
 ; Check for unsupported Windows version
 ;
-If A_OSVersion not in WIN_XP,WIN_2003,WIN_VISTA ; Windows 7 is included in WIN_VISTA
+If A_OSVersion not in WIN_XP,WIN_2003,WIN_VISTA,WIN_7
 {
 	;
 	; Groupbox: Installation problem (OS requirement not met)
