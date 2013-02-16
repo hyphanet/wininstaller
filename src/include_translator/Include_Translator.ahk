@@ -17,7 +17,7 @@
 #Include ..\include_translator\Include_Lang_nl.inc								; Include Dutch (nl) translation
 #Include ..\include_translator\Include_Lang_pt-br.inc								; Include Brazilian Portuguese (pt-br) translation
 #Include ..\include_translator\Include_Lang_ja.inc								; Include Japanese (ja) translation
-#Include ..\src_translationhelper\Include_Lang_pl.inc								; Include Polish (pl) translation
+#Include ..\include_translator\Include_Lang_pl.inc								; Include Polish (pl) translation
 
 InitTranslations()
 {
