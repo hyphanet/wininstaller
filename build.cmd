@@ -98,3 +98,5 @@ move ..\res\install_node\freenetuninstaller.exe freenetuninstaller.exe
 echo +++++
 echo + All done! Hopefully no errors above...
 echo +++++
+
+cd ..
