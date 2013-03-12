@@ -1,3 +1,4 @@
+﻿
 ;
 ; Translation helper
 ;

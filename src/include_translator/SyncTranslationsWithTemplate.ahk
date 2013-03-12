@@ -1,3 +1,4 @@
+﻿
 ;
 ; Freenet Windows Installer translation file synchronizer
 ;

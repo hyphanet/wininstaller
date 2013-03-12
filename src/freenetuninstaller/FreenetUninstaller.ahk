@@ -1,3 +1,4 @@
+﻿
 ;
 ; Windows Freenet Uninstaller by Zero3 (zero3 that-a-thingy zero3 that-dot-thingy dk) - http://freenetproject.org/
 ;

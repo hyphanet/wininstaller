@@ -1,3 +1,4 @@
+﻿
 ;
 ; Translation file - German (de) [Sie] - by Thomas Bruderer (apophis / www.apophis.ch)
 ; updated by sweetie@IRC.freenet, 2011-05-10

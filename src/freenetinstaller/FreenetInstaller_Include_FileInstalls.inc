@@ -1,3 +1,4 @@
+﻿
 ;
 ; Freenet Windows Installer - Include file - File installs
 ;

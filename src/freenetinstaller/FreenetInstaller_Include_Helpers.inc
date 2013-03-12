@@ -1,3 +1,4 @@
+﻿
 ;
 ; Windows Freenet Installer - Include file - Helpers
 ;
