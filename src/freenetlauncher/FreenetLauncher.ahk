@@ -130,6 +130,22 @@ If (!ErrorLevel && _FFVersion <> "")
 }
 
 ;
+; Try browser: Opera (Tested versions: 12.15)
+;
+RegRead, _OperaPath, HKEY_LOCAL_MACHINE, Software\Clients\StartMenuInternet\Opera\shell\open\command
+
+If (!ErrorLevel && _OperaPath <> "")
+{
+	StringReplace, _OperaPath, _OperaPath, ", , All
+
+	IfExist, %_OperaPath%
+	{
+		Run, %_OperaPath% -newprivatetab "%_URL%%_SecureSuffix%", , UseErrorLevel
+		ExitApp, 0
+	}
+}
+
+;
 ; Try browser: Opera (Tested versions: 9.6)
 ;
 RegRead, _OperaPath, HKEY_LOCAL_MACHINE, Software\Clients\StartMenuInternet\Opera.exe\shell\open\command
