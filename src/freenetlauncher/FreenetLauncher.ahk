@@ -57,7 +57,7 @@ If (RegExMatch(_INI, "i)fproxy.port=([0-9]{1,5})", _Port) == 0 || !_Port1)
 	PopupErrorMessage(Trans("Freenet Launcher") " " Trans("was unable to read the 'fproxy.port' value from the 'freenet.ini' configuration file.") "`n`n" Trans("If the problem keeps occurring, try reinstalling Freenet or report this error message to the developers."))
 	ExitApp, 1
 }
-_URL = http://127.0.0.1:%_Port1%/
+_URL = http://localhost:%_Port1%/ ; Windows 8 needs localhost not 127.0.0.1, but it does HAVE an IPv4 localhost adapter, the issue is in IE
 
 ;
 ; Wait for the node HTTP interface to become available
@@ -226,7 +226,7 @@ TestPortAvailability(_Port)
 	VarSetCapacity(SocketAddress, SizeOfSocketAddress)
 	InsertInteger(2, SocketAddress, 0, AF_INET)
 	InsertInteger(DllCall("Ws2_32\htons", "UShort", _Port), SocketAddress, 2, 2)
-	InsertInteger(DllCall("Ws2_32\inet_addr", "Str", "127.0.0.1"), SocketAddress, 4, 4)
+	InsertInteger(DllCall("Ws2_32\inet_addr", "Str", "127.0.0.1"), SocketAddress, 4, 4) ; this does not take a DNS name, so use 127.blah
 
 	If DllCall("Ws2_32\connect", "UInt", _Socket, "UInt", &SocketAddress, "Int", SizeOfSocketAddress)
 	{
