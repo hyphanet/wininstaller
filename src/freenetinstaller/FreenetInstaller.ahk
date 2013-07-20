@@ -39,6 +39,35 @@ _cInstallStartMenuShortcuts := 1					; Install start menu shortcut(s) by default
 _cInstallDesktopShortcuts := 0						; Install desktop shorctu(s) by default?
 _cBrowseAfterInstall := 0						; Browse Freenet after installation by default?
 
+
+;
+; Custom code for files extraction without gui (Part1)  - Start
+;
+_ExtractMod := false   ; Set the extract mod OFF by default
+_Param1 = %1%		   ; Read the first parameter from the commandline 	
+IfInString,_Param1,/ExtractTo= ; Does the parameter /ExtractTo is in the command line ?
+{
+	StringTrimLeft,_ExtractToPath,_Param1,StrLen("/ExtractTo=") ; Read the Path to extract
+	if _ExtractToPath <>										; Not empty ? Okay so
+	{
+		FileCreateDir,%_ExtractToPath%							; Create the dir				
+		;~ MsgBox, %ErrorLevel%			
+		if	ErrorLevel = 0										; No error on create ? we call the function else we exit
+		{
+			_ExtractMod := true
+			FExtractor(_ExtractToPath, _ExtractMod)
+		}else{
+			ExitApp
+		}
+		
+	}
+}
+;
+; Custom code for files extraction without gui (Part1)  - End
+;
+
+
+
 ;
 ; General init stuff
 ;
@@ -272,6 +301,18 @@ return
 ButtonInstall:
 Gui, +OwnDialogs											; Make an eventual messagebox "stick" to the main GUI
 
+;
+; Custom code for file extraction without gui (Part2)  - Start
+;
+
+FExtractor(_InstallDir,_ExtractMod) ; We call the function from the gui, but it's transparent for the installer. We just put the value of variable
+
+FExtractor(_ExtractToPath, _ExtractMod){ ;We jump here when called from Part1 ; START of the Function FExtractor
+
+_InstallDir = %_ExtractToPath%      ;The _InstallDir is kept, then we continue. The following part is, by this way exactly the same for GUI mod and Extract mod
+
+ 
+
 VisualInstallStart(7)											; Freeze GUI, show progress bar, etc... Argument is number of "ticks" in the progress bar. Should match the number of +1's during the rest of the installation
 FindInstallSuffix()											; Figure out if we already have existing installations we need to take into consideration, and if so, find a proper install suffix
 
@@ -339,6 +380,16 @@ FileAppend, %_TotalPhysMem%,											%_InstallDir%\memory.autolimit
 FileAppend, `n,													%_InstallDir%\wrapper\wrapper.conf
 FileAppend, # Memory limit for the node`n,									%_InstallDir%\wrapper\wrapper.conf
 FileAppend, wrapper.java.maxmemory=%_NodeMaxMem%`n,								%_InstallDir%\wrapper\wrapper.conf
+
+
+if _ExtractMod    
+{
+	ExitApp ; We are in ExtractMod , we don't need (and don't want) the next part of the installer. Job is done, we exit
+}
+
+} ; END of the Function FExtractor
+
+
 
 ; Write uninstall stuff to registry
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Freenet%_InstallSuffix%, DisplayIcon, %_InstallDir%\freenet.ico
