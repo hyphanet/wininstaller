@@ -13,7 +13,7 @@
 :: - res\install_node\freenet.jar (Freenet jar)
 :: - res\install_node\freenet-ext.jar (Freenet jar)
 :: - res\install_node\seednodes.fref (Freenet seednodes file)
-:: - res\install_node\bcprov-jdk15on-147.jar (Bouncycastle crypto library)
+:: - res\install_node\bcprov-jdk15on-149.jar (Bouncycastle crypto library)
 ::
 :: - res\install_node\plugins\JSTUN.jar (Freenet plugin jar)
 :: - res\install_node\plugins\KeyUtils.jar (Freenet plugin jar)
