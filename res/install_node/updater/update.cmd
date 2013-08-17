@@ -209,7 +209,7 @@ FIND "bcprov-jdk15on-149.jar" %WRAPPER% > NUL
 IF NOT ERRORLEVEL 1 GOTO checkeddeps
 :: If it has bcprov 147 we need a new wrapper.conf
 FIND "bcprov-jdk15on-147.jar" %WRAPPER% > NUL
-IF ERRORLEVEL 1 GOTO error5
+IF NOT ERRORLEVEL 1 GOTO error5
 :: If it has neither, we can simply append to wrapper.conf, no need to clobber it.
 ECHO wrapper.java.classpath.3=bcprov-jdk15on-149.jar >> %WRAPPER%
 
