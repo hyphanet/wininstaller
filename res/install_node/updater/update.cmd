@@ -206,12 +206,19 @@ IF NOT EXIST bcprov-jdk15on-149.jar updater\wget.exe -o NUL --timeout=5 --tries=
 
 :: If it has bcprov 149 we are OK.
 FIND "bcprov-jdk15on-149.jar" %WRAPPER% > NUL
-IF NOT ERRORLEVEL 1 GOTO checkeddeps
+IF NOT ERRORLEVEL 1 GOTO has149
 :: If it has bcprov 147 we need a new wrapper.conf
 FIND "bcprov-jdk15on-147.jar" %WRAPPER% > NUL
 IF NOT ERRORLEVEL 1 GOTO error5
 :: If it has neither, we can simply append to wrapper.conf, no need to clobber it.
 ECHO wrapper.java.classpath.3=bcprov-jdk15on-149.jar >> %WRAPPER%
+GOTO checkeddeps
+
+:has149
+FIND "bcprov-jdk15on-147.jar" %WRAPPER% > NUL
+if ERRORLEVEL 1 GOTO checkeddeps
+:if it has both we need to replace the wrapper.conf anyway
+GOTO error5
 
 :checkeddeps
 
