@@ -37,6 +37,8 @@ FileCreateDir,								%_InstallDir%\wrapper
 FileInstall, ..\..\res\install_node\wrapper\freenetwrapper.exe,		%_InstallDir%\wrapper\freenetwrapper.exe
 FileInstall, ..\..\res\install_node\wrapper\wrapper.conf,		%_InstallDir%\wrapper\wrapper.conf
 FileInstall, ..\..\res\install_node\wrapper\wrapper-windows-x86-32.dll,	%_InstallDir%\wrapper\wrapper-windows-x86-32.dll
+FileInstall, ..\..\res\install_node\wrapper\wrapper.jar,		%_InstallDir%\wrapper\wrapper.jar
+
 FileCreateDir,								%_InstallDir%\updater
 FileInstall, ..\..\res\install_node\updater\update.cmd,		%_InstallDir%\update.cmd
 FileInstall, ..\..\res\install_node\updater\sha1test.jar,		%_InstallDir%\updater\sha1test.jar
