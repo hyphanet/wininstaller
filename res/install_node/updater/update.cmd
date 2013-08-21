@@ -1251,8 +1251,7 @@ GOTO veryend
 :newwrapper
 IF EXIST %WRAPPER% MOVE %WRAPPER% %WRAPPERBAK%
 :: This will set the memory settings back to default, but it can't be helped.
-SET WRAPPERURL=https://downloads.freenetproject.org/alpha/update/wrapper.conf
-IF %NEWINSTALL%==1 SET WRAPPERURL=https://downloads.freenetproject.org/alpha/update/wrapper.conf.no-service
+SET WRAPPERURL=https://downloads.freenetproject.org/alpha/update/wrapper.conf.windows
 updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 %WRAPPERURL% -O %WRAPPER%
 IF NOT EXIST %WRAPPER% GOTO wrappererror
 IF EXIST wrapper.password type wrapper.password >> %WRAPPER%
