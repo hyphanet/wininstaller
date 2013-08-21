@@ -212,13 +212,23 @@ FIND "bcprov-jdk15on-147.jar" %WRAPPER% > NUL
 IF NOT ERRORLEVEL 1 GOTO error5
 :: If it has neither, we can simply append to wrapper.conf, no need to clobber it.
 ECHO wrapper.java.classpath.3=bcprov-jdk15on-149.jar >> %WRAPPER%
-GOTO checkeddeps
+GOTO checkwrapperjar
 
 :has149
 FIND "bcprov-jdk15on-147.jar" %WRAPPER% > NUL
-if ERRORLEVEL 1 GOTO checkeddeps
+if ERRORLEVEL 1 GOTO checkwrapperjar
 :if it has both we need to replace the wrapper.conf anyway
 GOTO error5
+
+:: Check for wrapper.jar
+:: Get the original ext 29 version if wrapper.jar doesn't exist
+:: There are later versions but then it will exist.
+:checkwrapperjar
+IF NOT EXIST wrapper.jar updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://downloads.freenetproject.org/alpha/deps/wrapper.jar.from-ext29 -O wrapper.jar
+
+:: Now check the wrapper.conf
+FIND "wrapper.jar" %WRAPPER% > NUL
+IF ERRORLEVEL 1 GOTO error5
 
 :checkeddeps
 
