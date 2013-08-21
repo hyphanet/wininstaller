@@ -224,7 +224,7 @@ GOTO error5
 :: Get the original ext 29 version if wrapper.jar doesn't exist
 :: There are later versions but then it will exist.
 :checkwrapperjar
-IF NOT EXIST wrapper.jar updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://downloads.freenetproject.org/alpha/deps/wrapper.jar.from-ext29 -O wrapper.jar
+IF NOT EXIST wrapper.jar updater\wget.exe -o NUL --timeout=5 --tries=5 --waitretry=10 https://downloads.freenetproject.org/alpha/deps/wrapper.jar.from-ext29 -O wrapper\wrapper.jar
 
 :: Now check the wrapper.conf
 FIND "wrapper.jar" %WRAPPER% > NUL
